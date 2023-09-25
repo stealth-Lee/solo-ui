@@ -1,98 +1,3 @@
-<script setup lang="ts">
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ref, computed, watch, getCurrentInstance } from "vue";
-
-import Dept from "@iconify-icons/ri/git-branch-line";
-// import Reset from "@iconify-icons/ri/restart-line";
-import Search from "@iconify-icons/ep/search";
-import More2Fill from "@iconify-icons/ri/more-2-fill";
-import OfficeBuilding from "@iconify-icons/ep/office-building";
-import LocationCompany from "@iconify-icons/ep/add-location";
-import ExpandIcon from "./svg/expand.svg?component";
-import UnExpandIcon from "./svg/unexpand.svg?component";
-
-interface Tree {
-  id: number;
-  name: string;
-  highlight?: boolean;
-  children?: Tree[];
-}
-
-const props = defineProps({
-  treeLoading: Boolean,
-  treeData: Array
-});
-
-const emit = defineEmits(["tree-select"]);
-
-const treeRef = ref();
-const isExpand = ref(true);
-const searchValue = ref("");
-const highlightMap = ref({});
-const { proxy } = getCurrentInstance();
-const defaultProps = {
-  children: "children",
-  label: "name"
-};
-const buttonClass = computed(() => {
-  return [
-    "!h-[20px]",
-    "reset-margin",
-    "!text-gray-500",
-    "dark:!text-white",
-    "dark:hover:!text-primary"
-  ];
-});
-
-const filterNode = (value: string, data: Tree) => {
-  if (!value) return true;
-  return data.name.includes(value);
-};
-
-function nodeClick(value) {
-  const nodeId = value.$treeNodeId;
-  highlightMap.value[nodeId] = highlightMap.value[nodeId]?.highlight
-    ? Object.assign({ id: nodeId }, highlightMap.value[nodeId], {
-        highlight: false
-      })
-    : Object.assign({ id: nodeId }, highlightMap.value[nodeId], {
-        highlight: true
-      });
-  Object.values(highlightMap.value).forEach((v: Tree) => {
-    if (v.id !== nodeId) {
-      v.highlight = false;
-    }
-  });
-  emit(
-    "tree-select",
-    highlightMap.value[nodeId]?.highlight
-      ? Object.assign({ ...value, selected: true })
-      : Object.assign({ ...value, selected: false })
-  );
-}
-
-function toggleRowExpansionAll(status) {
-  isExpand.value = status;
-  const nodes = (proxy.$refs["treeRef"] as any).store._getAllNodes();
-  for (let i = 0; i < nodes.length; i++) {
-    nodes[i].expanded = status;
-  }
-}
-
-/** 重置部门树状态（选中状态、搜索框值、树初始化） */
-function onTreeReset() {
-  highlightMap.value = {};
-  searchValue.value = "";
-  toggleRowExpansionAll(true);
-}
-
-watch(searchValue, val => {
-  treeRef.value!.filter(val);
-});
-
-defineExpose({ onTreeReset });
-</script>
-
 <template>
   <div
     v-loading="props.treeLoading"
@@ -153,13 +58,13 @@ defineExpose({ onTreeReset });
     <el-divider />
     <el-tree
       ref="treeRef"
-      :data="props.treeData"
-      node-key="id"
+      :data="treeData"
+      node-key="deptId"
       size="small"
       :props="defaultProps"
       default-expand-all
       :expand-on-click-node="false"
-      :filter-node-method="filterNode"
+      :filter-node-method="queryNode"
       @node-click="nodeClick"
     >
       <template #default="{ node, data }">
@@ -201,6 +106,86 @@ defineExpose({ onTreeReset });
     </el-tree>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { ref, computed, watch, getCurrentInstance, onMounted } from "vue";
+
+import { handleTree } from "@/utils/tree";
+import { listSimple } from "@/api/system/dept";
+
+import Dept from "@iconify-icons/ri/git-branch-line";
+// import Reset from "@iconify-icons/ri/restart-line";
+import Search from "@iconify-icons/ep/search";
+import More2Fill from "@iconify-icons/ri/more-2-fill";
+import OfficeBuilding from "@iconify-icons/ep/office-building";
+import LocationCompany from "@iconify-icons/ep/add-location";
+import ExpandIcon from "./svg/expand.svg?component";
+import UnExpandIcon from "./svg/unexpand.svg?component";
+
+interface Tree {
+  deptId: number;
+  deptName: string;
+  highlight?: boolean;
+  children?: Tree[];
+}
+
+const props = defineProps({
+  treeLoading: Boolean
+});
+
+const emit = defineEmits(["tree-select"]);
+
+const treeData = ref([]);
+const treeRef = ref();
+const isExpand = ref(true);
+const searchValue = ref("");
+const highlightMap = ref({});
+const { proxy } = getCurrentInstance();
+const defaultProps = {
+  children: "children",
+  label: "deptName"
+};
+const buttonClass = computed(() => {
+  return [
+    "!h-[20px]",
+    "reset-margin",
+    "!text-gray-500",
+    "dark:!text-white",
+    "dark:hover:!text-primary"
+  ];
+});
+
+// 查询节点
+const queryNode = (value: string, data: Tree) => {
+  if (!value) return true;
+  return data.deptName.includes(value);
+};
+
+// 部门树节点点击事件
+const nodeClick = (row: any) => {
+  emit("tree-select", row);
+};
+
+// 展开/折叠事件
+function toggleRowExpansionAll(status) {
+  isExpand.value = status;
+  const nodes = (proxy.$refs["treeRef"] as any).store._getAllNodes();
+  for (let i = 0; i < nodes.length; i++) {
+    nodes[i].expanded = status;
+  }
+}
+
+watch(searchValue, val => {
+  treeRef.value!.filter(val);
+});
+
+// 初始化
+onMounted(async () => {
+  const treeRes = await listSimple();
+  treeData.value = handleTree(treeRes.data, "deptId");
+});
+</script>
 
 <style lang="scss" scoped>
 :deep(.el-divider) {

@@ -13,6 +13,7 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
+import { message } from "@/utils/message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -123,6 +124,13 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
+        // 业务异常处理
+        if (response.data.code === 1) {
+          message(response.data.message, {
+            type: "error"
+          });
+          return Promise.reject("service exception");
+        }
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
@@ -188,6 +196,24 @@ class PureHttp {
     config?: PureHttpRequestConfig
   ): Promise<P> {
     return this.request<P>("get", url, params, config);
+  }
+
+  // delete工具函数
+  public delete<T, P>(
+    url: string,
+    params?: AxiosRequestConfig<T>,
+    config?: PureHttpRequestConfig
+  ): Promise<P> {
+    return this.request<P>("delete", url, params, config);
+  }
+
+  // put工具函数
+  public put<T, P>(
+    url: string,
+    params?: AxiosRequestConfig<T>,
+    config?: PureHttpRequestConfig
+  ): Promise<P> {
+    return this.request<P>("put", url, params, config);
   }
 }
 

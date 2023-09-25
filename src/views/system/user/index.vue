@@ -1,82 +1,29 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import tree from "./tree.vue";
-import { useUser } from "./utils/hook";
-import { PureTableBar } from "@/components/RePureTableBar";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-
-import Upload from "@iconify-icons/ri/upload-line";
-import Role from "@iconify-icons/ri/admin-line";
-import Password from "@iconify-icons/ri/lock-password-line";
-import More from "@iconify-icons/ep/more-filled";
-import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Search from "@iconify-icons/ep/search";
-import Refresh from "@iconify-icons/ep/refresh";
-import AddFill from "@iconify-icons/ri/add-circle-line";
-
-defineOptions({
-  name: "User"
-});
-
-const treeRef = ref();
-const formRef = ref();
-const tableRef = ref();
-
-const {
-  form,
-  loading,
-  columns,
-  dataList,
-  treeData,
-  treeLoading,
-  selectedNum,
-  pagination,
-  buttonClass,
-  onSearch,
-  resetForm,
-  onbatchDel,
-  openDialog,
-  onTreeSelect,
-  handleUpdate,
-  handleDelete,
-  handleUpload,
-  handleReset,
-  handleRole,
-  handleSizeChange,
-  onSelectionCancel,
-  handleCurrentChange,
-  handleSelectionChange
-} = useUser(tableRef, treeRef);
-</script>
-
 <template>
   <div class="flex justify-between">
-    <tree
+    <dept-tree
       ref="treeRef"
       class="min-w-[200px] mr-2"
-      :treeData="treeData"
       :treeLoading="treeLoading"
-      @tree-select="onTreeSelect"
+      @tree-select="handleSelectTree"
     />
     <div class="w-[calc(100%-200px)]">
       <el-form
-        ref="formRef"
+        ref="queryFormRef"
         :inline="true"
-        :model="form"
+        :model="queryParams"
         class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
       >
         <el-form-item label="用户名称：" prop="username">
           <el-input
-            v-model="form.username"
+            v-model="queryParams.username"
             placeholder="请输入用户名称"
             clearable
             class="!w-[160px]"
           />
         </el-form-item>
-        <el-form-item label="手机号码：" prop="phone">
+        <el-form-item label="手机号码：" prop="mobile">
           <el-input
-            v-model="form.phone"
+            v-model="queryParams.mobile"
             placeholder="请输入手机号码"
             clearable
             class="!w-[160px]"
@@ -84,7 +31,7 @@ const {
         </el-form-item>
         <el-form-item label="状态：" prop="status">
           <el-select
-            v-model="form.status"
+            v-model="queryParams.status"
             placeholder="请选择"
             clearable
             class="!w-[160px]"
@@ -98,28 +45,24 @@ const {
             type="primary"
             :icon="useRenderIcon(Search)"
             :loading="loading"
-            @click="onSearch"
+            @click="handleQuery"
           >
             搜索
           </el-button>
-          <el-button :icon="useRenderIcon(Refresh)" @click="resetForm(formRef)">
+          <el-button :icon="useRenderIcon(Refresh)" @click="handleReset()">
             重置
           </el-button>
         </el-form-item>
       </el-form>
 
-      <PureTableBar
-        title="用户管理（仅演示，操作后不生效）"
-        :columns="columns"
-        @refresh="onSearch"
-      >
+      <PureTableBar title="用户列表" :columns="columns" @refresh="handleQuery">
         <template #buttons>
           <el-button
             type="primary"
             :icon="useRenderIcon(AddFill)"
-            @click="openDialog()"
+            @click="handleCreateOrUpdate()"
           >
-            新增用户
+            新增
           </el-button>
         </template>
         <template v-slot="{ size, dynamicColumns }">
@@ -174,19 +117,19 @@ const {
                 type="primary"
                 :size="size"
                 :icon="useRenderIcon(EditPen)"
-                @click="openDialog('编辑', row)"
+                @click="handleCreateOrUpdate('编辑', row.userId)"
               >
                 修改
               </el-button>
               <el-popconfirm
-                :title="`是否确认删除用户编号为${row.id}的这条数据`"
+                :title="`是否确认删除用户编号为${row.userId}的这条数据`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>
                   <el-button
                     class="reset-margin"
                     link
-                    type="primary"
+                    type="danger"
                     :size="size"
                     :icon="useRenderIcon(Delete)"
                   >
@@ -198,7 +141,6 @@ const {
                 <el-button
                   class="ml-3 mt-[2px]"
                   link
-                  type="primary"
                   :size="size"
                   :icon="useRenderIcon(More)"
                   @click="handleUpdate(row)"
@@ -224,7 +166,7 @@ const {
                         type="primary"
                         :size="size"
                         :icon="useRenderIcon(Password)"
-                        @click="handleReset(row)"
+                        @click="handleReset()"
                       >
                         重置密码
                       </el-button>
@@ -250,7 +192,208 @@ const {
       </PureTableBar>
     </div>
   </div>
+  <user-form ref="userDialogFormRef" @refresh="getData()" />
 </template>
+
+<script setup lang="tsx">
+import { ref, onMounted, reactive, defineAsyncComponent } from "vue";
+import { message } from "@/utils/message";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { useUser } from "./utils/hook";
+import { PureTableBar } from "@/components/RePureTableBar";
+import { type PaginationProps } from "@pureadmin/table";
+
+import Upload from "@iconify-icons/ri/upload-line";
+import Role from "@iconify-icons/ri/admin-line";
+import Password from "@iconify-icons/ri/lock-password-line";
+import More from "@iconify-icons/ep/more-filled";
+import Delete from "@iconify-icons/ep/delete";
+import EditPen from "@iconify-icons/ep/edit-pen";
+import Search from "@iconify-icons/ep/search";
+import Refresh from "@iconify-icons/ep/refresh";
+import AddFill from "@iconify-icons/ri/add-circle-line";
+
+import { paging, deleting } from "@/api/system/user";
+
+import DeptTree from "./tree.vue";
+const UserForm = defineAsyncComponent(() => import("./form.vue"));
+
+defineOptions({
+  name: "User"
+});
+
+const treeRef = ref();
+const queryFormRef = ref();
+const tableRef = ref();
+const loading = ref(true);
+const dataList = ref([]);
+
+const userDialogFormRef = ref();
+
+const pagination: PaginationProps = reactive<PaginationProps>({
+  total: 0,
+  pageSize: 10,
+  currentPage: 1,
+  background: true
+});
+
+const queryParams = reactive({
+  deptId: null,
+  username: null,
+  mobile: null,
+  status: null,
+  pageNumber: pagination?.currentPage,
+  pageSize: pagination?.pageSize
+});
+
+const {
+  treeLoading,
+  selectedNum,
+  buttonClass,
+  onbatchDel,
+  handleUpdate,
+  handleUpload,
+  handleRole,
+  onSelectionCancel,
+  handleSelectionChange
+} = useUser(tableRef, treeRef);
+
+const columns: TableColumnList = [
+  {
+    label: "勾选列", // 如果需要表格多选，此处label必须设置
+    type: "selection",
+    fixed: "left",
+    reserveSelection: true // 数据刷新后保留选项
+  },
+  {
+    label: "用户编号",
+    prop: "userId",
+    width: 90
+  },
+  {
+    label: "用户名称",
+    prop: "username",
+    minWidth: 130
+  },
+  {
+    label: "用户昵称",
+    prop: "nickname",
+    minWidth: 130
+  },
+  {
+    label: "用户姓名",
+    prop: "name",
+    minWidth: 130
+  },
+  {
+    label: "手机号",
+    prop: "mobile",
+    minWidth: 130
+  },
+  {
+    label: "性别",
+    prop: "sex",
+    minWidth: 90,
+    cellRenderer: ({ row, props }) => (
+      <el-tag
+        size={props.size}
+        type={row.sex === 0 ? "primary" : row.sex === 1 ? "danger" : "warning"}
+        effect="plain"
+      >
+        {row.sex === 0 ? "男" : row.sex === 1 ? "女" : "未知"}
+      </el-tag>
+    )
+  },
+  {
+    label: "状态",
+    prop: "status",
+    minWidth: 90,
+    cellRenderer: ({ row, props }) => (
+      <el-tag
+        size={props.size}
+        type={row.status === 0 ? "primary" : "danger"}
+        effect="plain"
+      >
+        {row.status === 0 ? "正常" : "停用"}
+      </el-tag>
+    )
+  },
+  {
+    label: "创建时间",
+    minWidth: 90,
+    prop: "createTime"
+  },
+  {
+    label: "操作",
+    fixed: "right",
+    width: 180,
+    slot: "operation"
+  }
+];
+
+// 查询用户列表
+const getData = async () => {
+  loading.value = true;
+  try {
+    const res = await paging(queryParams);
+    if (res.code === 0) {
+      const data = res.data;
+      dataList.value = data.records;
+      pagination.total = data.totalRow;
+      pagination.pageSize = data.pageSize;
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 搜索按钮
+const handleQuery = () => {
+  getData();
+};
+
+// 部门树搜索
+function handleSelectTree(row) {
+  queryParams.deptId = row.deptId;
+  handleQuery();
+}
+
+// 重置按钮
+const handleReset = () => {
+  queryParams.deptId = "";
+  queryFormRef.value.resetFields();
+  handleQuery();
+};
+
+// 当前页码改变事件
+function handleCurrentChange(val: number) {
+  queryParams.pageNumber = val;
+  handleQuery();
+}
+
+// 页面大小改变事件
+function handleSizeChange(val: number) {
+  queryParams.pageSize = val;
+  handleQuery();
+}
+
+// 新增、编辑按钮
+const handleCreateOrUpdate = (title = "新增", id?: number) => {
+  userDialogFormRef.value.openDialog(title, id);
+};
+
+// 删除按钮
+const handleDelete = async (row: any) => {
+  await deleting(row.userId);
+  message(`用户[${row.username}]删除成功！`, { type: "success" });
+  await getData();
+};
+
+// 初始化
+onMounted(async () => {
+  await getData();
+});
+</script>
 
 <style scoped lang="scss">
 :deep(.el-dropdown-menu__item i) {

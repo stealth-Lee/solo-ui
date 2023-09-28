@@ -45,6 +45,10 @@ app.component("FontIcon", FontIcon);
 import { Auth } from "@/components/ReAuth";
 app.component("Auth", Auth);
 
+// 全局注册字典标签组件
+import DictTag from "@/components/DictTag/index.vue";
+app.component("DictTag", DictTag);
+
 getServerConfig(app).then(async config => {
   setupStore(app);
   app.use(router);

@@ -1,61 +1,23 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRole } from "./utils/hook";
-import { PureTableBar } from "@/components/RePureTableBar";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-
-// import Database from "@iconify-icons/ri/database-2-line";
-// import More from "@iconify-icons/ep/more-filled";
-import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Search from "@iconify-icons/ep/search";
-import Refresh from "@iconify-icons/ep/refresh";
-import Menu from "@iconify-icons/ep/menu";
-import AddFill from "@iconify-icons/ri/add-circle-line";
-
-defineOptions({
-  name: "Role"
-});
-
-const formRef = ref();
-const {
-  form,
-  loading,
-  columns,
-  dataList,
-  pagination,
-  // buttonClass,
-  onSearch,
-  resetForm,
-  openDialog,
-  handleMenu,
-  handleDelete,
-  // handleDatabase,
-  handleSizeChange,
-  handleCurrentChange,
-  handleSelectionChange
-} = useRole();
-</script>
-
 <template>
   <div class="main">
+    <!-- 搜索工作栏 -->
     <el-form
-      ref="formRef"
+      ref="queryFormRef"
       :inline="true"
-      :model="form"
+      :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="name">
+      <el-form-item label="角色名称：" prop="roleName">
         <el-input
-          v-model="form.name"
+          v-model="props.queryParams.roleName"
           placeholder="请输入角色名称"
           clearable
-          class="!w-[200px]"
+          class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="code">
+      <el-form-item label="角色标识：" prop="roleCode">
         <el-input
-          v-model="form.code"
+          v-model="props.queryParams.roleCode"
           placeholder="请输入角色标识"
           clearable
           class="!w-[180px]"
@@ -63,42 +25,94 @@ const {
       </el-form-item>
       <el-form-item label="状态：" prop="status">
         <el-select
-          v-model="form.status"
+          v-model="props.queryParams.status"
           placeholder="请选择状态"
           clearable
           class="!w-[180px]"
         >
-          <el-option label="已启用" value="1" />
-          <el-option label="已停用" value="0" />
+          <el-option
+            v-for="dict in status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          :icon="useRenderIcon(Search)"
-          :loading="loading"
-          @click="onSearch"
-        >
-          搜索
-        </el-button>
-        <el-button :icon="useRenderIcon(Refresh)" @click="resetForm(formRef)">
-          重置
-        </el-button>
+        <el-tooltip content="搜索" placement="top">
+          <el-button
+            :icon="useRenderIcon(Search)"
+            :loading="props.loading"
+            @click="handleQuery"
+            circle
+          />
+        </el-tooltip>
+        <el-tooltip content="重置" placement="top">
+          <el-button
+            :icon="useRenderIcon(RefreshRight)"
+            @click="handleReset()"
+            circle
+          />
+        </el-tooltip>
       </el-form-item>
     </el-form>
 
+    <!-- 列表 -->
     <PureTableBar
-      title="角色列表（仅演示，操作后不生效）"
+      :title="`${props.title}列表`"
       :columns="columns"
-      @refresh="onSearch"
+      @refresh="handleQuery"
     >
       <template #buttons>
         <el-button
           type="primary"
-          :icon="useRenderIcon(AddFill)"
-          @click="openDialog()"
+          :icon="useRenderIcon(Plus)"
+          @click="handleCreate()"
+          plain
         >
-          新增角色
+          新增
+        </el-button>
+        <el-button
+          type="success"
+          :icon="useRenderIcon(EditPen)"
+          @click="handleUpdate()"
+          :disabled="props.single"
+          plain
+        >
+          编辑
+        </el-button>
+        <el-popconfirm
+          width="180"
+          icon-color="red"
+          title="是否删除选中数据？"
+          @confirm="handleDelete()"
+        >
+          <template #reference>
+            <el-button
+              type="danger"
+              :icon="useRenderIcon(Delete)"
+              :disabled="props.multiple"
+              plain
+            >
+              删除
+            </el-button>
+          </template>
+        </el-popconfirm>
+        <el-button
+          type="info"
+          :icon="useRenderIcon(Upload)"
+          @click="handleUpdate()"
+          plain
+        >
+          导入
+        </el-button>
+        <el-button
+          type="warning"
+          :icon="useRenderIcon(Download)"
+          @click="handleUpdate()"
+          plain
+        >
+          导出
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -106,12 +120,12 @@ const {
           align-whole="center"
           showOverflowTooltip
           table-layout="auto"
-          :loading="loading"
+          :loading="props.loading"
           :size="size"
           adaptive
-          :data="dataList"
+          :data="props.dataList"
           :columns="dynamicColumns"
-          :pagination="pagination"
+          :pagination="props.pagination"
           :paginationSmall="size === 'small' ? true : false"
           :header-cell-style="{
             background: 'var(--el-fill-color-light)',
@@ -128,29 +142,21 @@ const {
               type="primary"
               :size="size"
               :icon="useRenderIcon(EditPen)"
-              @click="openDialog('编辑', row)"
+              @click="handleUpdate(row.roleId)"
             >
               修改
             </el-button>
-            <el-button
-              class="reset-margin"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(Menu)"
-              @click="handleMenu"
-            >
-              菜单权限
-            </el-button>
             <el-popconfirm
-              :title="`是否确认删除角色名称为${row.name}的这条数据`"
-              @confirm="handleDelete(row)"
+              width="180"
+              icon-color="red"
+              title="是否删除选中数据？"
+              @confirm="handleDelete(row.roleId)"
             >
               <template #reference>
                 <el-button
                   class="reset-margin"
                   link
-                  type="primary"
+                  type="danger"
                   :size="size"
                   :icon="useRenderIcon(Delete)"
                 >
@@ -158,11 +164,10 @@ const {
                 </el-button>
               </template>
             </el-popconfirm>
-            <!-- <el-dropdown>
+            <el-dropdown>
               <el-button
                 class="ml-3 mt-[2px]"
                 link
-                type="primary"
                 :size="size"
                 :icon="useRenderIcon(More)"
               />
@@ -175,7 +180,6 @@ const {
                       type="primary"
                       :size="size"
                       :icon="useRenderIcon(Menu)"
-                      @click="handleMenu"
                     >
                       菜单权限
                     </el-button>
@@ -187,20 +191,122 @@ const {
                       type="primary"
                       :size="size"
                       :icon="useRenderIcon(Database)"
-                      @click="handleDatabase"
                     >
                       数据权限
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
-            </el-dropdown> -->
+            </el-dropdown>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
   </div>
+  <role-form ref="roleDialogFormRef" @refresh="loadData()" />
 </template>
+
+<script setup lang="tsx">
+import { ref, reactive, computed } from "vue";
+import { PureTableBar } from "@/components/RePureTableBar";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+
+import { useDict } from "@/hooks/dict";
+import { BasicTableProps, useTable } from "@/hooks/table";
+import { paging, deleting } from "@/api/system/role";
+
+import RoleForm from "./form.vue";
+
+import Search from "@iconify-icons/ep/search";
+import RefreshRight from "@iconify-icons/ep/refresh-right";
+import Plus from "@iconify-icons/ep/plus";
+import EditPen from "@iconify-icons/ep/edit-pen";
+import Delete from "@iconify-icons/ep/delete";
+import Upload from "@iconify-icons/ep/upload";
+import Download from "@iconify-icons/ep/download";
+import More from "@iconify-icons/ep/more-filled";
+import Menu from "@iconify-icons/ep/menu";
+import Database from "@iconify-icons/ri/database-2-line";
+
+defineOptions({ name: "SysRole" });
+
+const queryFormRef = ref();
+const roleDialogFormRef = ref();
+
+const { status } = useDict("status");
+
+const props: BasicTableProps = reactive<BasicTableProps>({
+  title: "角色",
+  pk: "roleId",
+  listApi: paging,
+  deleteApi: deleting,
+  formRef: queryFormRef,
+  dialogRef: roleDialogFormRef
+});
+
+const {
+  loadData,
+  handleSizeChange,
+  handleCurrentChange,
+  handleSelectionChange,
+  handleQuery,
+  handleReset,
+  handleCreate,
+  handleUpdate,
+  handleDelete
+} = useTable(props);
+
+const columns: TableColumnList = [
+  {
+    type: "selection",
+    align: "left",
+    width: 10
+  },
+  {
+    label: "角色名称",
+    prop: "roleName",
+    minWidth: 120
+  },
+  {
+    label: "角色标识",
+    prop: "roleCode",
+    minWidth: 150
+  },
+  {
+    label: "状态",
+    minWidth: 130,
+    cellRenderer: ({ row }) => (
+      <dict-tag options={status.value} value={row.status}></dict-tag>
+    )
+  },
+  {
+    label: "备注",
+    prop: "remark",
+    minWidth: 150
+  },
+  {
+    label: "创建时间",
+    minWidth: 180,
+    prop: "createTime"
+  },
+  {
+    label: "操作",
+    fixed: "right",
+    width: 240,
+    slot: "operation"
+  }
+];
+
+const buttonClass = computed(() => {
+  return [
+    "!h-[20px]",
+    "reset-margin",
+    "!text-gray-500",
+    "dark:!text-white",
+    "dark:hover:!text-primary"
+  ];
+});
+</script>
 
 <style scoped lang="scss">
 :deep(.el-dropdown-menu__item i) {

@@ -109,7 +109,7 @@
         </re-col>
 
         <re-col>
-          <el-form-item label="备注">
+          <el-form-item label="备注" prop="remark">
             <el-input
               v-model="formModel.remark"
               placeholder="请输入备注信息"

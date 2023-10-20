@@ -11,6 +11,7 @@ import removeConsole from "vite-plugin-remove-console";
 import themePreprocessorPlugin from "@pureadmin/theme";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import { genScssMultipleScopeVars } from "../src/layout/theme";
+import AutoImport from "unplugin-auto-import/vite";
 
 export function getPluginsList(
   command: string,
@@ -21,6 +22,23 @@ export function getPluginsList(
   const lifecycle = process.env.npm_lifecycle_event;
   return [
     vue(),
+    AutoImport({
+      imports: [
+        "vue",
+        // 额外添加需要自动导入的组件
+        {
+          "@/hooks/table": ["useTable"],
+          "@/hooks/dict": ["useDict"],
+          "@/hooks/message": ["useMessage", "useMessageBox", "usrNotification"]
+        }
+      ],
+      dts: "src/types/auto-imports.d.ts",
+      eslintrc: {
+        enabled: false, // Default `false`
+        filepath: "./.eslintrc-auto-import.json", // Default `./.eslintrc-auto-import.json`
+        globalsPropValue: true // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+      }
+    }),
     VueI18nPlugin({
       runtimeOnly: true,
       compositionOnly: true,

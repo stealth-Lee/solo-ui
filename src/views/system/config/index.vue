@@ -7,31 +7,39 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="roleName">
+      <el-form-item label="配置名称" prop="configName">
         <el-input
-          v-model="props.queryParams.roleName"
-          placeholder="请输入角色名称"
+          v-model="props.queryParams.configName"
+          placeholder="请输入配置名称"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="roleCode">
+      <el-form-item label="配置键" prop="configKey">
         <el-input
-          v-model="props.queryParams.roleCode"
-          placeholder="请输入角色标识"
+          v-model="props.queryParams.configKey"
+          placeholder="请输入配置键"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
+      <el-form-item label="配置值" prop="configValue">
+        <el-input
+          v-model="props.queryParams.configValue"
+          placeholder="请输入配置值"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item label="系统标识" prop="isSys">
         <el-select
-          v-model="props.queryParams.status"
-          placeholder="请选择状态"
+          v-model="props.queryParams.isSys"
+          placeholder="请选择系统标识"
           clearable
           class="!w-[180px]"
         >
           <el-option
-            v-for="dict in status"
+            v-for="dict in is_sys"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -41,7 +49,7 @@
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
           <el-button
-            :icon="useRenderIcon(Search)"
+            :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
             circle
@@ -49,7 +57,7 @@
         </el-tooltip>
         <el-tooltip content="重置" placement="top">
           <el-button
-            :icon="useRenderIcon(RefreshRight)"
+            :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
             circle
           />
@@ -66,7 +74,7 @@
       <template #buttons>
         <el-button
           type="primary"
-          :icon="useRenderIcon(Plus)"
+          :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
         >
@@ -74,7 +82,7 @@
         </el-button>
         <el-button
           type="success"
-          :icon="useRenderIcon(EditPen)"
+          :icon="useRenderIcon('ep:edit-pen')"
           @click="handleUpdate()"
           :disabled="props.single"
           plain
@@ -90,7 +98,7 @@
           <template #reference>
             <el-button
               type="danger"
-              :icon="useRenderIcon(Delete)"
+              :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
               plain
             >
@@ -100,7 +108,7 @@
         </el-popconfirm>
         <el-button
           type="info"
-          :icon="useRenderIcon(Upload)"
+          :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
           plain
         >
@@ -108,7 +116,7 @@
         </el-button>
         <el-button
           type="warning"
-          :icon="useRenderIcon(Download)"
+          :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
           plain
         >
@@ -141,16 +149,16 @@
               link
               type="primary"
               :size="size"
-              :icon="useRenderIcon(EditPen)"
-              @click="handleUpdate(row.roleId)"
+              :icon="useRenderIcon('ep:edit-pen')"
+              @click="handleUpdate(row.configId)"
             >
-              修改
+              编辑
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
               title="是否删除选中数据？"
-              @confirm="handleDelete(row.roleId)"
+              @confirm="handleDelete(row.configId)"
             >
               <template #reference>
                 <el-button
@@ -158,92 +166,40 @@
                   link
                   type="danger"
                   :size="size"
-                  :icon="useRenderIcon(Delete)"
+                  :icon="useRenderIcon('ep:delete')"
                 >
                   删除
                 </el-button>
               </template>
             </el-popconfirm>
-            <el-dropdown>
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
-                :size="size"
-                :icon="useRenderIcon(More)"
-              />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Menu)"
-                    >
-                      菜单权限
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Database)"
-                    >
-                      数据权限
-                    </el-button>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
   </div>
-  <role-form ref="roleDialogFormRef" @refresh="loadData()" />
+  <ConfigForm ref="dialogFormRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">
-import { ref, reactive, computed } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { BasicTableProps } from "@/hooks/table";
+import { paging, deleting } from "@/api/system/config";
 
-import { useDict } from "@/hooks/dict";
-import { BasicTableProps, useTable } from "@/hooks/table";
-import { paging, deleting, updateStatus } from "@/api/system/role";
+defineOptions({ name: "SysConfig" });
 
-import RoleForm from "./form.vue";
-
-import Search from "@iconify-icons/ep/search";
-import RefreshRight from "@iconify-icons/ep/refresh-right";
-import Plus from "@iconify-icons/ep/plus";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Delete from "@iconify-icons/ep/delete";
-import Upload from "@iconify-icons/ep/upload";
-import Download from "@iconify-icons/ep/download";
-import More from "@iconify-icons/ep/more-filled";
-import Menu from "@iconify-icons/ep/menu";
-import Database from "@iconify-icons/ri/database-2-line";
-
-defineOptions({ name: "SysRole" });
-
+const ConfigForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
-const roleDialogFormRef = ref();
+const dialogFormRef = ref();
 
-const { status } = useDict("status");
-
+const { is_sys } = useDict("is_sys");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "角色",
-  pk: "roleId",
-  switchField: "status",
+  title: "系统配置",
+  pk: "configId",
   listApi: paging,
   deleteApi: deleting,
-  switchApi: updateStatus,
   queryRef: queryFormRef,
-  formRef: roleDialogFormRef
+  formRef: dialogFormRef
 });
 
 const {
@@ -255,8 +211,7 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete,
-  handleSwitch
+  handleDelete
 } = useTable(props);
 
 const columns: TableColumnList = [
@@ -266,36 +221,37 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "角色名称",
-    prop: "roleName",
+    label: "配置名称",
+    prop: "configName",
     minWidth: 120
   },
   {
-    label: "角色标识",
-    prop: "roleCode",
-    minWidth: 150
+    label: "配置键",
+    prop: "configKey",
+    minWidth: 120
   },
   {
-    label: "备注",
-    prop: "remark",
-    minWidth: 150
+    label: "配置值",
+    prop: "configValue",
+    minWidth: 120
   },
   {
-    label: "状态",
-    minWidth: 130,
+    label: "系统标识[0:否 1:是]",
+    prop: "isSys",
+    minWidth: 120,
     cellRenderer: scope => (
-      <el-switch
-        v-model={scope.row.status}
-        active-value={1}
-        inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.roleName)}
-      />
+      <dict-tag options={is_sys.value} value={scope.row.isSys}></dict-tag>
     )
   },
   {
     label: "创建时间",
-    minWidth: 180,
-    prop: "createTime"
+    prop: "createTime",
+    minWidth: 120
+  },
+  {
+    label: "备注",
+    prop: "remark",
+    minWidth: 120
   },
   {
     label: "操作",
@@ -304,16 +260,6 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
-
-const buttonClass = computed(() => {
-  return [
-    "!h-[20px]",
-    "reset-margin",
-    "!text-gray-500",
-    "dark:!text-white",
-    "dark:hover:!text-primary"
-  ];
-});
 </script>
 
 <style scoped lang="scss">

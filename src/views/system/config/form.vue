@@ -7,34 +7,45 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="角色名称" prop="roleName">
+      <el-form-item label="配置名称" prop="configName">
         <el-input
-          v-model="formModel.roleName"
+          v-model="formModel.configName"
+          placeholder="请输入配置名称"
           clearable
-          placeholder="请输入角色名称"
         />
       </el-form-item>
-      <el-form-item label="角色标识" prop="roleCode">
+      <el-form-item label="配置键" prop="configKey">
         <el-input
-          v-model="formModel.roleCode"
+          v-model="formModel.configKey"
+          placeholder="请输入配置键"
           clearable
-          placeholder="请输入角色标识"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="formModel.status">
-          <el-radio-button
-            :label="item.value"
-            v-for="(item, index) in status"
-            :key="index"
-            >{{ item.label }}
-          </el-radio-button>
-        </el-radio-group>
+      <el-form-item label="配置值" prop="configValue">
+        <el-input
+          v-model="formModel.configValue"
+          placeholder="请输入配置值"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="系统标识" prop="isSys">
+        <el-select
+          v-model="formModel.isSys"
+          placeholder="请选择系统标识"
+          clearable
+        >
+          <el-option
+            v-for="dict in is_sys"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注信息"
+          placeholder="请输入备注"
           type="textarea"
         />
       </el-form-item>
@@ -49,33 +60,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { useMessage } from "@/hooks/message";
+import { getting, creating, updating } from "@/api/system/config";
 
-import { useDict } from "@/hooks/dict";
-import { getting, creating, updating } from "@/api/system/role";
+defineOptions({ name: "SysConfigForm" });
 
-defineOptions({ name: "SysRoleForm" });
-
+const { is_sys } = useDict("is_sys");
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
 const formLoading = ref(false);
 const formTitle = ref("");
-const { status } = useDict("status");
 const formModel = reactive({
-  roleId: undefined,
-  roleName: "",
-  roleCode: "",
-  dataScope: 1,
-  status: 1,
+  configId: "undefined",
+  configName: "",
+  configKey: "",
+  configValue: "",
+  isSys: "true",
   remark: ""
 });
 
-/** 自定义表单规则校验 */
+// 自定义表单规则校验
 const formRules = reactive({
-  roleName: [{ required: true, message: "角色名称为必填项", trigger: "blur" }],
-  roleCode: [{ required: true, message: "角色标识为必填项", trigger: "blur" }]
+  configName: [
+    { required: true, message: "配置名称为必填项", trigger: "blur" }
+  ],
+  configKey: [{ required: true, message: "配置键为必填项", trigger: "blur" }],
+  configValue: [{ required: true, message: "配置值为必填项", trigger: "blur" }]
 });
 
 // 打开弹框
@@ -101,8 +111,8 @@ const handleSubmit = async () => {
   if (!valid) return;
   try {
     formLoading.value = true;
-    formModel.roleId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}[${formModel.roleName}]成功！`);
+    formModel.configId ? await updating(formModel) : await creating(formModel);
+    message.success(`${formTitle.value}成功！`);
     visible.value = false;
     emit("refresh");
   } finally {
@@ -112,7 +122,7 @@ const handleSubmit = async () => {
 
 // 重置表单
 const resetForm = () => {
-  formModel.roleId = "";
+  formModel.configId = "";
   formRef.value?.resetFields();
 };
 

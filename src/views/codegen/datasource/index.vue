@@ -7,36 +7,13 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="roleName">
+      <el-form-item label="别名" prop="name">
         <el-input
-          v-model="props.queryParams.roleName"
-          placeholder="请输入角色名称"
+          v-model="props.queryParams.name"
+          placeholder="请输入别名："
           clearable
           class="!w-[180px]"
         />
-      </el-form-item>
-      <el-form-item label="角色标识：" prop="roleCode">
-        <el-input
-          v-model="props.queryParams.roleCode"
-          placeholder="请输入角色标识"
-          clearable
-          class="!w-[180px]"
-        />
-      </el-form-item>
-      <el-form-item label="状态：" prop="status">
-        <el-select
-          v-model="props.queryParams.status"
-          placeholder="请选择状态"
-          clearable
-          class="!w-[180px]"
-        >
-          <el-option
-            v-for="dict in status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
@@ -139,10 +116,20 @@
             <el-button
               class="reset-margin"
               link
+              type="success"
+              :size="size"
+              :icon="useRenderIcon(Database)"
+              @click="handleTest(row.sourceId)"
+            >
+              测试连接
+            </el-button>
+            <el-button
+              class="reset-margin"
+              link
               type="primary"
               :size="size"
               :icon="useRenderIcon(EditPen)"
-              @click="handleUpdate(row.roleId)"
+              @click="handleUpdate(row.sourceId)"
             >
               修改
             </el-button>
@@ -150,7 +137,7 @@
               width="180"
               icon-color="red"
               title="是否删除选中数据？"
-              @confirm="handleDelete(row.roleId)"
+              @confirm="handleDelete(row.sourceId)"
             >
               <template #reference>
                 <el-button
@@ -164,58 +151,23 @@
                 </el-button>
               </template>
             </el-popconfirm>
-            <el-dropdown>
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
-                :size="size"
-                :icon="useRenderIcon(More)"
-              />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Menu)"
-                    >
-                      菜单权限
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Database)"
-                    >
-                      数据权限
-                    </el-button>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
   </div>
-  <role-form ref="roleDialogFormRef" @refresh="loadData()" />
+  <datasource-form ref="datasourceDialogFormRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-
-import { useDict } from "@/hooks/dict";
+import { useMessage } from "@/hooks/message";
 import { BasicTableProps, useTable } from "@/hooks/table";
-import { paging, deleting, updateStatus } from "@/api/system/role";
+import { paging, deleting, test } from "@/api/codegen/datasource";
 
-import RoleForm from "./form.vue";
+import DatasourceForm from "./form.vue";
 
 import Search from "@iconify-icons/ep/search";
 import RefreshRight from "@iconify-icons/ep/refresh-right";
@@ -224,26 +176,21 @@ import EditPen from "@iconify-icons/ep/edit-pen";
 import Delete from "@iconify-icons/ep/delete";
 import Upload from "@iconify-icons/ep/upload";
 import Download from "@iconify-icons/ep/download";
-import More from "@iconify-icons/ep/more-filled";
-import Menu from "@iconify-icons/ep/menu";
 import Database from "@iconify-icons/ri/database-2-line";
 
 defineOptions({ name: "SysRole" });
 
+const message = useMessage();
 const queryFormRef = ref();
-const roleDialogFormRef = ref();
-
-const { status } = useDict("status");
+const datasourceDialogFormRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "角色",
-  pk: "roleId",
-  switchField: "status",
+  title: "数据源",
+  pk: "sourceId",
   listApi: paging,
   deleteApi: deleting,
-  switchApi: updateStatus,
-  queryRef: queryFormRef,
-  formRef: roleDialogFormRef
+  formRef: queryFormRef,
+  dialogRef: datasourceDialogFormRef
 });
 
 const {
@@ -255,8 +202,7 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete,
-  handleSwitch
+  handleDelete
 } = useTable(props);
 
 const columns: TableColumnList = [
@@ -266,31 +212,24 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "角色名称",
-    prop: "roleName",
+    label: "连接名",
+    prop: "name",
     minWidth: 120
   },
   {
-    label: "角色标识",
-    prop: "roleCode",
+    label: "数据源URL",
+    prop: "url",
+    minWidth: 150
+  },
+  {
+    label: "用户名",
+    prop: "username",
     minWidth: 150
   },
   {
     label: "备注",
     prop: "remark",
     minWidth: 150
-  },
-  {
-    label: "状态",
-    minWidth: 130,
-    cellRenderer: scope => (
-      <el-switch
-        v-model={scope.row.status}
-        active-value={1}
-        inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.roleName)}
-      />
-    )
   },
   {
     label: "创建时间",
@@ -305,15 +244,10 @@ const columns: TableColumnList = [
   }
 ];
 
-const buttonClass = computed(() => {
-  return [
-    "!h-[20px]",
-    "reset-margin",
-    "!text-gray-500",
-    "dark:!text-white",
-    "dark:hover:!text-primary"
-  ];
-});
+const handleTest = async (id: number) => {
+  await test(id);
+  message.success("连接成功");
+};
 </script>
 
 <style scoped lang="scss">

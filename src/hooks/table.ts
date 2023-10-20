@@ -1,6 +1,11 @@
-import { onMounted } from "vue";
+import { onMounted, h } from "vue";
+import { useWatermark, delay } from "@pureadmin/utils";
 import { type PaginationProps } from "@pureadmin/table";
-import { message } from "@/utils/message";
+import { useMessage, useMessageBox } from "@/hooks/message";
+import { GlobalStatus } from "@/utils/constants";
+
+const message = useMessage();
+const messageBox = useMessageBox();
 
 export interface BasicTableProps {
   // 标题
@@ -15,19 +20,27 @@ export interface BasicTableProps {
   listApi?: (...arg: any) => Promise<any>;
   // 删除函数
   deleteApi?: (...arg: any) => Promise<any>;
+  // 状态切换函数
+  switchApi?: (...arg: any) => Promise<any>;
+  // 主键名
+  pk?: any;
+  // 状态字段名
+  switchField?: any;
   // loading标志
   loading?: boolean;
   // 数据列表数组
   dataList?: any[];
   // 查询表单ref
+  queryRef?: any;
+  // 列表表单ref
+  listRef?: any;
+  // 窗口ref
   formRef?: any;
-  dialogRef?: any;
   // 单选启用
   single?: boolean;
   // 多选启用
   multiple?: boolean;
   // 选中的集合id
-  pk?: any;
   ids?: any[];
 }
 
@@ -83,7 +96,7 @@ export function useTable(options?: BasicTableProps) {
         }
       } catch (err: any) {
         // 捕获异常并显示错误提示
-        message(err.msg || err.data.msg, { customClass: "el", type: "error" });
+        message.error(err.msg || err.data.msg);
       } finally {
         props.loading = false;
       }
@@ -116,33 +129,76 @@ export function useTable(options?: BasicTableProps) {
 
   // 重置按钮
   const handleReset = () => {
-    props.formRef.resetFields();
+    props.queryRef.resetFields();
     handleQuery();
   };
 
   // 新增按钮
   const handleCreate = () => {
-    props.dialogRef.openDialog("新增" + props.title);
+    props.formRef.openDialog(`新增${props.title}`);
   };
 
   // 编辑按钮
   const handleUpdate = (id?: number) => {
     const ids = id || props.ids;
-    props.dialogRef.openDialog("编辑" + props.title, ids);
+    props.formRef.openDialog(`编辑${props.title}`, ids);
   };
 
   // 删除按钮
   const handleDelete = async (id?: any[]) => {
     const ids = id || props.ids;
     await props.deleteApi(ids);
-    message(`${props.title}删除成功！`, { type: "success" });
+    message.success(`${props.title}删除成功！`);
     await loadData();
+  };
+
+  // 状态切换按钮
+  const handleSwitch = async (row: any, name?: any) => {
+    try {
+      const text =
+        row[props.switchField] === GlobalStatus.ENABLE
+          ? h("span", { style: "color: teal; font-weight: bold" }, "启用")
+          : h("span", { style: "color: red; font-weight: bold" }, "禁用");
+      name = name
+        ? h("span", { style: "font-weight: bold" }, `“${name}”`)
+        : null;
+      const content = h("p", null, [
+        h("span", null, "确认要"),
+        text,
+        name,
+        h("span", null, `${props.title}吗？`)
+      ]);
+      await messageBox.confirm(content);
+      await props.switchApi(row[props.pk], row[props.switchField]);
+      await loadData();
+      await message.success("操作成功！");
+    } catch {
+      row[props.switchField] =
+        row[props.switchField] === GlobalStatus.ENABLE
+          ? GlobalStatus.DISABLE
+          : GlobalStatus.ENABLE;
+    }
   };
 
   // 初始化数据
   onMounted(() => {
     if (props.createdIsNeed) {
       loadData();
+    }
+    // TODO 先暂时保留
+    if (props.listRef) {
+      delay().then(() => {
+        const { setWatermark } = useWatermark(
+          props.listRef.getTableDoms().tableWrapper
+        );
+        setWatermark("SOLO ADMIN", {
+          font: "16px Microsoft YaHei",
+          globalAlpha: 0.8,
+          forever: true,
+          width: 252,
+          height: 80
+        });
+      });
     }
   });
 
@@ -155,6 +211,7 @@ export function useTable(options?: BasicTableProps) {
     handleReset,
     handleCreate,
     handleUpdate,
-    handleDelete
+    handleDelete,
+    handleSwitch
   };
 }

@@ -46,7 +46,7 @@ import { Auth } from "@/components/ReAuth";
 app.component("Auth", Auth);
 
 // 全局注册字典标签组件
-import DictTag from "@/components/DictTag/index.vue";
+import { DictTag } from "@/components/DictTag";
 app.component("DictTag", DictTag);
 
 getServerConfig(app).then(async config => {

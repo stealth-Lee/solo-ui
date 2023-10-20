@@ -42,6 +42,15 @@ const systemRouter = {
         title: "menus.hsDept",
         roles: ["admin"]
       }
+    },
+    {
+      path: "/system/config/index",
+      name: "Config",
+      meta: {
+        icon: "dept",
+        title: "系统参数",
+        roles: ["admin"]
+      }
     }
   ]
 };
@@ -198,6 +207,35 @@ const tabsRouter = {
   ]
 };
 
+const toolsRouter = {
+  path: "/codegen",
+  meta: {
+    icon: "setting",
+    title: "系统工具",
+    rank: system
+  },
+  children: [
+    {
+      path: "/codegen/table/index",
+      name: "Table",
+      meta: {
+        icon: "flTable",
+        title: "代码生成",
+        roles: ["admin"]
+      }
+    },
+    {
+      path: "/codegen/datasource/index",
+      name: "Datasource",
+      meta: {
+        icon: "flDatasource",
+        title: "数据源管理",
+        roles: ["admin"]
+      }
+    }
+  ]
+};
+
 export default [
   {
     url: "/getAsyncRoutes",
@@ -205,7 +243,13 @@ export default [
     response: () => {
       return {
         success: true,
-        data: [systemRouter, permissionRouter, frameRouter, tabsRouter]
+        data: [
+          systemRouter,
+          permissionRouter,
+          frameRouter,
+          tabsRouter,
+          toolsRouter
+        ]
       };
     }
   }

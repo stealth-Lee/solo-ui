@@ -213,6 +213,7 @@ import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import AddFill from "@iconify-icons/ri/add-circle-line";
 
+import { useDict } from "@/hooks/dict";
 import { paging, deleting } from "@/api/system/user";
 
 import DeptTree from "./tree.vue";
@@ -222,6 +223,7 @@ defineOptions({
   name: "User"
 });
 
+const { sex, status } = useDict("sex", "status");
 const treeRef = ref();
 const queryFormRef = ref();
 const tableRef = ref();
@@ -294,28 +296,16 @@ const columns: TableColumnList = [
     label: "性别",
     prop: "sex",
     minWidth: 90,
-    cellRenderer: ({ row, props }) => (
-      <el-tag
-        size={props.size}
-        type={row.sex === 0 ? "primary" : row.sex === 1 ? "danger" : "warning"}
-        effect="plain"
-      >
-        {row.sex === 0 ? "男" : row.sex === 1 ? "女" : "未知"}
-      </el-tag>
+    cellRenderer: scope => (
+      <dict-tag options={sex.value} value={scope.row.sex}></dict-tag>
     )
   },
   {
     label: "状态",
     prop: "status",
     minWidth: 90,
-    cellRenderer: ({ row, props }) => (
-      <el-tag
-        size={props.size}
-        type={row.status === 0 ? "primary" : "danger"}
-        effect="plain"
-      >
-        {row.status === 0 ? "正常" : "停用"}
-      </el-tag>
+    cellRenderer: scope => (
+      <dict-tag options={status.value} value={scope.row.status}></dict-tag>
     )
   },
   {

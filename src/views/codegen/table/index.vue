@@ -7,41 +7,26 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="roleName">
+      <el-form-item label="表名称：" prop="tableName">
         <el-input
-          v-model="props.queryParams.roleName"
-          placeholder="请输入角色名称"
+          v-model="props.queryParams.tableName"
+          placeholder="请输入表名称："
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="roleCode">
+      <el-form-item label="表描述" prop="tableComment">
         <el-input
-          v-model="props.queryParams.roleCode"
-          placeholder="请输入角色标识"
+          v-model="props.queryParams.tableComment"
+          placeholder="请输入表描述"
           clearable
           class="!w-[180px]"
         />
-      </el-form-item>
-      <el-form-item label="状态：" prop="status">
-        <el-select
-          v-model="props.queryParams.status"
-          placeholder="请选择状态"
-          clearable
-          class="!w-[180px]"
-        >
-          <el-option
-            v-for="dict in status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
           <el-button
-            :icon="useRenderIcon(Search)"
+            :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
             circle
@@ -49,7 +34,7 @@
         </el-tooltip>
         <el-tooltip content="重置" placement="top">
           <el-button
-            :icon="useRenderIcon(RefreshRight)"
+            :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
             circle
           />
@@ -66,7 +51,7 @@
       <template #buttons>
         <el-button
           type="primary"
-          :icon="useRenderIcon(Plus)"
+          :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
         >
@@ -74,7 +59,7 @@
         </el-button>
         <el-button
           type="success"
-          :icon="useRenderIcon(EditPen)"
+          :icon="useRenderIcon('ep:edit-pen')"
           @click="handleUpdate()"
           :disabled="props.single"
           plain
@@ -90,7 +75,7 @@
           <template #reference>
             <el-button
               type="danger"
-              :icon="useRenderIcon(Delete)"
+              :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
               plain
             >
@@ -100,7 +85,7 @@
         </el-popconfirm>
         <el-button
           type="info"
-          :icon="useRenderIcon(Upload)"
+          :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
           plain
         >
@@ -108,7 +93,7 @@
         </el-button>
         <el-button
           type="warning"
-          :icon="useRenderIcon(Download)"
+          :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
           plain
         >
@@ -117,6 +102,7 @@
       </template>
       <template v-slot="{ size, dynamicColumns }">
         <pure-table
+          ref="listFormRef"
           align-whole="center"
           showOverflowTooltip
           table-layout="auto"
@@ -141,8 +127,8 @@
               link
               type="primary"
               :size="size"
-              :icon="useRenderIcon(EditPen)"
-              @click="handleUpdate(row.roleId)"
+              :icon="useRenderIcon('ep:edit-pen')"
+              @click="handleUpdate(row.tableId)"
             >
               修改
             </el-button>
@@ -150,7 +136,7 @@
               width="180"
               icon-color="red"
               title="是否删除选中数据？"
-              @confirm="handleDelete(row.roleId)"
+              @confirm="handleDelete(row.tableId)"
             >
               <template #reference>
                 <el-button
@@ -158,7 +144,7 @@
                   link
                   type="danger"
                   :size="size"
-                  :icon="useRenderIcon(Delete)"
+                  :icon="useRenderIcon('ep:delete')"
                 >
                   删除
                 </el-button>
@@ -169,7 +155,7 @@
                 class="ml-3 mt-[2px]"
                 link
                 :size="size"
-                :icon="useRenderIcon(More)"
+                :icon="useRenderIcon('ep:more-filled')"
               />
               <template #dropdown>
                 <el-dropdown-menu>
@@ -179,9 +165,10 @@
                       link
                       type="primary"
                       :size="size"
-                      :icon="useRenderIcon(Menu)"
+                      :icon="useRenderIcon('ep:menu')"
+                      @click="handlePreview(row.tableId)"
                     >
-                      菜单权限
+                      预览
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -190,9 +177,9 @@
                       link
                       type="primary"
                       :size="size"
-                      :icon="useRenderIcon(Database)"
+                      :icon="useRenderIcon('ri:database-2-line')"
                     >
-                      数据权限
+                      生成代码
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -203,47 +190,36 @@
       </template>
     </PureTableBar>
   </div>
-  <role-form ref="roleDialogFormRef" @refresh="loadData()" />
+  <CreateTable ref="createTableRef" @refresh="loadData()" />
+  <EditTable ref="editTableRef" @refresh="loadData()" />
+  <PreviewTable ref="previewTableRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">
-import { ref, reactive, computed } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { BasicTableProps } from "@/hooks/table";
+import { paging, deleting } from "@/api/codegen/table";
 
-import { useDict } from "@/hooks/dict";
-import { BasicTableProps, useTable } from "@/hooks/table";
-import { paging, deleting, updateStatus } from "@/api/system/role";
+defineOptions({ name: "GenTable" });
 
-import RoleForm from "./form.vue";
-
-import Search from "@iconify-icons/ep/search";
-import RefreshRight from "@iconify-icons/ep/refresh-right";
-import Plus from "@iconify-icons/ep/plus";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Delete from "@iconify-icons/ep/delete";
-import Upload from "@iconify-icons/ep/upload";
-import Download from "@iconify-icons/ep/download";
-import More from "@iconify-icons/ep/more-filled";
-import Menu from "@iconify-icons/ep/menu";
-import Database from "@iconify-icons/ri/database-2-line";
-
-defineOptions({ name: "SysRole" });
+const CreateTable = defineAsyncComponent(() => import("./create.vue"));
+const EditTable = defineAsyncComponent(() => import("./edit.vue"));
+const PreviewTable = defineAsyncComponent(() => import("./preview.vue"));
 
 const queryFormRef = ref();
-const roleDialogFormRef = ref();
-
-const { status } = useDict("status");
+const listFormRef = ref();
+const createTableRef = ref();
+const editTableRef = ref();
+const previewTableRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "角色",
-  pk: "roleId",
-  switchField: "status",
+  title: "代码生成",
+  pk: "tableId",
   listApi: paging,
   deleteApi: deleting,
-  switchApi: updateStatus,
   queryRef: queryFormRef,
-  formRef: roleDialogFormRef
+  listRef: listFormRef
 });
 
 const {
@@ -253,10 +229,7 @@ const {
   handleSelectionChange,
   handleQuery,
   handleReset,
-  handleCreate,
-  handleUpdate,
-  handleDelete,
-  handleSwitch
+  handleDelete
 } = useTable(props);
 
 const columns: TableColumnList = [
@@ -266,31 +239,29 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "角色名称",
-    prop: "roleName",
+    label: "表名称",
+    prop: "tableName",
     minWidth: 120
   },
   {
-    label: "角色标识",
-    prop: "roleCode",
+    label: "表描述",
+    prop: "tableComment",
+    minWidth: 150
+  },
+  {
+    label: "作者",
+    prop: "author",
+    minWidth: 150
+  },
+  {
+    label: "模版类型",
+    prop: "tplType",
     minWidth: 150
   },
   {
     label: "备注",
     prop: "remark",
     minWidth: 150
-  },
-  {
-    label: "状态",
-    minWidth: 130,
-    cellRenderer: scope => (
-      <el-switch
-        v-model={scope.row.status}
-        active-value={1}
-        inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.roleName)}
-      />
-    )
   },
   {
     label: "创建时间",
@@ -304,6 +275,21 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
+
+// 新增按钮
+const handleCreate = () => {
+  createTableRef.value.openDialog(`新增${props.title}`);
+};
+
+// 编辑按钮
+const handleUpdate = (id?: number) => {
+  editTableRef.value.openDialog(`编辑${props.title}`, id);
+};
+
+// 预览按钮
+const handlePreview = (id?: number) => {
+  previewTableRef.value.openDialog(id);
+};
 
 const buttonClass = computed(() => {
   return [

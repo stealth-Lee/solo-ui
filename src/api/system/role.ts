@@ -44,6 +44,20 @@ export const updating = (data: RoleReq) => {
 };
 
 /**
+ * 修改角色状态
+ * @param roleId 角色id
+ * @param status 角色状态
+ * @returns 返回信息
+ */
+export const updateStatus = (roleId: number, status: number) => {
+  const data = {
+    roleId,
+    status
+  };
+  return http.put(baseUrlApi("/system/role/update-status"), { data });
+};
+
+/**
  * 获取单条角色信息
  * @param id 角色id
  * @returns 角色信息

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="formTitle" v-model="visible" width="600">
+  <el-drawer :title="formTitle" v-model="visible" width="600">
     <el-form
       ref="formRef"
       :model="formModel"
@@ -125,7 +125,7 @@
         <el-button type="primary" @click="handleSubmit">确定</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">

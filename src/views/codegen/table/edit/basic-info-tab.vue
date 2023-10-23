@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="basicInfoForm"
+    ref="basicInfoTabRef"
     :model="formModel"
     :rules="formRules"
     label-width="150px"
@@ -42,14 +42,16 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({ name: "GenBasicInfoTab" });
+
+const basicInfoTabRef = ref();
 const props = defineProps({
   table: {
     type: Object,
     default: () => null
   }
 });
-
-const formModel = reactive({
+const formModel = ref({
   tableName: "",
   tableComment: "",
   className: "",
@@ -61,20 +63,24 @@ const formModel = reactive({
 const formRules = reactive({
   tableName: [{ required: true, message: "请输入表名称", trigger: "blur" }],
   tableComment: [{ required: true, message: "请输入表描述", trigger: "blur" }],
-  className: [{ required: true, message: "请输入实体类名称", trigger: "blur" }],
-  functionAuthor: [{ required: true, message: "请输入作者", trigger: "blur" }]
+  className: [{ required: true, message: "请输入实体类名称", trigger: "blur" }]
 });
 
-/** 监听 table 属性，复制给 formData 属性 */
+/** 监听 table 属性，复制给 formModel 属性 */
 watch(
   () => props.table,
   table => {
+    console.log(table);
     if (!table) return;
-    Object.assign(formModel, table);
+    formModel.value = table;
   },
   {
     deep: true,
     immediate: true
   }
 );
+
+defineExpose({
+  validate: async () => unref(basicInfoTabRef)?.validate()
+});
 </script>

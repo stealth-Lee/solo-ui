@@ -3,6 +3,8 @@
 </template>
 
 <script setup lang="tsx">
+defineOptions({ name: "GenColumnInfoTab" });
+
 const { java_type, query_mode, form_type } = useDict(
   "java_type",
   "query_mode",
@@ -11,7 +13,7 @@ const { java_type, query_mode, form_type } = useDict(
 
 const props = defineProps({
   columns: {
-    type: [],
+    type: Array,
     default: () => null
   }
 });
@@ -157,6 +159,7 @@ const tableColumns: TableColumnList = [
 watch(
   () => props.columns,
   columns => {
+    console.log(columns)
     if (!columns) return;
     dataList.value = columns;
   },

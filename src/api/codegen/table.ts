@@ -22,7 +22,7 @@ export const updating = (data: object) => {
 
 // 获取业务表详细信息
 export const getting = (tableId: number) => {
-  return http.get<object, Result>(baseUrlApi("/codegen/table/" + tableId));
+  return http.get(baseUrlApi("/codegen/table/" + tableId));
 };
 
 // 预览代码

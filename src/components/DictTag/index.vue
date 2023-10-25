@@ -38,7 +38,7 @@ const props = defineProps({
 
 const values = computed(() => {
   if (props.value !== null && typeof props.value !== "undefined") {
-    return Array.isArray(props.value) ? props.value : [String(props.value)];
+    return Array.isArray(props.value) ? props.value : [props.value];
   } else {
     return [];
   }

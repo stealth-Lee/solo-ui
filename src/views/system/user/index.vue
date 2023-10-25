@@ -213,7 +213,6 @@ import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import AddFill from "@iconify-icons/ri/add-circle-line";
 
-import { useDict } from "@/hooks/dict";
 import { paging, deleting } from "@/api/system/user";
 
 import DeptTree from "./tree.vue";

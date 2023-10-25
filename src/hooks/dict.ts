@@ -20,12 +20,20 @@ export function useDict(...args: any): any {
       } else {
         selectByDictCode(dictType).then(resp => {
           // @ts-ignore
-          res.value[dictType] = resp.data.map((p: any) => ({
-            label: p.dictLabel,
-            value: p.dictValue,
-            elTagType: p.tagType,
-            elTagClass: p.tagClass
-          }));
+          res.value[dictType] = resp.data.map((p: any) => {
+            let value = p.dictValue;
+            if (p.dictType === 2) {
+              value = Number(value);
+            } else if (p.dictType === 3) {
+              value = value === "true" || value === "1"; // Convert to boolean
+            }
+            return {
+              label: p.dictLabel,
+              value: value,
+              elTagType: p.tagType,
+              elTagClass: p.tagClass
+            };
+          });
           // @ts-ignore
           dictStore.setDict(dictType, res.value[dictType]);
         });

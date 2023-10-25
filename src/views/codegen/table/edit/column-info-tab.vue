@@ -3,14 +3,26 @@
 </template>
 
 <script setup lang="tsx">
+import {
+  DictTypeReq,
+  listSimple as dictlistSimple
+} from "@/api/system/dict.type";
+
 defineOptions({ name: "GenColumnInfoTab" });
 
+const dictList = ref<DictTypeReq[]>([]);
 const { java_type, query_mode, form_type } = useDict(
   "java_type",
   "query_mode",
   "form_type"
 );
-
+const basicEntity: string[] = [
+  "create_by",
+  "create_time",
+  "update_by",
+  "update_time",
+  "deleted"
+];
 const props = defineProps({
   columns: {
     type: Array,
@@ -26,28 +38,37 @@ const tableColumns: TableColumnList = [
       {
         label: "列名",
         prop: "columnName",
-        headerAlign: "center",
-        align: "left"
+        width: 130,
+        align: "left",
+        headerAlign: "center"
       },
       {
         label: "列类型",
         prop: "columnType",
-        headerAlign: "center",
-        width: 120,
-        align: "left"
+        width: 150,
+        align: "left",
+        headerAlign: "center"
       },
       {
         label: "Java字段名",
         prop: "javaField",
         width: 130,
-        cellRenderer: scope => <el-input v-model={scope.row.javaField} />
+        cellRenderer: scope => (
+          <el-input
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.javaField}
+          />
+        )
       },
       {
         label: "Java类型",
         prop: "javaType",
-        width: 130,
+        width: 150,
         cellRenderer: scope => (
-          <el-select v-model={scope.row.javaType} class="!w-[100px]">
+          <el-select
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.javaType}
+          >
             {java_type.value.map(item => (
               <el-option
                 key={item.value}
@@ -61,14 +82,24 @@ const tableColumns: TableColumnList = [
       {
         label: "Java说明",
         prop: "javaComment",
-        width: 130,
-        cellRenderer: scope => <el-input v-model={scope.row.javaComment} />
+        width: 150,
+        cellRenderer: scope => (
+          <el-input
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.javaComment}
+          />
+        )
       },
       {
         label: "主键",
         prop: "isPk",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isPk} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.isPk}
+          />
+        )
       }
     ]
   },
@@ -80,13 +111,23 @@ const tableColumns: TableColumnList = [
         label: "列表",
         prop: "isList",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isList} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={scope.row.columnName == "deleted"}
+            v-model={scope.row.isList}
+          />
+        )
       },
       {
         label: "查询",
         prop: "isQuery",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isQuery} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={scope.row.columnName == "deleted"}
+            v-model={scope.row.isQuery}
+          />
+        )
       },
       {
         label: "查询方式",
@@ -118,26 +159,45 @@ const tableColumns: TableColumnList = [
         label: "插入",
         prop: "isCreate",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isCreate} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.isCreate}
+          />
+        )
       },
       {
         label: "更新",
         prop: "isUpdate",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isUpdate} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.isUpdate}
+          />
+        )
       },
       {
         label: "必填",
         prop: "isRequired",
         width: 55,
-        cellRenderer: scope => <el-checkbox v-model={scope.row.isRequired} />
+        cellRenderer: scope => (
+          <el-checkbox
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.isRequired}
+          />
+        )
       },
       {
         label: "表单类型",
         prop: "formType",
         width: 130,
         cellRenderer: scope => (
-          <el-select v-model={scope.row.formType} class="!w-[100px]">
+          <el-select
+            disabled={basicEntity.includes(scope.row.columnName)}
+            v-model={scope.row.formType}
+            class="!w-[100px]"
+          >
             {form_type.value.map(item => (
               <el-option
                 key={item.value}
@@ -150,7 +210,35 @@ const tableColumns: TableColumnList = [
       },
       {
         label: "字典",
-        prop: "dictCode"
+        prop: "dictCode",
+        width: 180,
+        cellRenderer: scope => (
+          <el-select
+            v-model={scope.row.dictCode}
+            disabled={basicEntity.includes(scope.row.columnName)}
+            filterable
+            allow-create
+          >
+            {dictList.value.map(item => (
+              <el-option
+                key={item.dictCode}
+                label={item.dictCode}
+                value={item.dictCode}
+              >
+                <span style="float: left">{item.dictCode}</span>
+                <span
+                  style="
+                    float: right;
+                    color: var(--el-text-color-secondary);
+                    font-size: 13px;
+                  "
+                >
+                  {item.dictName}
+                </span>
+              </el-option>
+            ))}
+          </el-select>
+        )
       }
     ]
   }
@@ -159,7 +247,6 @@ const tableColumns: TableColumnList = [
 watch(
   () => props.columns,
   columns => {
-    console.log(columns)
     if (!columns) return;
     dataList.value = columns;
   },
@@ -168,6 +255,11 @@ watch(
     immediate: true
   }
 );
+
+onMounted(async () => {
+  const res = await dictlistSimple();
+  dictList.value = res.data;
+});
 </script>
 <style>
 .el-drawer__body {

@@ -35,15 +35,6 @@ export const deleting = (id: number) => {
 };
 
 /**
- * 修改角色
- * @param id 角色id
- * @returns 返回信息
- */
-export const updating = (data: RoleReq) => {
-  return http.put(baseUrlApi("/system/role"), { data });
-};
-
-/**
  * 修改角色状态
  * @param roleId 角色id
  * @param status 角色状态
@@ -55,6 +46,11 @@ export const updateStatus = (roleId: number, status: number) => {
     status
   };
   return http.put(baseUrlApi("/system/role/update-status"), { data });
+};
+
+// 修改角色
+export const updating = (data: RoleReq) => {
+  return http.put(baseUrlApi("/system/role"), { data });
 };
 
 /**

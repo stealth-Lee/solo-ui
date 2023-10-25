@@ -15,6 +15,12 @@ import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
 import { message } from "@/utils/message";
 
+type Result<T> = {
+  code: number;
+  message: string;
+  data?: T;
+};
+
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -190,12 +196,12 @@ class PureHttp {
   }
 
   /** 单独抽离的get工具函数 */
-  public get<T, P>(
+  public get<P>(
     url: string,
-    params?: AxiosRequestConfig<T>,
+    params?: AxiosRequestConfig,
     config?: PureHttpRequestConfig
-  ): Promise<P> {
-    return this.request<P>("get", url, params, config);
+  ): Promise<Result<P>> {
+    return this.request<Result<P>>("get", url, params, config);
   }
 
   // delete工具函数

@@ -6,13 +6,9 @@ export const creating = (data: object) => {
   return http.post(baseUrlApi("/codegen/table"), { data });
 };
 
-/**
- * 删除角色
- * @param id 角色id
- * @returns 返回信息
- */
+// 删除业务表
 export const deleting = (id: number) => {
-  return http.delete(baseUrlApi("/system/role/" + id));
+  return http.delete(baseUrlApi("/codegen/table/" + id));
 };
 
 // 修改业务表

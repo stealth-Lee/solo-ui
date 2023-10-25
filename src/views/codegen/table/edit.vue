@@ -7,7 +7,11 @@
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="basicInfo">
-        <BasicInfoTab ref="basicInfoTabRef" :table="result.table" />
+        <BasicInfoTab
+          ref="basicInfoTabRef"
+          :table="result.table"
+          :columns="result.columns"
+        />
       </el-tab-pane>
       <el-tab-pane label="字段信息" name="columnInfo">
         <ColumnInfoTab ref="columnInfoRef" :columns="result.columns" />

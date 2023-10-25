@@ -203,6 +203,7 @@ import { paging, deleting } from "@/api/codegen/table";
 
 defineOptions({ name: "GenTable" });
 
+const { tpl_type } = useDict("tpl_type");
 const CreateTable = defineAsyncComponent(() => import("./create.vue"));
 const EditTable = defineAsyncComponent(() => import("./edit.vue"));
 const PreviewTable = defineAsyncComponent(() => import("./preview.vue"));
@@ -256,7 +257,10 @@ const columns: TableColumnList = [
   {
     label: "模版类型",
     prop: "tplType",
-    minWidth: 150
+    minWidth: 150,
+    cellRenderer: scope => (
+      <dict-tag options={tpl_type.value} value={scope.row.tplType}></dict-tag>
+    )
   },
   {
     label: "备注",

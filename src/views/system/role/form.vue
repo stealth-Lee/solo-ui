@@ -49,10 +49,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { useMessage } from "@/hooks/message";
-
-import { useDict } from "@/hooks/dict";
 import { getting, creating, updating } from "@/api/system/role";
 
 defineOptions({ name: "SysRoleForm" });

@@ -41,7 +41,7 @@
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
           <el-button
-            :icon="useRenderIcon(Search)"
+            :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
             circle
@@ -49,7 +49,7 @@
         </el-tooltip>
         <el-tooltip content="重置" placement="top">
           <el-button
-            :icon="useRenderIcon(RefreshRight)"
+            :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
             circle
           />
@@ -66,7 +66,7 @@
       <template #buttons>
         <el-button
           type="primary"
-          :icon="useRenderIcon(Plus)"
+          :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
         >
@@ -74,7 +74,7 @@
         </el-button>
         <el-button
           type="success"
-          :icon="useRenderIcon(EditPen)"
+          :icon="useRenderIcon('ep:edit-pen')"
           @click="handleUpdate()"
           :disabled="props.single"
           plain
@@ -90,7 +90,7 @@
           <template #reference>
             <el-button
               type="danger"
-              :icon="useRenderIcon(Delete)"
+              :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
               plain
             >
@@ -100,7 +100,7 @@
         </el-popconfirm>
         <el-button
           type="info"
-          :icon="useRenderIcon(Upload)"
+          :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
           plain
         >
@@ -108,7 +108,7 @@
         </el-button>
         <el-button
           type="warning"
-          :icon="useRenderIcon(Download)"
+          :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
           plain
         >
@@ -141,7 +141,7 @@
               link
               type="primary"
               :size="size"
-              :icon="useRenderIcon(EditPen)"
+              :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.roleId)"
             >
               修改
@@ -158,7 +158,7 @@
                   link
                   type="danger"
                   :size="size"
-                  :icon="useRenderIcon(Delete)"
+                  :icon="useRenderIcon('ep:delete')"
                 >
                   删除
                 </el-button>
@@ -169,7 +169,7 @@
                 class="ml-3 mt-[2px]"
                 link
                 :size="size"
-                :icon="useRenderIcon(More)"
+                :icon="useRenderIcon('ep:more-filled')"
               />
               <template #dropdown>
                 <el-dropdown-menu>
@@ -179,7 +179,7 @@
                       link
                       type="primary"
                       :size="size"
-                      :icon="useRenderIcon(Menu)"
+                      :icon="useRenderIcon('ep:menu')"
                     >
                       菜单权限
                     </el-button>
@@ -190,7 +190,7 @@
                       link
                       type="primary"
                       :size="size"
-                      :icon="useRenderIcon(Database)"
+                      :icon="useRenderIcon('ri:database-2-line')"
                     >
                       数据权限
                     </el-button>
@@ -207,41 +207,24 @@
 </template>
 
 <script setup lang="tsx">
-import { ref, reactive, computed } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-
-import { useDict } from "@/hooks/dict";
-import { BasicTableProps, useTable } from "@/hooks/table";
+import { BasicTableProps } from "@/hooks/table";
 import { paging, deleting, updateStatus } from "@/api/system/role";
-
-import RoleForm from "./form.vue";
-
-import Search from "@iconify-icons/ep/search";
-import RefreshRight from "@iconify-icons/ep/refresh-right";
-import Plus from "@iconify-icons/ep/plus";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Delete from "@iconify-icons/ep/delete";
-import Upload from "@iconify-icons/ep/upload";
-import Download from "@iconify-icons/ep/download";
-import More from "@iconify-icons/ep/more-filled";
-import Menu from "@iconify-icons/ep/menu";
-import Database from "@iconify-icons/ri/database-2-line";
 
 defineOptions({ name: "SysRole" });
 
+const RoleForm = defineAsyncComponent(() => import("./form.vue"));
+const { status } = useDict("status");
 const queryFormRef = ref();
 const roleDialogFormRef = ref();
-
-const { status } = useDict("status");
-
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: "角色",
   pk: "roleId",
-  switchField: "status",
   listApi: paging,
   deleteApi: deleting,
   switchApi: updateStatus,
+  switchField: "status",
   queryRef: queryFormRef,
   formRef: roleDialogFormRef
 });
@@ -281,6 +264,11 @@ const columns: TableColumnList = [
     minWidth: 150
   },
   {
+    label: "创建时间",
+    minWidth: 180,
+    prop: "createTime"
+  },
+  {
     label: "状态",
     minWidth: 130,
     cellRenderer: scope => (
@@ -291,11 +279,6 @@ const columns: TableColumnList = [
         onChange={() => handleSwitch(scope.row, scope.row.roleName)}
       />
     )
-  },
-  {
-    label: "创建时间",
-    minWidth: 180,
-    prop: "createTime"
   },
   {
     label: "操作",

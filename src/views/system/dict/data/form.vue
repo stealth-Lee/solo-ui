@@ -28,13 +28,10 @@
           clearable
         />
       </el-form-item>
-      <el-form-item
-        label="标签类型[0:default 1:primary 2:success 3:info 4:warning 5:danger]"
-        prop="tagType"
-      >
+      <el-form-item label="标签类型" prop="tagType">
         <el-select
           v-model="formModel.tagType"
-          placeholder="请选择标签类型[0:default 1:primary 2:success 3:info 4:warning 5:danger]"
+          placeholder="请选择标签类型"
           clearable
         >
           <el-option
@@ -53,13 +50,9 @@
         />
       </el-form-item>
       <el-form-item label="字典排序" prop="dictSort">
-        <el-input
-          v-model="formModel.dictSort"
-          placeholder="请输入字典排序"
-          clearable
-        />
+        <el-input-number v-model="formModel.dictSort" />
       </el-form-item>
-      <el-form-item label="状态[0禁用 1正常]" prop="status">
+      <el-form-item label="状态" prop="status">
         <el-switch
           v-model="formModel.status"
           active-value="1"
@@ -86,9 +79,9 @@
 <script setup lang="ts">
 import { getting, creating, updating } from "@/api/system/dict.data";
 
-defineOptions({ name: "SystemDictDataForm" });
+defineOptions({ name: "SysDictDataForm" });
 
-const { tag_type } = useDict("tag_type");
+const { tag_type, status } = useDict("tag_type", "status");
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
@@ -111,9 +104,7 @@ const formRules = reactive({
   dictCode: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
   dictValue: [{ required: true, message: "字典键值为必填项", trigger: "blur" }],
   dictLabel: [{ required: true, message: "字典标签为必填项", trigger: "blur" }],
-  status: [
-    { required: true, message: "状态[0禁用 1正常]为必填项", trigger: "blur" }
-  ]
+  status: [{ required: true, message: "状态为必填项", trigger: "blur" }]
 });
 
 // 打开弹框

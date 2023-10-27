@@ -183,7 +183,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <DictTypeForm ref="dialogFormRef" @refresh="loadData()" />
+    <DictTypeForm ref="dictTypeFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -197,7 +197,7 @@ defineOptions({ name: "SysDictType" });
 
 const DictTypeForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
-const dialogFormRef = ref();
+const dictTypeFormRef = ref();
 
 const { dict_type, status } = useDict("dict_type", "status");
 const props: BasicTableProps = reactive<BasicTableProps>({
@@ -208,7 +208,7 @@ const props: BasicTableProps = reactive<BasicTableProps>({
   switchApi: updateStatus,
   switchField: "status",
   queryRef: queryFormRef,
-  formRef: dialogFormRef
+  formRef: dictTypeFormRef
 });
 
 const {

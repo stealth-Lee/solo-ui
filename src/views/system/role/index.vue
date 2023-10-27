@@ -202,7 +202,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <RoleForm ref="roleDialogFormRef" @refresh="loadData()" />
+    <RoleForm ref="roleFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -217,7 +217,7 @@ defineOptions({ name: "SysRole" });
 const RoleForm = defineAsyncComponent(() => import("./form.vue"));
 const { status } = useDict("status");
 const queryFormRef = ref();
-const roleDialogFormRef = ref();
+const roleFormRef = ref();
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: "角色",
   pk: "roleId",
@@ -226,7 +226,7 @@ const props: BasicTableProps = reactive<BasicTableProps>({
   switchApi: updateStatus,
   switchField: "status",
   queryRef: queryFormRef,
-  formRef: roleDialogFormRef
+  formRef: roleFormRef
 });
 
 const {

@@ -57,8 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { useMessage } from "@/hooks/message";
 import { listSimple } from "@/api/codegen/datasource";
 import { listSimple as listSimpleTable, creating } from "@/api/codegen/table";
 

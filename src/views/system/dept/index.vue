@@ -103,7 +103,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <dept-form ref="deptDialogFormRef" @refresh="getData()" />
+    <DeptForm ref="deptFormRef" @refresh="getData()" />
   </div>
 </template>
 
@@ -125,7 +125,7 @@ import AddFill from "@iconify-icons/ri/add-circle-line";
 const DeptForm = defineAsyncComponent(() => import("./form.vue"));
 
 const queryFormRef = ref();
-const deptDialogFormRef = ref();
+const deptFormRef = ref();
 const tableRef = ref();
 const dataList = ref([]);
 const loading = ref(true);
@@ -208,7 +208,7 @@ const handleDelete = async (row: any) => {
 
 // 新增、编辑按钮
 const handleCreateOrUpdate = (title = "新增", id?: number) => {
-  deptDialogFormRef.value.openDialog(title, id);
+  deptFormRef.value.openDialog(title, id);
 };
 
 // 初始化

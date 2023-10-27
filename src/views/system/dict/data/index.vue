@@ -7,14 +7,6 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="字典编码" prop="dictCode">
-        <el-input
-          v-model="props.queryParams.dictCode"
-          placeholder="请输入字典编码"
-          clearable
-          class="!w-[180px]"
-        />
-      </el-form-item>
       <el-form-item label="字典键值" prop="dictValue">
         <el-input
           v-model="props.queryParams.dictValue"
@@ -30,6 +22,21 @@
           clearable
           class="!w-[180px]"
         />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select
+          v-model="props.queryParams.status"
+          placeholder="请选择状态"
+          clearable
+          class="!w-[180px]"
+        >
+          <el-option
+            v-for="dict in status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
@@ -52,7 +59,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}列表(${route.params.dictCode})`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -161,7 +168,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <DictDataForm ref="dialogFormRef" @refresh="loadData()" />
+    <DictDataForm ref="dictDataFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -169,22 +176,31 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting } from "@/api/system/dict.data";
+import { paging, deleting, updateStatus } from "@/api/system/dict.data";
 
-defineOptions({ name: "SystemDictData" });
+defineOptions({ name: "SysDictData" });
 
+const route = useRoute(); // 路由
 const DictDataForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
-const dialogFormRef = ref();
+const dictDataFormRef = ref();
 
-const { tag_type } = useDict("tag_type");
+const { tag_type, status } = useDict("tag_type", "status");
 const props: BasicTableProps = reactive<BasicTableProps>({
+  queryParams: {
+    dictCode: route.params.dictCode,
+    dictValue: "",
+    dictLabel: "",
+    status: ""
+  },
   title: "字典数据",
   pk: "dataId",
   listApi: paging,
   deleteApi: deleting,
+  switchApi: updateStatus,
+  switchField: "status",
   queryRef: queryFormRef,
-  formRef: dialogFormRef
+  formRef: dictDataFormRef
 });
 
 const {
@@ -196,7 +212,8 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete
+  handleDelete,
+  handleSwitch
 } = useTable(props);
 
 const columns: TableColumnList = [
@@ -204,11 +221,6 @@ const columns: TableColumnList = [
     type: "selection",
     align: "left",
     width: 10
-  },
-  {
-    label: "字典编码",
-    prop: "dictCode",
-    minWidth: 120
   },
   {
     label: "字典键值",
@@ -226,9 +238,17 @@ const columns: TableColumnList = [
     minWidth: 120
   },
   {
-    label: "状态[0禁用 1正常]",
+    label: "状态",
     prop: "status",
-    minWidth: 120
+    minWidth: 120,
+    cellRenderer: scope => (
+      <el-switch
+        v-model={scope.row.status}
+        active-value={1}
+        inactive-value={0}
+        onChange={() => handleSwitch(scope.row)}
+      />
+    )
   },
   {
     label: "创建时间",

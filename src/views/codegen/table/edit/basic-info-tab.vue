@@ -21,7 +21,6 @@
           <el-input
             placeholder="请输入表描述"
             v-model="formModel.tableComment"
-            disabled
           />
         </el-form-item>
       </el-col>
@@ -189,7 +188,7 @@ watch(
   newIsSwitch => {
     if (!newIsSwitch) {
       // 如果isSwitch变为false，清空switchField的值
-      formModel.switchField = "";
+      formModel.value.switchField = "";
     }
   }
 );

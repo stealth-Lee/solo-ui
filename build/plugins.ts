@@ -25,6 +25,7 @@ export function getPluginsList(
     AutoImport({
       imports: [
         "vue",
+        "vue-router",
         // 额外添加需要自动导入的组件
         {
           "@/hooks/table": ["useTable"],

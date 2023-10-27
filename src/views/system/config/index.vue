@@ -176,7 +176,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <ConfigForm ref="dialogFormRef" @refresh="loadData()" />
+    <ConfigForm ref="configFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -190,7 +190,7 @@ defineOptions({ name: "SysConfig" });
 
 const ConfigForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
-const dialogFormRef = ref();
+const configFormRef = ref();
 
 const { is_sys } = useDict("is_sys");
 const props: BasicTableProps = reactive<BasicTableProps>({
@@ -199,7 +199,7 @@ const props: BasicTableProps = reactive<BasicTableProps>({
   listApi: paging,
   deleteApi: deleting,
   queryRef: queryFormRef,
-  formRef: dialogFormRef
+  formRef: configFormRef
 });
 
 const {

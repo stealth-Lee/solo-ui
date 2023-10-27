@@ -155,7 +155,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <DatasourceForm ref="datasourceDialogFormRef" @refresh="loadData()" />
+    <DatasourceForm ref="datasourceFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -182,15 +182,15 @@ defineOptions({ name: "SysRole" });
 
 const message = useMessage();
 const queryFormRef = ref();
-const datasourceDialogFormRef = ref();
+const datasourceFormRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: "数据源",
   pk: "sourceId",
   listApi: paging,
   deleteApi: deleting,
-  formRef: queryFormRef,
-  dialogRef: datasourceDialogFormRef
+  queryRef: queryFormRef,
+  formRef: datasourceFormRef
 });
 
 const {

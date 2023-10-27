@@ -191,7 +191,7 @@
         </template>
       </PureTableBar>
     </div>
-    <UserForm ref="userDialogFormRef" @refresh="getData()" />
+    <UserForm ref="userFormRef" @refresh="getData()" />
   </div>
 </template>
 
@@ -229,7 +229,7 @@ const tableRef = ref();
 const loading = ref(true);
 const dataList = ref([]);
 
-const userDialogFormRef = ref();
+const userFormRef = ref();
 
 const pagination: PaginationProps = reactive<PaginationProps>({
   total: 0,
@@ -368,7 +368,7 @@ function handleSizeChange(val: number) {
 
 // 新增、编辑按钮
 const handleCreateOrUpdate = (title = "新增", id?: number) => {
-  userDialogFormRef.value.openDialog(title, id);
+  userFormRef.value.openDialog(title, id);
 };
 
 // 删除按钮

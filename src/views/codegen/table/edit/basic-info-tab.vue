@@ -84,7 +84,7 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="是否启用开关按钮" prop="functionName">
+        <el-form-item label="是否启用开关按钮" prop="isSwitch">
           <el-radio-group v-model="formModel.isSwitch">
             <el-radio
               v-for="(item, index) in yes_no"
@@ -107,12 +107,14 @@
             placeholder="请选择开关字段"
             :disabled="!formModel.isSwitch"
           >
-            <el-option
-              v-for="dict in columns"
-              :key="dict.javaField"
-              :label="dict.javaField"
-              :value="dict.javaField"
-            />
+            <template v-for="dict in columns">
+              <el-option
+                v-if="dict.javaType == 'Boolean'"
+                :key="dict.javaField"
+                :label="dict.javaField"
+                :value="dict.javaField"
+              />
+            </template>
           </el-select>
         </el-form-item>
       </el-col>
@@ -129,18 +131,20 @@
 </template>
 
 <script lang="ts" setup>
+import { TableReq } from "@/api/codegen/table";
+import { ColumnReq } from "@/api/codegen/column";
 defineOptions({ name: "GenBasicInfoTab" });
 
 const { tpl_type, yes_no } = useDict("tpl_type", "yes_no");
 const basicInfoTabRef = ref();
 const props = defineProps({
   table: {
-    type: Object,
-    default: () => null
+    type: Object as PropType<TableReq>,
+    default: () => ({})
   },
   columns: {
-    type: Array,
-    default: () => null
+    type: Array<ColumnReq>,
+    default: () => []
   }
 });
 const formModel = ref({
@@ -150,7 +154,7 @@ const formModel = ref({
   author: "",
   classTail: "",
   remark: "",
-  tplType: "",
+  tplType: 0,
   packageName: "",
   moduleName: "",
   businessName: "",
@@ -176,6 +180,17 @@ watch(
   {
     deep: true,
     immediate: true
+  }
+);
+
+// 监视isSwitch属性的变化
+watch(
+  () => formModel.value.isSwitch,
+  newIsSwitch => {
+    if (!newIsSwitch) {
+      // 如果isSwitch变为false，清空switchField的值
+      formModel.switchField = "";
+    }
   }
 );
 

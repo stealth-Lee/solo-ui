@@ -176,8 +176,8 @@
         </pure-table>
       </template>
     </PureTableBar>
+    <ConfigForm ref="dialogFormRef" @refresh="loadData()" />
   </div>
-  <ConfigForm ref="dialogFormRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">

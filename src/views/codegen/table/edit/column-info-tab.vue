@@ -1,8 +1,15 @@
 <template>
-  <pure-table :data="dataList" :columns="tableColumns" alignWhole="center" />
+  <pure-table
+    :data="dataList"
+    :columns="tableColumns"
+    alignWhole="center"
+    max-height="470"
+  />
 </template>
 
 <script setup lang="tsx">
+import { TableReq } from "@/api/codegen/table";
+import { ColumnReq } from "@/api/codegen/column";
 import {
   DictTypeReq,
   listSimple as dictlistSimple
@@ -10,6 +17,18 @@ import {
 
 defineOptions({ name: "GenColumnInfoTab" });
 
+const props = defineProps({
+  table: {
+    type: Object as PropType<TableReq>,
+    default: () => ({})
+  },
+  columns: {
+    type: Array<ColumnReq>,
+    default: () => []
+  }
+});
+
+const dataList = ref([]);
 const dictList = ref<DictTypeReq[]>([]);
 const { java_type, query_mode, form_type } = useDict(
   "java_type",
@@ -23,13 +42,7 @@ const basicEntity: string[] = [
   "update_time",
   "deleted"
 ];
-const props = defineProps({
-  columns: {
-    type: Array,
-    default: () => null
-  }
-});
-const dataList = ref([]);
+
 const tableColumns: TableColumnList = [
   {
     label: "字段",
@@ -55,7 +68,11 @@ const tableColumns: TableColumnList = [
         width: 130,
         cellRenderer: scope => (
           <el-input
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.javaField}
           />
         )
@@ -66,7 +83,11 @@ const tableColumns: TableColumnList = [
         width: 150,
         cellRenderer: scope => (
           <el-select
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.javaType}
           >
             {java_type.value.map(item => (
@@ -113,7 +134,11 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={scope.row.columnName == "deleted"}
+            disabled={
+              scope.row.columnName == "deleted" ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.isList}
           />
         )
@@ -161,7 +186,11 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.isCreate}
           />
         )
@@ -172,7 +201,11 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.isUpdate}
           />
         )
@@ -183,7 +216,11 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             v-model={scope.row.isRequired}
           />
         )
@@ -208,6 +245,7 @@ const tableColumns: TableColumnList = [
           </el-select>
         )
       },
+      // TODO 11 修改成当isSwitch=true时，自动将字典设置成status
       {
         label: "字典",
         prop: "dictCode",
@@ -215,7 +253,11 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-select
             v-model={scope.row.dictCode}
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={
+              basicEntity.includes(scope.row.columnName) ||
+              (props.table.isSwitch &&
+                props.table.switchField == scope.row.javaField)
+            }
             filterable
             allow-create
           >

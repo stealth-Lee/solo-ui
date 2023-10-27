@@ -155,8 +155,8 @@
         </pure-table>
       </template>
     </PureTableBar>
+    <DatasourceForm ref="datasourceDialogFormRef" @refresh="loadData()" />
   </div>
-  <datasource-form ref="datasourceDialogFormRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">

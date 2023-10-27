@@ -14,7 +14,11 @@
         />
       </el-tab-pane>
       <el-tab-pane label="字段信息" name="columnInfo">
-        <ColumnInfoTab ref="columnInfoRef" :columns="result.columns" />
+        <ColumnInfoTab
+          ref="columnInfoRef"
+          :table="result.table"
+          :columns="result.columns"
+        />
       </el-tab-pane>
     </el-tabs>
     <template #footer>
@@ -28,10 +32,11 @@
 
 <script setup lang="tsx">
 import {
+  TableReq,
   getting as getTable,
   updating as updateTable
 } from "@/api/codegen/table";
-import { listing as listColumn } from "@/api/codegen/column";
+import { ColumnReq, listing as listColumn } from "@/api/codegen/column";
 
 defineOptions({ name: "GenTableEdit" });
 
@@ -47,8 +52,8 @@ const activeName = ref("columnInfo");
 const visible = ref(false);
 const formTitle = ref("");
 const result = ref({
-  table: {},
-  columns: [] as any[]
+  table: {} as TableReq,
+  columns: [] as ColumnReq[]
 });
 
 // 打开弹框

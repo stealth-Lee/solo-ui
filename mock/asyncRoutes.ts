@@ -51,6 +51,15 @@ const systemRouter = {
         title: "系统参数",
         roles: ["admin"]
       }
+    },
+    {
+      path: "/system/dict/type/index",
+      name: "Dict",
+      meta: {
+        icon: "dept",
+        title: "数据字典",
+        roles: ["admin"]
+      }
     }
   ]
 };

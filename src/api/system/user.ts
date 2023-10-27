@@ -1,12 +1,6 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
 
-type Result = {
-  code: number;
-  message: string;
-  data?: Object;
-};
-
 export interface UserReq {
   userId: number;
   deptId: number;
@@ -54,7 +48,7 @@ export const updating = (data: UserReq) => {
  * @returns 用户信息
  */
 export const getting = (id: number) => {
-  return http.get<object, Result>(baseUrlApi("/system/user/" + id));
+  return http.get<UserReq>(baseUrlApi("/system/user/" + id));
 };
 
 /**
@@ -63,7 +57,7 @@ export const getting = (id: number) => {
  * @returns 部门信息列表
  */
 export const paging = (params?: object) => {
-  return http.get<object, Result>(baseUrlApi("/system/user/page"), {
+  return http.get<UserReq>(baseUrlApi("/system/user/page"), {
     params
   });
 };

@@ -103,8 +103,8 @@
         </pure-table>
       </template>
     </PureTableBar>
+    <dept-form ref="deptDialogFormRef" @refresh="getData()" />
   </div>
-  <dept-form ref="deptDialogFormRef" @refresh="getData()" />
 </template>
 
 <script setup lang="ts">

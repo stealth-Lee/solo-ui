@@ -7,36 +7,29 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="roleName">
+      <el-form-item label="字典编码" prop="dictCode">
         <el-input
-          v-model="props.queryParams.roleName"
-          placeholder="请输入角色名称"
+          v-model="props.queryParams.dictCode"
+          placeholder="请输入字典编码"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="roleCode">
+      <el-form-item label="字典键值" prop="dictValue">
         <el-input
-          v-model="props.queryParams.roleCode"
-          placeholder="请输入角色标识"
+          v-model="props.queryParams.dictValue"
+          placeholder="请输入字典键值"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
-        <el-select
-          v-model="props.queryParams.status"
-          placeholder="请选择状态"
+      <el-form-item label="字典标签" prop="dictLabel">
+        <el-input
+          v-model="props.queryParams.dictLabel"
+          placeholder="请输入字典标签"
           clearable
           class="!w-[180px]"
-        >
-          <el-option
-            v-for="dict in status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        />
       </el-form-item>
       <el-form-item>
         <el-tooltip content="搜索" placement="top">
@@ -142,15 +135,15 @@
               type="primary"
               :size="size"
               :icon="useRenderIcon('ep:edit-pen')"
-              @click="handleUpdate(row.roleId)"
+              @click="handleUpdate(row.dataId)"
             >
-              修改
+              编辑
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
               title="是否删除选中数据？"
-              @confirm="handleDelete(row.roleId)"
+              @confirm="handleDelete(row.dataId)"
             >
               <template #reference>
                 <el-button
@@ -164,45 +157,11 @@
                 </el-button>
               </template>
             </el-popconfirm>
-            <el-dropdown>
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
-                :size="size"
-                :icon="useRenderIcon('ep:more-filled')"
-              />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon('ep:menu')"
-                    >
-                      菜单权限
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon('ri:database-2-line')"
-                    >
-                      数据权限
-                    </el-button>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
-    <RoleForm ref="roleDialogFormRef" @refresh="loadData()" />
+    <DictDataForm ref="dialogFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -210,23 +169,22 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting, updateStatus } from "@/api/system/role";
+import { paging, deleting } from "@/api/system/dict.data";
 
-defineOptions({ name: "SysRole" });
+defineOptions({ name: "SystemDictData" });
 
-const RoleForm = defineAsyncComponent(() => import("./form.vue"));
-const { status } = useDict("status");
+const DictDataForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
-const roleDialogFormRef = ref();
+const dialogFormRef = ref();
+
+const { tag_type } = useDict("tag_type");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "角色",
-  pk: "roleId",
+  title: "字典数据",
+  pk: "dataId",
   listApi: paging,
   deleteApi: deleting,
-  switchApi: updateStatus,
-  switchField: "status",
   queryRef: queryFormRef,
-  formRef: roleDialogFormRef
+  formRef: dialogFormRef
 });
 
 const {
@@ -238,8 +196,7 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete,
-  handleSwitch
+  handleDelete
 } = useTable(props);
 
 const columns: TableColumnList = [
@@ -249,36 +206,39 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "角色名称",
-    prop: "roleName",
+    label: "字典编码",
+    prop: "dictCode",
     minWidth: 120
   },
   {
-    label: "角色标识",
-    prop: "roleCode",
-    minWidth: 150
+    label: "字典键值",
+    prop: "dictValue",
+    minWidth: 120
+  },
+  {
+    label: "字典标签",
+    prop: "dictLabel",
+    minWidth: 120
+  },
+  {
+    label: "字典排序",
+    prop: "dictSort",
+    minWidth: 120
+  },
+  {
+    label: "状态[0禁用 1正常]",
+    prop: "status",
+    minWidth: 120
+  },
+  {
+    label: "创建时间",
+    prop: "createTime",
+    minWidth: 120
   },
   {
     label: "备注",
     prop: "remark",
-    minWidth: 150
-  },
-  {
-    label: "创建时间",
-    minWidth: 180,
-    prop: "createTime"
-  },
-  {
-    label: "状态",
-    minWidth: 130,
-    cellRenderer: scope => (
-      <el-switch
-        v-model={scope.row.status}
-        active-value={1}
-        inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.roleName)}
-      />
-    )
+    minWidth: 120
   },
   {
     label: "操作",
@@ -287,16 +247,6 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
-
-const buttonClass = computed(() => {
-  return [
-    "!h-[20px]",
-    "reset-margin",
-    "!text-gray-500",
-    "dark:!text-white",
-    "dark:hover:!text-primary"
-  ];
-});
 </script>
 
 <style scoped lang="scss">

@@ -189,10 +189,10 @@
         </pure-table>
       </template>
     </PureTableBar>
+    <CreateTable ref="createTableRef" @refresh="loadData()" />
+    <EditTable ref="editTableRef" @refresh="loadData()" />
+    <PreviewTable ref="previewTableRef" @refresh="loadData()" />
   </div>
-  <CreateTable ref="createTableRef" @refresh="loadData()" />
-  <EditTable ref="editTableRef" @refresh="loadData()" />
-  <PreviewTable ref="previewTableRef" @refresh="loadData()" />
 </template>
 
 <script setup lang="tsx">

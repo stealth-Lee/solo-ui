@@ -1,6 +1,29 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
 
+export interface TableReq {
+  tableId: number;
+  sourceId: number;
+  tableName: string;
+  tableComment: string;
+  author: string;
+  tplType: number;
+  packageName: string;
+  moduleName: string;
+  businessName: string;
+  functionName: string;
+  className: string;
+  classTail: string;
+  isSwitch: boolean;
+  switchField: string;
+  remark: string;
+}
+
+export interface PreviewReq {
+  path: string;
+  code: string;
+}
+
 // 新增业务表
 export const creating = (data: object) => {
   return http.post(baseUrlApi("/codegen/table"), { data });
@@ -18,24 +41,22 @@ export const updating = (data: object) => {
 
 // 获取业务表详细信息
 export const getting = (tableId: number) => {
-  return http.get(baseUrlApi("/codegen/table/" + tableId));
+  return http.get<TableReq>(baseUrlApi("/codegen/table/" + tableId));
 };
 
 // 预览代码
 export const preview = (id: number) => {
-  return http.get<object, Result>(baseUrlApi("/codegen/table/preview/" + id));
+  return http.get<PreviewReq[]>(baseUrlApi("/codegen/table/preview/" + id));
 };
 
 // 获取业务表精简信息列表
 export const listSimple = (id: number) => {
-  return http.get<object, Result>(
-    baseUrlApi("/codegen/table/list-simple/" + id)
-  );
+  return http.get<TableReq>(baseUrlApi("/codegen/table/list-simple/" + id));
 };
 
 // 获取业务表信息分页列表
 export const paging = (params?: object) => {
-  return http.get<object, Result>(baseUrlApi("/codegen/table/page"), {
+  return http.get<Array<TableReq>>(baseUrlApi("/codegen/table/page"), {
     params
   });
 };

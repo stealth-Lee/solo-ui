@@ -4,6 +4,7 @@ import Axios, {
   CustomParamsSerializer
 } from "axios";
 import {
+  Result,
   PureHttpError,
   RequestMethods,
   PureHttpResponse,
@@ -14,12 +15,6 @@ import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
 import { message } from "@/utils/message";
-
-type Result<T> = {
-  code: number;
-  message: string;
-  data?: T;
-};
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -187,39 +182,39 @@ class PureHttp {
   }
 
   /** 单独抽离的post工具函数 */
-  public post<T, P>(
-    url: string,
-    params?: AxiosRequestConfig<T>,
-    config?: PureHttpRequestConfig
-  ): Promise<P> {
-    return this.request<P>("post", url, params, config);
-  }
-
-  /** 单独抽离的get工具函数 */
-  public get<P>(
+  public post<T>(
     url: string,
     params?: AxiosRequestConfig,
     config?: PureHttpRequestConfig
-  ): Promise<Result<P>> {
-    return this.request<Result<P>>("get", url, params, config);
+  ): Promise<T> {
+    return this.request<T>("post", url, params, config);
+  }
+
+  /** 单独抽离的get工具函数 */
+  public get<T>(
+    url: string,
+    params?: AxiosRequestConfig,
+    config?: PureHttpRequestConfig
+  ): Promise<Result<T>> {
+    return this.request<Result<T>>("get", url, params, config);
   }
 
   // delete工具函数
-  public delete<T, P>(
+  public delete<T>(
     url: string,
-    params?: AxiosRequestConfig<T>,
+    params?: AxiosRequestConfig,
     config?: PureHttpRequestConfig
-  ): Promise<P> {
-    return this.request<P>("delete", url, params, config);
+  ): Promise<T> {
+    return this.request<T>("delete", url, params, config);
   }
 
   // put工具函数
-  public put<T, P>(
+  public put<T>(
     url: string,
-    params?: AxiosRequestConfig<T>,
+    params?: AxiosRequestConfig,
     config?: PureHttpRequestConfig
-  ): Promise<P> {
-    return this.request<P>("put", url, params, config);
+  ): Promise<T> {
+    return this.request<T>("put", url, params, config);
   }
 }
 

@@ -1,65 +1,44 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
 
-type Result = {
-  code: number;
-  message: string;
-  data?: Array<any>;
-};
-
 export interface DictDataReq {
   dataId: number;
-  deptCode: string;
+  dictCode: string;
   dictValue: string;
   dictLabel: string;
+  tagType: number;
+  tagClass: string;
   dictSort: number;
-  status: number;
+  status: boolean;
   remark: string;
 }
 
-/**
- * 新增部门
- * @param data 部门信息
- * @returns 返回信息
- */
+// 新增字典数据
 export const creating = (data: DictDataReq) => {
-  return http.post(baseUrlApi("/system/dict-data"), { data });
+  return http.post(baseUrlApi("/sys/dict-data"), { data });
 };
 
-/**
- * 删除部门
- * @param id 部门id
- * @returns 返回信息
- */
-export const deleting = (id: number) => {
-  return http.delete(baseUrlApi("/system/dict-data/" + id));
+// 删除字典数据
+export const deleting = (dataIds: number) => {
+  return http.delete(baseUrlApi("/sys/dict-data/" + dataIds));
 };
 
-/**
- * 修改部门
- * @param id 部门id
- * @returns 返回信息
- */
+// 修改字典数据
 export const updating = (data: DictDataReq) => {
-  return http.put(baseUrlApi("/system/dict-data"), { data });
+  return http.put(baseUrlApi("/sys/dict-data"), { data });
 };
 
-/**
- * 获取单条部门信息
- * @param id 部门id
- * @returns 部门信息
- */
-export const getting = (id: number) => {
-  return http.get<object, Result>(baseUrlApi("/system/dict-data/" + id));
-};
-
-/**
- * 根据字典编码获取字典数据列表
- * @param dictCode 字典编码
- * @returns 字典数据列表
- */
+// 根据字典编码获取字典数据列表
 export const selectByDictCode = (dictCode: String) => {
-  return http.get<object, Result>(
-    baseUrlApi("/system/dict-data/code/" + dictCode)
-  );
+  return http.get(baseUrlApi("/system/dict-data/code/" + dictCode));
+};
+
+// 获取单条字典数据信息
+export const getting = (dataId: number) => {
+  return http.get<DictDataReq>(baseUrlApi("/sys/dict-data/" + dataId));
+};
+
+// 获取字典数据信息分页列表
+export const paging = (params?: object) => {
+  return http.get<DictDataReq>(baseUrlApi("/sys/dict-data/page"), { params });
 };

@@ -154,6 +154,7 @@ export function useTable(options?: BasicTableProps) {
 
   // 状态切换按钮
   const handleSwitch = async (row: any, name?: any) => {
+    console.log(row);
     try {
       const text =
         row[props.switchField] === GlobalStatus.ENABLE

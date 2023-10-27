@@ -191,8 +191,8 @@
         </template>
       </PureTableBar>
     </div>
+    <UserForm ref="userDialogFormRef" @refresh="getData()" />
   </div>
-  <user-form ref="userDialogFormRef" @refresh="getData()" />
 </template>
 
 <script setup lang="tsx">

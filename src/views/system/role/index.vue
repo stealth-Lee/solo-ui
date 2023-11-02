@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="main">
     <!-- 搜索工作栏 -->
     <el-form
@@ -7,28 +7,28 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="角色名称：" prop="roleName">
+      <el-form-item :label="$t('role.column.name')" prop="name">
         <el-input
-          v-model="props.queryParams.roleName"
-          placeholder="请输入角色名称"
+          v-model="props.queryParams.name"
+          :placeholder="$t('role.tip.name')"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="roleCode">
+      <el-form-item :label="$t('role.column.code')" prop="code">
         <el-input
-          v-model="props.queryParams.roleCode"
-          placeholder="请输入角色标识"
+          v-model="props.queryParams.code"
+          :placeholder="$t('role.tip.code')"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
+      <el-form-item :label="$t('role.column.status')" prop="status">
         <el-select
           v-model="props.queryParams.status"
-          placeholder="请选择状态"
+          :placeholder="$t('role.tip.status')"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         >
           <el-option
             v-for="dict in status"
@@ -39,7 +39,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -47,7 +47,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -59,7 +59,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}${t('commons.other.list')}`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -70,7 +70,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -79,12 +79,11 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
-          width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -94,7 +93,7 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -104,7 +103,7 @@
           @click="handleUpdate()"
           plain
         >
-          导入
+          {{ t("commons.buttons.import") }}
         </el-button>
         <el-button
           type="warning"
@@ -112,7 +111,7 @@
           @click="handleUpdate()"
           plain
         >
-          导出
+          {{ t("commons.buttons.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -144,12 +143,11 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.roleId)"
             >
-              修改
+              {{ t("commons.buttons.update") }}
             </el-button>
             <el-popconfirm
-              width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.roleId)"
             >
               <template #reference>
@@ -160,7 +158,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -181,7 +179,7 @@
                       :size="size"
                       :icon="useRenderIcon('ep:menu')"
                     >
-                      菜单权限
+                      {{ t("role.button.menu") }}
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -192,7 +190,7 @@
                       :size="size"
                       :icon="useRenderIcon('ri:database-2-line')"
                     >
-                      数据权限
+                      {{ t("role.button.data") }}
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -211,15 +209,16 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
 import { paging, deleting, updateStatus } from "@/api/system/role";
-
 defineOptions({ name: "SysRole" });
+// import { $t } from "@/plugins/i18n";
+const { t } = useI18n();
 
 const RoleForm = defineAsyncComponent(() => import("./form.vue"));
 const { status } = useDict("status");
 const queryFormRef = ref();
 const roleFormRef = ref();
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "角色",
+  title: t("role.title"),
   pk: "roleId",
   listApi: paging,
   deleteApi: deleting,
@@ -249,39 +248,39 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "角色名称",
-    prop: "roleName",
+    label: t("role.column.name"),
+    prop: "name",
     minWidth: 120
   },
   {
-    label: "角色标识",
-    prop: "roleCode",
+    label: t("role.column.code"),
+    prop: "code",
     minWidth: 150
   },
   {
-    label: "备注",
+    label: t("role.column.remark"),
     prop: "remark",
     minWidth: 150
   },
   {
-    label: "创建时间",
+    label: t("role.column.createTime"),
     minWidth: 180,
     prop: "createTime"
   },
   {
-    label: "状态",
+    label: t("role.column.status"),
     minWidth: 130,
     cellRenderer: scope => (
       <el-switch
         v-model={scope.row.status}
         active-value={1}
         inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.roleName)}
+        onChange={() => handleSwitch(scope.row, scope.row.name)}
       />
     )
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 240,
     slot: "operation"
@@ -309,4 +308,4 @@ const buttonClass = computed(() => {
     margin-bottom: 12px;
   }
 }
-</style>
+</style> -->

@@ -1,14 +1,14 @@
 <template>
-  <el-dialog :title="formTitle" v-model="visible" width="600">
+  <el-drawer :title="formTitle" v-model="visible" size="600">
     <el-form
       ref="formRef"
       :model="formModel"
       :rules="formRules"
-      label-width="82px"
+      label-width="81px"
       v-loading="formLoading"
     >
-      <el-row :gutter="30">
-        <re-col>
+      <el-row :gutter="11">
+        <el-col>
           <el-form-item label="上级部门" prop="parentId">
             <el-cascader
               class="w-full"
@@ -21,45 +21,42 @@
                 checkStrictly: true,
                 expandTrigger: 'hover' as const
               }"
+              placeholder="请选择上级部门"
               clearable
               filterable
-              placeholder="请选择上级部门"
             />
           </el-form-item>
-        </re-col>
-
-        <re-col :value="12" :xs="24" :sm="24">
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="部门名称" prop="deptName">
             <el-input
               v-model="formModel.deptName"
-              clearable
               placeholder="请输入部门名称"
+              clearable
             />
           </el-form-item>
-        </re-col>
-
-        <re-col :value="12" :xs="24" :sm="24">
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="部门编码" prop="deptCode">
             <el-input
               v-model="formModel.deptCode"
-              clearable
               placeholder="请输入部门编码"
+              clearable
             />
           </el-form-item>
-        </re-col>
-
-        <re-col :value="12" :xs="24" :sm="24">
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="排序" prop="deptSort">
             <el-input-number
               v-model="formModel.deptSort"
+              placeholder="请输入排序"
+              class="!w-[100%]"
               :min="0"
               :max="9999"
-              controls-position="right"
             />
           </el-form-item>
-        </re-col>
-
-        <re-col>
+        </el-col>
+        <el-col>
           <el-form-item label="备注" prop="remark">
             <el-input
               v-model="formModel.remark"
@@ -67,7 +64,7 @@
               type="textarea"
             />
           </el-form-item>
-        </re-col>
+        </el-col>
       </el-row>
     </el-form>
     <template #footer>
@@ -76,17 +73,14 @@
         <el-button type="primary" @click="handleSubmit">确定</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { message } from "@/utils/message";
-import ReCol from "@/components/ReCol";
 import { handleTree } from "@/utils/tree";
-
 import { listSimple, getting, creating, updating } from "@/api/system/dept";
 
+const message = useMessage();
 const formRef = ref();
 const deptTree = ref(); // 树形结构
 const visible = ref(false);
@@ -117,7 +111,7 @@ const resetForm = () => {
 // 打开弹框
 const openDialog = async (title: string, id?: number) => {
   visible.value = true;
-  formTitle.value = title + "部门";
+  formTitle.value = title;
   resetForm();
   const treeRes = await listSimple();
   deptTree.value = handleTree(treeRes.data, "deptId");
@@ -140,9 +134,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.deptId ? await updating(formModel) : await creating(formModel);
-    message(`部门[${formModel.deptName}]${formTitle.value}成功！`, {
-      type: "success"
-    });
+    message.success(`部门[${formModel.deptName}]${formTitle.value}成功！`);
     visible.value = false;
     emit("refresh");
   } finally {

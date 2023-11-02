@@ -7,23 +7,23 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="字典编码" prop="dictCode">
+      <el-form-item label="字典编码" prop="code">
         <el-input
-          v-model="formModel.dictCode"
+          v-model="formModel.code"
           placeholder="请输入字典编码"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典键值" prop="dictValue">
+      <el-form-item label="字典键值" prop="value">
         <el-input
-          v-model="formModel.dictValue"
+          v-model="formModel.value"
           placeholder="请输入字典键值"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典标签" prop="dictLabel">
+      <el-form-item label="字典标签" prop="label">
         <el-input
-          v-model="formModel.dictLabel"
+          v-model="formModel.label"
           placeholder="请输入字典标签"
           clearable
         />
@@ -63,7 +63,7 @@
         <el-input
           v-model="formModel.remark"
           placeholder="请输入备注"
-          clearable
+          type="textarea"
         />
       </el-form-item>
     </el-form>
@@ -89,9 +89,9 @@ const formLoading = ref(false);
 const formTitle = ref("");
 const formModel = reactive({
   dataId: undefined,
-  dictCode: "",
-  dictValue: "",
-  dictLabel: "",
+  code: "",
+  value: "",
+  label: "",
   tagType: undefined,
   tagClass: "",
   dictSort: undefined,
@@ -101,9 +101,9 @@ const formModel = reactive({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  dictCode: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
-  dictValue: [{ required: true, message: "字典键值为必填项", trigger: "blur" }],
-  dictLabel: [{ required: true, message: "字典标签为必填项", trigger: "blur" }],
+  code: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
+  value: [{ required: true, message: "字典键值为必填项", trigger: "blur" }],
+  label: [{ required: true, message: "字典标签为必填项", trigger: "blur" }],
   status: [{ required: true, message: "状态为必填项", trigger: "blur" }]
 });
 

@@ -3,20 +3,20 @@
     <el-form
       ref="queryFormRef"
       :inline="true"
-      :model="queryParams"
+      :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="部门名称：" prop="deptName">
+      <el-form-item :label="$t('dept.name')" prop="name">
         <el-input
-          v-model="queryParams.deptName"
+          v-model="props.queryParams.name"
           placeholder="请输入部门名称"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="部门编码：" prop="deptCode">
+      <el-form-item label="部门编码" prop="code">
         <el-input
-          v-model="queryParams.deptCode"
+          v-model="props.queryParams.code"
           placeholder="请输入部门编码"
           clearable
           class="!w-[200px]"
@@ -24,17 +24,21 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button
-          type="primary"
-          :icon="useRenderIcon(Search)"
-          :loading="loading"
-          @click="handleQuery"
-        >
-          搜索
-        </el-button>
-        <el-button :icon="useRenderIcon(Refresh)" @click="handleReset">
-          重置
-        </el-button>
+        <el-tooltip content="搜索" placement="top">
+          <el-button
+            :icon="useRenderIcon('ep:search')"
+            :loading="props.loading"
+            @click="handleQuery"
+            circle
+          />
+        </el-tooltip>
+        <el-tooltip content="重置" placement="top">
+          <el-button
+            :icon="useRenderIcon('ep:refresh-right')"
+            @click="handleReset()"
+            circle
+          />
+        </el-tooltip>
       </el-form-item>
     </el-form>
 
@@ -47,8 +51,9 @@
       <template #buttons>
         <el-button
           type="primary"
-          :icon="useRenderIcon(AddFill)"
-          @click="handleCreateOrUpdate()"
+          :icon="useRenderIcon('ep:plus')"
+          @click="handleCreate()"
+          plain
         >
           新增
         </el-button>
@@ -63,9 +68,9 @@
           showOverflowTooltip
           table-layout="auto"
           default-expand-all
-          :loading="loading"
+          :loading="props.loading"
           :size="size"
-          :data="dataList"
+          :data="props.dataList"
           :columns="dynamicColumns"
           :header-cell-style="{
             background: 'var(--el-fill-color-light)',
@@ -78,14 +83,14 @@
               link
               type="primary"
               :size="size"
-              :icon="useRenderIcon(EditPen)"
-              @click="handleCreateOrUpdate('编辑', row.deptId)"
+              :icon="useRenderIcon('ep:edit-pen')"
+              @click="handleUpdate(row.deptId)"
             >
               编辑
             </el-button>
             <el-popconfirm
-              :title="`是否删除[${row.deptName}]?`"
-              @confirm="handleDelete(row)"
+              title="是否删除选中数据？"
+              @confirm="handleDelete(row.deptId)"
             >
               <template #reference>
                 <el-button
@@ -93,7 +98,7 @@
                   link
                   type="danger"
                   :size="size"
-                  :icon="useRenderIcon(Delete)"
+                  :icon="useRenderIcon('ep:delete')"
                 >
                   删除
                 </el-button>
@@ -103,58 +108,61 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <DeptForm ref="deptFormRef" @refresh="getData()" />
+    <DeptForm ref="deptFormRef" @refresh="loadData()" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw, onMounted, reactive, defineAsyncComponent } from "vue";
-import { message } from "@/utils/message";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-
-import { handleTree } from "@/utils/tree";
+import { BasicTableProps } from "@/hooks/table";
 import { deleting, listing } from "@/api/system/dept";
-
-import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import Search from "@iconify-icons/ep/search";
-import Refresh from "@iconify-icons/ep/refresh";
-import AddFill from "@iconify-icons/ri/add-circle-line";
 
 const DeptForm = defineAsyncComponent(() => import("./form.vue"));
 
 const queryFormRef = ref();
 const deptFormRef = ref();
 const tableRef = ref();
-const dataList = ref([]);
-const loading = ref(true);
 
 defineOptions({
   name: "Dept"
 });
 
-const queryParams = reactive({
-  deptName: null,
-  deptCode: null
+const props: BasicTableProps = reactive<BasicTableProps>({
+  type: "tree",
+  title: "部门",
+  pk: "deptId",
+  listApi: listing,
+  deleteApi: deleting,
+  queryRef: queryFormRef,
+  formRef: deptFormRef
 });
+
+const {
+  loadData,
+  handleQuery,
+  handleReset,
+  handleCreate,
+  handleUpdate,
+  handleDelete
+} = useTable(props);
 
 const columns: TableColumnList = [
   {
     label: "部门名称",
-    prop: "deptName",
+    prop: "name",
     width: 180,
     align: "left"
   },
   {
     label: "部门编码",
-    prop: "deptCode",
+    prop: "code",
     width: 180,
     align: "left"
   },
   {
     label: "排序",
-    prop: "deptSort",
+    prop: "sort",
     minWidth: 70
   },
   {
@@ -174,47 +182,6 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
-
-// 查询部门列表
-const getData = async () => {
-  loading.value = true;
-  try {
-    const res = await listing(toRaw(queryParams)); // 这里是返回一维数组结构，前端自行处理成树结构，返回格式要求：唯一id加父节点parentId，parentId取父节点id
-    if (res.code === 0) {
-      dataList.value = handleTree(res.data, "deptId"); // 处理成树结构
-    }
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 搜索按钮
-const handleQuery = () => {
-  getData();
-};
-
-// 重置按钮
-const handleReset = () => {
-  queryFormRef.value.resetFields();
-  handleQuery();
-};
-
-// 删除按钮
-const handleDelete = async (row: any) => {
-  await deleting(row.deptId);
-  message(`部门[${row.deptName}]删除成功！`, { type: "success" });
-  await getData();
-};
-
-// 新增、编辑按钮
-const handleCreateOrUpdate = (title = "新增", id?: number) => {
-  deptFormRef.value.openDialog(title, id);
-};
-
-// 初始化
-onMounted(async () => {
-  await getData();
-});
 </script>
 
 <style lang="scss" scoped>

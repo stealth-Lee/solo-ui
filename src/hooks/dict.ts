@@ -1,5 +1,5 @@
 import { useDictStoreHook } from "@/store/modules/dict";
-import { selectByDictCode } from "@/api/system/dict.data";
+import { selectByCode } from "@/api/system/dict.data";
 import { ref, toRefs } from "vue";
 
 const dictStore = useDictStoreHook();
@@ -10,32 +10,32 @@ const dictStore = useDictStoreHook();
 export function useDict(...args: any): any {
   const res = ref({});
   return (() => {
-    args.forEach((dictType: String) => {
+    args.forEach((code: String) => {
       // @ts-ignore
-      res.value[dictType] = [];
-      const dicts = dictStore.getDict(dictType);
+      res.value[code] = [];
+      const dicts = dictStore.getDict(code);
       if (dicts) {
         // @ts-ignore
-        res.value[dictType] = dicts;
+        res.value[code] = dicts;
       } else {
-        selectByDictCode(dictType).then(resp => {
+        selectByCode(code).then(resp => {
           // @ts-ignore
-          res.value[dictType] = resp.data.map((p: any) => {
-            let value = p.dictValue;
-            if (p.dictType === 2) {
+          res.value[code] = resp.data.map((p: any) => {
+            let value = p.value;
+            if (p.type === 2) {
               value = Number(value);
-            } else if (p.dictType === 3) {
+            } else if (p.type === 3) {
               value = value === "true" || value === "1"; // Convert to boolean
             }
             return {
-              label: p.dictLabel,
+              label: p.label,
               value: value,
               elTagType: p.tagType,
               elTagClass: p.tagClass
             };
           });
           // @ts-ignore
-          dictStore.setDict(dictType, res.value[dictType]);
+          dictStore.setDict(code, res.value[code]);
         });
       }
     });

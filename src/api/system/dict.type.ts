@@ -3,9 +3,9 @@ import { baseUrlApi } from "@/api/utils";
 
 export interface DictTypeReq {
   typeId: number;
-  dictName: string;
-  dictCode: string;
-  dictType: number;
+  name: string;
+  code: string;
+  type: number;
   status: boolean;
   remark: string;
 }

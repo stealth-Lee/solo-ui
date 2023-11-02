@@ -18,7 +18,7 @@
             v-model="queryParams.username"
             placeholder="请输入用户名称"
             clearable
-            class="!w-[160px]"
+            class="!w-[200px]"
           />
         </el-form-item>
         <el-form-item label="手机号码：" prop="mobile">
@@ -26,7 +26,7 @@
             v-model="queryParams.mobile"
             placeholder="请输入手机号码"
             clearable
-            class="!w-[160px]"
+            class="!w-[200px]"
           />
         </el-form-item>
         <el-form-item label="状态：" prop="status">
@@ -34,7 +34,7 @@
             v-model="queryParams.status"
             placeholder="请选择"
             clearable
-            class="!w-[160px]"
+            class="!w-[200px]"
           >
             <el-option label="已开启" value="1" />
             <el-option label="已关闭" value="0" />

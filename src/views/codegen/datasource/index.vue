@@ -12,7 +12,7 @@
           v-model="props.queryParams.name"
           placeholder="请输入别名："
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item>

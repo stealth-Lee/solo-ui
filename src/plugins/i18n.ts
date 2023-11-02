@@ -9,14 +9,28 @@ import enLocale from "element-plus/dist/locale/en.mjs";
 import zhLocale from "element-plus/dist/locale/zh-cn.mjs";
 
 function siphonI18n(prefix = "zh-CN") {
-  return Object.fromEntries(
-    Object.entries(
-      import.meta.glob("../../locales/*.y(a)?ml", { eager: true })
-    ).map(([key, value]: any) => {
-      const matched = key.match(/([A-Za-z0-9-_]+)\./i)[1];
-      return [matched, value.default];
-    })
-  )[prefix];
+  const i18nData = {};
+  const mergedObject: { [key: string]: any } = {};
+  Object.entries(
+    import.meta.glob(
+      ["../../locales/*.y(a)?ml", "../../src/views/**/i18n/*.yaml"],
+      { eager: true }
+    )
+  ).forEach(([key, value]: any) => {
+    const matched = key.match(/([A-Za-z0-9-_]+)\./i)[1];
+    if (matched) {
+      if (!i18nData[matched]) {
+        i18nData[matched] = [];
+      }
+      i18nData[matched].push(value.default);
+    }
+  });
+  i18nData[prefix].forEach(obj => {
+    Object.keys(obj).forEach(key => {
+      mergedObject[key] = obj[key];
+    });
+  });
+  return mergedObject; // 返回指定前缀的数据数组
 }
 
 export const localesConfigs = {

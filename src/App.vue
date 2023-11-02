@@ -12,6 +12,8 @@ import { ElConfigProvider } from "element-plus";
 import en from "element-plus/dist/locale/en.mjs";
 import { ReDialog } from "@/components/ReDialog";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import { useWatermark } from "@pureadmin/utils";
+const { setWatermark } = useWatermark();
 
 export default defineComponent({
   name: "app",
@@ -46,6 +48,17 @@ export default defineComponent({
         }
       );
     }
+  },
+  // 初始化数据
+  setup() {
+    onMounted(() => {
+      // 水印设置
+      nextTick(() => {
+        setWatermark("SOLO ADMIN", {
+          globalAlpha: 0.15
+        });
+      });
+    });
   }
 });
 </script>

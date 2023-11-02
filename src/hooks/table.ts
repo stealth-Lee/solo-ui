@@ -1,13 +1,19 @@
-import { onMounted, h } from "vue";
 import { useWatermark, delay } from "@pureadmin/utils";
 import { type PaginationProps } from "@pureadmin/table";
 import { useMessage, useMessageBox } from "@/hooks/message";
 import { GlobalStatus } from "@/utils/constants";
+import { handleTree } from "@/utils/tree";
+import { i18n } from "@/plugins/i18n";
 
+const { t } = i18n.global;
 const message = useMessage();
 const messageBox = useMessageBox();
 
+type Type = "table" | "tree";
+
 export interface BasicTableProps {
+  // 表格类型
+  type?: Type;
   // 标题
   title?: string;
   // 是否在创建页面时即调用数据列表接口
@@ -46,6 +52,7 @@ export interface BasicTableProps {
 
 export function useTable(options?: BasicTableProps) {
   const defaultOptions: BasicTableProps = {
+    type: "table",
     createdIsNeed: true,
     queryParams: {},
     pagination: {
@@ -83,16 +90,28 @@ export function useTable(options?: BasicTableProps) {
     if (props.listApi) {
       props.loading = true;
       try {
-        const res = await props.listApi({
-          ...props.queryParams,
-          pageNumber: props.pagination?.currentPage,
-          pageSize: props.pagination?.pageSize
-        });
-        if (res.code === 0) {
-          const data = res.data;
-          props.dataList = data.records;
-          props.pagination.total = data.totalRow;
-          props.pagination.pageSize = data.pageSize;
+        if (props.type === "table") {
+          // 普通分页表格处理
+          const res = await props.listApi({
+            ...props.queryParams,
+            pageNumber: props.pagination?.currentPage,
+            pageSize: props.pagination?.pageSize
+          });
+          if (res.code === 0) {
+            const data = res.data;
+            props.dataList = data.records;
+            props.pagination.total = data.totalRow;
+            props.pagination.pageSize = data.pageSize;
+          }
+        } else {
+          // 树形表格处理
+          const res = await props.listApi({
+            ...props.queryParams
+          });
+          if (res.code === 0) {
+            const data = res.data;
+            props.dataList = handleTree(data, props.pk);
+          }
         }
       } catch (err: any) {
         // 捕获异常并显示错误提示
@@ -135,44 +154,30 @@ export function useTable(options?: BasicTableProps) {
 
   // 新增按钮
   const handleCreate = () => {
-    props.formRef.openDialog(`新增${props.title}`);
+    props.formRef.openDialog(`${t("commons.buttons.create")}${props.title}`);
   };
 
   // 编辑按钮
   const handleUpdate = (id?: number) => {
     const ids = id || props.ids;
-    props.formRef.openDialog(`编辑${props.title}`, ids);
+    props.formRef.openDialog(`${t("commons.buttons.edit")}${props.title}`, ids);
   };
 
   // 删除按钮
   const handleDelete = async (id?: any[]) => {
     const ids = id || props.ids;
     await props.deleteApi(ids);
-    message.success(`${props.title}删除成功！`);
+    message.success(`${props.title}${t("commons.prompt.delete")}`);
     await loadData();
   };
 
   // 状态切换按钮
   const handleSwitch = async (row: any, name?: any) => {
-    console.log(row);
     try {
-      const text =
-        row[props.switchField] === GlobalStatus.ENABLE
-          ? h("span", { style: "color: teal; font-weight: bold" }, "启用")
-          : h("span", { style: "color: red; font-weight: bold" }, "禁用");
-      name = name
-        ? h("span", { style: "font-weight: bold" }, `“${name}”`)
-        : null;
-      const content = h("p", null, [
-        h("span", null, "确认要"),
-        text,
-        name,
-        h("span", null, `${props.title}吗？`)
-      ]);
-      await messageBox.confirm(content);
+      await messageBox.switch(row[props.switchField], name, props.title);
       await props.switchApi(row[props.pk], row[props.switchField]);
       await loadData();
-      await message.success("操作成功！");
+      await message.success(t("commons.prompt.action"));
     } catch {
       row[props.switchField] =
         row[props.switchField] === GlobalStatus.ENABLE

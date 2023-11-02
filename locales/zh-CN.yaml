@@ -152,3 +152,31 @@ login:
   passwordSureReg: 请输入确认密码
   passwordDifferentReg: 两次密码不一致!
   passwordUpdateReg: 修改密码成功
+commons:
+  buttons:
+    create: 新增
+    delete: 删除
+    update: 修改
+    edit: 编辑
+    import: 导入
+    export: 导出
+    search: 搜索
+    reset: 重置
+
+    cancel: 取消
+    confirm: 确认
+    enable: 启用
+    disable: 禁用
+  columns:
+    action: 操作
+  other:
+    list: 列表
+    success: 成功
+    fail: 失败
+  ask:
+    delete: 您确认要删除选中数据吗？
+    confirm: 您确认要
+  prompt:
+    system: 系统提示
+    delete: 删除成功
+    action: 操作成功

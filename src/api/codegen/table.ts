@@ -4,8 +4,8 @@ import { baseUrlApi } from "@/api/utils";
 export interface TableReq {
   tableId: number;
   sourceId: number;
-  tableName: string;
-  tableComment: string;
+  name: string;
+  comment: string;
   author: string;
   tplType: number;
   packageName: string;

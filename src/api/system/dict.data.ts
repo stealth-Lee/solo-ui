@@ -3,9 +3,9 @@ import { baseUrlApi } from "@/api/utils";
 
 export interface DictDataReq {
   dataId: number;
-  dictCode: string;
-  dictValue: string;
-  dictLabel: string;
+  code: string;
+  value: string;
+  label: string;
   tagType: number;
   tagClass: string;
   dictSort: number;
@@ -38,8 +38,8 @@ export const updating = (data: DictDataReq) => {
 };
 
 // 根据字典编码获取字典数据列表
-export const selectByDictCode = (dictCode: String) => {
-  return http.get(baseUrlApi("/system/dict-data/code/" + dictCode));
+export const selectByCode = (code: String) => {
+  return http.get(baseUrlApi("/system/dict-data/code/" + code));
 };
 
 // 获取单条字典数据信息

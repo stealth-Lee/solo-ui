@@ -1,48 +1,52 @@
-<template>
+<!-- <template>
   <el-drawer :title="formTitle" v-model="visible" width="600">
     <el-form
       ref="formRef"
       :model="formModel"
       :rules="formRules"
       v-loading="formLoading"
-      label-width="82px"
+      label-width="95px"
     >
-      <el-form-item label="角色名称" prop="roleName">
+      <el-form-item :label="$t('role.column.name')" prop="name">
         <el-input
-          v-model="formModel.roleName"
+          v-model="formModel.name"
+          :placeholder="$t('role.tip.name')"
           clearable
-          placeholder="请输入角色名称"
         />
       </el-form-item>
-      <el-form-item label="角色标识" prop="roleCode">
+      <el-form-item :label="$t('role.column.code')" prop="code">
         <el-input
-          v-model="formModel.roleCode"
+          v-model="formModel.code"
+          :placeholder="$t('role.tip.code')"
           clearable
-          placeholder="请输入角色标识"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item :label="$t('role.column.status')" prop="status">
         <el-radio-group v-model="formModel.status">
           <el-radio-button
-            :label="item.value"
             v-for="(item, index) in status"
             :key="index"
+            :label="item.value"
             >{{ item.label }}
           </el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item :label="$t('role.column.remark')" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注信息"
+          :placeholder="$t('role.tip.remark')"
           type="textarea"
         />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="visible = false">{{
+          t("commons.buttons.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("commons.buttons.confirm")
+        }}</el-button>
       </span>
     </template>
   </el-drawer>
@@ -53,6 +57,7 @@ import { getting, creating, updating } from "@/api/system/role";
 
 defineOptions({ name: "SysRoleForm" });
 
+const { t } = useI18n();
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
@@ -61,8 +66,8 @@ const formTitle = ref("");
 const { status } = useDict("status");
 const formModel = reactive({
   roleId: undefined,
-  roleName: "",
-  roleCode: "",
+  name: "",
+  code: "",
   dataScope: 1,
   status: 1,
   remark: ""
@@ -70,8 +75,8 @@ const formModel = reactive({
 
 /** 自定义表单规则校验 */
 const formRules = reactive({
-  roleName: [{ required: true, message: "角色名称为必填项", trigger: "blur" }],
-  roleCode: [{ required: true, message: "角色标识为必填项", trigger: "blur" }]
+  name: [{ required: true, message: t("role.message.name"), trigger: "blur" }],
+  code: [{ required: true, message: t("role.message.code"), trigger: "blur" }]
 });
 
 // 打开弹框
@@ -98,7 +103,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.roleId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}[${formModel.roleName}]成功！`);
+    message.success(t("commons.prompt.action"));
     visible.value = false;
     emit("refresh");
   } finally {
@@ -113,4 +118,4 @@ const resetForm = () => {
 };
 
 defineExpose({ openDialog });
-</script>
+</script> -->

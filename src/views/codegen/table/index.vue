@@ -7,20 +7,20 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="表名称：" prop="tableName">
+      <el-form-item label="表名称：" prop="name">
         <el-input
-          v-model="props.queryParams.tableName"
+          v-model="props.queryParams.name"
           placeholder="请输入表名称："
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="表描述" prop="tableComment">
+      <el-form-item label="表描述" prop="comment">
         <el-input
-          v-model="props.queryParams.tableComment"
+          v-model="props.queryParams.comment"
           placeholder="请输入表描述"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item>
@@ -241,12 +241,12 @@ const columns: TableColumnList = [
   },
   {
     label: "表名称",
-    prop: "tableName",
+    prop: "name",
     minWidth: 120
   },
   {
     label: "表描述",
-    prop: "tableComment",
+    prop: "comment",
     minWidth: 150
   },
   {

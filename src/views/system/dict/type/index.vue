@@ -7,28 +7,28 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="字典名称" prop="dictName">
+      <el-form-item label="字典名称" prop="name">
         <el-input
-          v-model="props.queryParams.dictName"
+          v-model="props.queryParams.name"
           placeholder="请输入字典名称"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictCode">
+      <el-form-item label="字典编码" prop="code">
         <el-input
-          v-model="props.queryParams.dictCode"
+          v-model="props.queryParams.code"
           placeholder="请输入字典编码"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典类型" prop="dictType">
+      <el-form-item label="字典类型" prop="type">
         <el-select
-          v-model="props.queryParams.dictType"
+          v-model="props.queryParams.type"
           placeholder="请选择字典类型"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         >
           <el-option
             v-for="dict in dict_type"
@@ -43,7 +43,7 @@
           v-model="props.queryParams.status"
           placeholder="请选择状态"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         >
           <el-option
             v-for="dict in status"
@@ -232,27 +232,27 @@ const columns: TableColumnList = [
   },
   {
     label: "字典名称",
-    prop: "dictName",
+    prop: "name",
     minWidth: 120
   },
   {
     label: "字典编码",
-    prop: "dictCode",
+    prop: "code",
     minWidth: 120,
     cellRenderer: scope => (
-      <router-link to={"/system/dict/data/" + scope.row.dictCode}>
+      <router-link to={"/system/dict/data/" + scope.row.code}>
         <el-button link type="primary">
-          {scope.row.dictCode}
+          {scope.row.code}
         </el-button>
       </router-link>
     )
   },
   {
     label: "字典类型",
-    prop: "dictType",
+    prop: "type",
     minWidth: 120,
     cellRenderer: scope => (
-      <dict-tag options={dict_type.value} value={scope.row.dictType}></dict-tag>
+      <dict-tag options={dict_type.value} value={scope.row.type}></dict-tag>
     )
   },
   {

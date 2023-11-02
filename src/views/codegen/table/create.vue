@@ -22,26 +22,22 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="选择表" prop="tableName">
-        <el-select
-          v-model="formModel.tableName"
-          filterable
-          placeholder="Select"
-        >
+      <el-form-item label="选择表" prop="name">
+        <el-select v-model="formModel.name" filterable placeholder="Select">
           <el-option
             v-for="item in table"
-            :key="item.tableName"
-            :label="item.tableName"
-            :value="item.tableName"
+            :key="item.name"
+            :label="item.name"
+            :value="item.name"
           >
-            <span style="float: left">{{ item.tableName }}</span>
+            <span style="float: left">{{ item.name }}</span>
             <span
               style="
                 float: right;
                 color: var(--el-text-color-secondary);
                 font-size: 13px;
               "
-              >{{ item.tableComment }}</span
+              >{{ item.comment }}</span
             >
           </el-option>
         </el-select>
@@ -70,7 +66,7 @@ const formLoading = ref(false);
 const formTitle = ref("");
 const formModel = reactive({
   sourceId: undefined,
-  tableName: ""
+  name: ""
 });
 const datasource = ref([]);
 const table = ref([]);
@@ -78,7 +74,7 @@ const table = ref([]);
 /** 自定义表单规则校验 */
 const formRules = reactive({
   sourceId: [{ required: true, message: "数据源为必填项", trigger: "blur" }],
-  tableName: [{ required: true, message: "表为必填项", trigger: "blur" }]
+  name: [{ required: true, message: "表为必填项", trigger: "blur" }]
 });
 
 // 打开弹框
@@ -103,7 +99,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     await creating(formModel);
-    message.success(`${formTitle.value}[${formModel.tableName}]成功！`);
+    message.success(`${formTitle.value}[${formModel.name}]成功！`);
     visible.value = false;
     emit("refresh");
   } finally {

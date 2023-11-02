@@ -4,9 +4,9 @@ import { baseUrlApi } from "@/api/utils";
 export interface ColumnReq {
   columnId: number;
   tableId: number;
-  columnName: string;
-  columnType: string;
-  columnSort: number;
+  name: string;
+  type: string;
+  sort: number;
   javaType: string;
   javaField: string;
   javaComment: string;

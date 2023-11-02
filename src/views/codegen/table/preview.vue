@@ -25,7 +25,7 @@
 
 <script setup lang="tsx">
 import "highlight.js/styles/github.css";
-import { useClipboard } from "@vueuse/core";
+import { useCopyToClipboard } from "@pureadmin/utils";
 import hljs from "highlight.js";
 import java from "highlight.js/lib/languages/java";
 import xml from "highlight.js/lib/languages/java";
@@ -33,29 +33,26 @@ import ts from "highlight.js/lib/languages/typescript";
 import sql from "highlight.js/lib/languages/sql";
 import { PreviewReq, preview } from "@/api/codegen/table";
 
+const { clipboardValue, copied } = useCopyToClipboard();
 const message = useMessage();
 const visible = ref(false);
-const activeName = ref("first");
+const activeName = ref("");
 const previewCodegen = ref<PreviewReq[]>([]);
 
 // 代码高亮
 const highlightedCode = item => {
   const language = item.path.substring(item.path.lastIndexOf(".") + 1);
-  console.log(language);
   const result = hljs.highlight(language, item.code || "", true);
   return result.value || "&nbsp;";
 };
 
 // 复制
 const copy = async (text: string) => {
-  const { copy, copied, isSupported } = useClipboard({ source: text });
-  if (!isSupported) {
-    message.error("复制失败");
-    return;
-  }
-  await copy();
-  if (unref(copied)) {
+  clipboardValue.value = unref(text);
+  if (copied.value) {
     message.success("复制成功");
+  } else {
+    message.error("复制失败");
   }
 };
 
@@ -63,6 +60,7 @@ const copy = async (text: string) => {
 const openDialog = async (id?: number) => {
   visible.value = true;
   const res = await preview(id);
+  activeName.value = res.data[0].path;
   previewCodegen.value = res.data;
 };
 defineExpose({ openDialog });

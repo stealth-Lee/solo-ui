@@ -9,15 +9,13 @@ export default {
   },
   children: [
     {
-      path: "/system/dict/data/:dictCode",
+      path: "/system/dict/data/:code",
       name: "SystemDictData",
       component: () => import("@/views/system/dict/data/index.vue"),
       meta: {
         title: "字典数据",
-        keepAlive: true,
-        showLink: true,
         activePath: "/system/dict",
-        hiddenTag: true,
+        hiddenTag: false,
         dynamicLevel: 3
       }
     }

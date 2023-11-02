@@ -5,18 +5,18 @@
       :model="formModel"
       :rules="formRules"
       v-loading="formLoading"
-      label-width="82px"
+      label-width="81px"
     >
-      <el-form-item label="字典名称" prop="dictName">
+      <el-form-item label="字典名称" prop="name">
         <el-input
-          v-model="formModel.dictName"
+          v-model="formModel.name"
           placeholder="请输入字典名称"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictCode">
+      <el-form-item label="字典编码" prop="code">
         <el-input
-          v-model="formModel.dictCode"
+          v-model="formModel.code"
           placeholder="请输入字典编码"
           clearable
         />
@@ -26,6 +26,7 @@
           v-model="formModel.dictType"
           placeholder="请选择字典类型"
           clearable
+          class="!w-[100%]"
         >
           <el-option
             v-for="dict in dict_type"
@@ -46,7 +47,7 @@
         <el-input
           v-model="formModel.remark"
           placeholder="请输入备注"
-          clearable
+          type="textarea"
         />
       </el-form-item>
     </el-form>
@@ -64,7 +65,7 @@ import { getting, creating, updating } from "@/api/system/dict.type";
 
 defineOptions({ name: "SysDictTypeForm" });
 
-const { dict_type, status } = useDict("dict_type", "status");
+const { dict_type } = useDict("dict_type");
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
@@ -72,8 +73,8 @@ const formLoading = ref(false);
 const formTitle = ref("");
 const formModel = reactive({
   typeId: undefined,
-  dictName: "",
-  dictCode: "",
+  name: "",
+  code: "",
   dictType: undefined,
   status: undefined,
   remark: ""
@@ -81,8 +82,8 @@ const formModel = reactive({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  dictName: [{ required: true, message: "字典名称为必填项", trigger: "blur" }],
-  dictCode: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
+  name: [{ required: true, message: "字典名称为必填项", trigger: "blur" }],
+  code: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
   dictType: [{ required: true, message: "字典类型为必填项", trigger: "blur" }],
   status: [{ required: true, message: "状态为必填项", trigger: "blur" }]
 });

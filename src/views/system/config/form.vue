@@ -7,23 +7,23 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="配置名称" prop="configName">
+      <el-form-item label="配置名称" prop="name">
         <el-input
-          v-model="formModel.configName"
+          v-model="formModel.name"
           placeholder="请输入配置名称"
           clearable
         />
       </el-form-item>
-      <el-form-item label="配置键" prop="configKey">
+      <el-form-item label="配置键" prop="key">
         <el-input
-          v-model="formModel.configKey"
+          v-model="formModel.key"
           placeholder="请输入配置键"
           clearable
         />
       </el-form-item>
-      <el-form-item label="配置值" prop="configValue">
+      <el-form-item label="配置值" prop="value">
         <el-input
-          v-model="formModel.configValue"
+          v-model="formModel.value"
           placeholder="请输入配置值"
           clearable
         />
@@ -72,20 +72,18 @@ const formLoading = ref(false);
 const formTitle = ref("");
 const formModel = reactive({
   configId: "undefined",
-  configName: "",
-  configKey: "",
-  configValue: "",
+  name: "",
+  key: "",
+  value: "",
   isSys: "true",
   remark: ""
 });
 
 // 自定义表单规则校验
 const formRules = reactive({
-  configName: [
-    { required: true, message: "配置名称为必填项", trigger: "blur" }
-  ],
-  configKey: [{ required: true, message: "配置键为必填项", trigger: "blur" }],
-  configValue: [{ required: true, message: "配置值为必填项", trigger: "blur" }]
+  name: [{ required: true, message: "配置名称为必填项", trigger: "blur" }],
+  key: [{ required: true, message: "配置键为必填项", trigger: "blur" }],
+  value: [{ required: true, message: "配置值为必填项", trigger: "blur" }]
 });
 
 // 打开弹框

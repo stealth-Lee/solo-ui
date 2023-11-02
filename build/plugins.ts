@@ -30,7 +30,8 @@ export function getPluginsList(
         {
           "@/hooks/table": ["useTable"],
           "@/hooks/dict": ["useDict"],
-          "@/hooks/message": ["useMessage", "useMessageBox", "usrNotification"]
+          "@/hooks/message": ["useMessage", "useMessageBox", "usrNotification"],
+          "vue-i18n": ["useI18n"]
         }
       ],
       dts: "src/types/auto-imports.d.ts",
@@ -43,7 +44,7 @@ export function getPluginsList(
     VueI18nPlugin({
       runtimeOnly: true,
       compositionOnly: true,
-      include: [resolve("locales/**")]
+      include: [resolve("locales/**"), resolve("src/views/**")]
     }),
     // jsx、tsx语法支持
     vueJsx(),

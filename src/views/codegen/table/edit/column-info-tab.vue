@@ -50,7 +50,7 @@ const tableColumns: TableColumnList = [
     children: [
       {
         label: "列名",
-        prop: "columnName",
+        prop: "name",
         width: 130,
         align: "left",
         headerAlign: "center"
@@ -69,7 +69,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-input
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -84,7 +84,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-select
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -106,7 +106,7 @@ const tableColumns: TableColumnList = [
         width: 150,
         cellRenderer: scope => (
           <el-input
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={basicEntity.includes(scope.row.name)}
             v-model={scope.row.javaComment}
           />
         )
@@ -117,7 +117,7 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={basicEntity.includes(scope.row.name)}
             v-model={scope.row.isPk}
           />
         )
@@ -135,7 +135,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-checkbox
             disabled={
-              scope.row.columnName == "deleted" ||
+              scope.row.name == "deleted" ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -149,7 +149,7 @@ const tableColumns: TableColumnList = [
         width: 55,
         cellRenderer: scope => (
           <el-checkbox
-            disabled={scope.row.columnName == "deleted"}
+            disabled={scope.row.name == "deleted"}
             v-model={scope.row.isQuery}
           />
         )
@@ -187,7 +187,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-checkbox
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -202,7 +202,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-checkbox
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -217,7 +217,7 @@ const tableColumns: TableColumnList = [
         cellRenderer: scope => (
           <el-checkbox
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -231,7 +231,7 @@ const tableColumns: TableColumnList = [
         width: 130,
         cellRenderer: scope => (
           <el-select
-            disabled={basicEntity.includes(scope.row.columnName)}
+            disabled={basicEntity.includes(scope.row.name)}
             v-model={scope.row.formType}
             class="!w-[100px]"
           >
@@ -248,13 +248,13 @@ const tableColumns: TableColumnList = [
       // TODO 11 修改成当isSwitch=true时，自动将字典设置成status
       {
         label: "字典",
-        prop: "dictCode",
+        prop: "code",
         width: 180,
         cellRenderer: scope => (
           <el-select
-            v-model={scope.row.dictCode}
+            v-model={scope.row.code}
             disabled={
-              basicEntity.includes(scope.row.columnName) ||
+              basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&
                 props.table.switchField == scope.row.javaField)
             }
@@ -262,12 +262,8 @@ const tableColumns: TableColumnList = [
             allow-create
           >
             {dictList.value.map(item => (
-              <el-option
-                key={item.dictCode}
-                label={item.dictCode}
-                value={item.dictCode}
-              >
-                <span style="float: left">{item.dictCode}</span>
+              <el-option key={item.code} label={item.code} value={item.code}>
+                <span style="float: left">{item.code}</span>
                 <span
                   style="
                     float: right;
@@ -275,7 +271,7 @@ const tableColumns: TableColumnList = [
                     font-size: 13px;
                   "
                 >
-                  {item.dictName}
+                  {item.name}
                 </span>
               </el-option>
             ))}

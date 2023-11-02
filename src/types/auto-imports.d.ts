@@ -55,6 +55,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useDict: typeof import('@/hooks/dict')['useDict']
+  const useI18n: typeof import('vue-i18n')['useI18n']
   const useLink: typeof import('vue-router')['useLink']
   const useMessage: typeof import('@/hooks/message')['useMessage']
   const useMessageBox: typeof import('@/hooks/message')['useMessageBox']

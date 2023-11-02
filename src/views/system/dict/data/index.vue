@@ -7,20 +7,20 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="字典键值" prop="dictValue">
+      <el-form-item label="字典键值" prop="value">
         <el-input
-          v-model="props.queryParams.dictValue"
+          v-model="props.queryParams.value"
           placeholder="请输入字典键值"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典标签" prop="dictLabel">
+      <el-form-item label="字典标签" prop="label">
         <el-input
-          v-model="props.queryParams.dictLabel"
+          v-model="props.queryParams.label"
           placeholder="请输入字典标签"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -28,7 +28,7 @@
           v-model="props.queryParams.status"
           placeholder="请选择状态"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         >
           <el-option
             v-for="dict in status"
@@ -59,7 +59,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表(${route.params.dictCode})`"
+      :title="`${props.title}列表(${route.params.code})`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -175,6 +175,7 @@
 <script setup lang="tsx">
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { isNullOrUnDef } from "@pureadmin/utils";
 import { BasicTableProps } from "@/hooks/table";
 import { paging, deleting, updateStatus } from "@/api/system/dict.data";
 
@@ -185,12 +186,12 @@ const DictDataForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
 const dictDataFormRef = ref();
 
-const { tag_type, status } = useDict("tag_type", "status");
+const { status } = useDict("status");
 const props: BasicTableProps = reactive<BasicTableProps>({
   queryParams: {
-    dictCode: route.params.dictCode,
-    dictValue: "",
-    dictLabel: "",
+    code: route.params.code,
+    value: "",
+    label: "",
     status: ""
   },
   title: "字典数据",
@@ -224,13 +225,21 @@ const columns: TableColumnList = [
   },
   {
     label: "字典键值",
-    prop: "dictValue",
+    prop: "value",
     minWidth: 120
   },
   {
     label: "字典标签",
-    prop: "dictLabel",
-    minWidth: 120
+    prop: "label",
+    minWidth: 120,
+    cellRenderer: scope =>
+      isNullOrUnDef(scope.row.tagType) || scope.row.tagType === "default" ? (
+        <span>{scope.row.label}</span>
+      ) : (
+        <el-tag type={scope.row.tagType === "primary" ? "" : scope.row.tagType}>
+          {scope.row.label}
+        </el-tag>
+      )
   },
   {
     label: "字典排序",

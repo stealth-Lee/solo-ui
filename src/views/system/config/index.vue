@@ -7,28 +7,28 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="配置名称" prop="configName">
+      <el-form-item label="配置名称" prop="name">
         <el-input
-          v-model="props.queryParams.configName"
+          v-model="props.queryParams.name"
           placeholder="请输入配置名称"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="配置键" prop="configKey">
+      <el-form-item label="配置键" prop="key">
         <el-input
-          v-model="props.queryParams.configKey"
+          v-model="props.queryParams.key"
           placeholder="请输入配置键"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="配置值" prop="configValue">
+      <el-form-item label="配置值" prop="value">
         <el-input
-          v-model="props.queryParams.configValue"
+          v-model="props.queryParams.value"
           placeholder="请输入配置值"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item label="系统标识" prop="isSys">
@@ -36,7 +36,7 @@
           v-model="props.queryParams.isSys"
           placeholder="请选择系统标识"
           clearable
-          class="!w-[180px]"
+          class="!w-[200px]"
         >
           <el-option
             v-for="dict in is_sys"
@@ -222,17 +222,17 @@ const columns: TableColumnList = [
   },
   {
     label: "配置名称",
-    prop: "configName",
+    prop: "name",
     minWidth: 120
   },
   {
     label: "配置键",
-    prop: "configKey",
+    prop: "key",
     minWidth: 120
   },
   {
     label: "配置值",
-    prop: "configValue",
+    prop: "value",
     minWidth: 120
   },
   {

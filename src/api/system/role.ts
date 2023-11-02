@@ -3,8 +3,8 @@ import { baseUrlApi } from "@/api/utils";
 
 export interface RoleReq {
   roleId: number;
-  roleName: string;
-  roleCode: string;
+  name: string;
+  code: string;
   dataScope: number;
   status: number;
   remark: string;

@@ -152,3 +152,31 @@ login:
   passwordSureReg: Please enter confirm password
   passwordDifferentReg: The two passwords do not match!
   passwordUpdateReg: Password has been updated
+commons:
+  buttons:
+    create: New
+    delete: Delete
+    update: Update
+    edit: Edit
+    import: Import
+    export: Export
+    search: Search
+    reset: Reset
+
+    cancel: Cancel
+    confirm: Confirm
+    enable: Enable
+    disable: Disable
+  columns:
+    action: Action
+  other:
+    list: List
+    success: Success
+    fail: Fail
+  ask:
+    delete: Are you sure to delete this?
+    confirm: Are you sure to
+  prompt:
+    system: System Prompt
+    delete: Delete Success
+    action: Action Success

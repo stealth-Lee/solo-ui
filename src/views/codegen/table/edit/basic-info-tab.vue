@@ -8,20 +8,17 @@
     <el-divider content-position="left">基本信息</el-divider>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="表名称" prop="tableName">
+        <el-form-item label="表名称" prop="name">
           <el-input
             placeholder="请输入表名称"
-            v-model="formModel.tableName"
+            v-model="formModel.name"
             disabled
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="表描述" prop="tableComment">
-          <el-input
-            placeholder="请输入表描述"
-            v-model="formModel.tableComment"
-          />
+        <el-form-item label="表描述" prop="comment">
+          <el-input placeholder="请输入表描述" v-model="formModel.comment" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -147,8 +144,8 @@ const props = defineProps({
   }
 });
 const formModel = ref({
-  tableName: "",
-  tableComment: "",
+  name: "",
+  comment: "",
   className: "",
   author: "",
   classTail: "",
@@ -164,8 +161,8 @@ const formModel = ref({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  tableName: [{ required: true, message: "请输入表名称", trigger: "blur" }],
-  tableComment: [{ required: true, message: "请输入表描述", trigger: "blur" }],
+  name: [{ required: true, message: "请输入表名称", trigger: "blur" }],
+  comment: [{ required: true, message: "请输入表描述", trigger: "blur" }],
   className: [{ required: true, message: "请输入实体类名称", trigger: "blur" }]
 });
 

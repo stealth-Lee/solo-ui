@@ -4,9 +4,9 @@ import { baseUrlApi } from "@/api/utils";
 export interface DeptReq {
   deptId: number;
   parentId: number;
-  deptName: string;
-  deptCode: string;
-  deptSort: number;
+  name: string;
+  code: string;
+  sort: number;
   remark: string;
 }
 
@@ -32,10 +32,10 @@ export const getting = (id: number) => {
 
 // 获取树形部门精简信息列表
 export const listSimple = () => {
-  return http.get<DeptReq>(baseUrlApi("/system/dept/list-simple"));
+  return http.get<DeptReq[]>(baseUrlApi("/system/dept/list-simple"));
 };
 
 // 获取树形部门信息列表
 export const listing = (params?: object) => {
-  return http.get<DeptReq>(baseUrlApi("/system/dept/list"), { params });
+  return http.get<DeptReq[]>(baseUrlApi("/system/dept/list"), { params });
 };

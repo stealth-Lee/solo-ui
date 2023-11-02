@@ -1,0 +1,19 @@
+role:
+  title: Role
+  column:
+    name: Role Name
+    code: Role Code
+    status: Status
+    remark: Remark
+    createTime: Create Time
+  tip:
+    name: Please Enter Role Name
+    code: Please Enter Role Code
+    status: Please Select Status
+    remark: Please Enter Remark
+  message:
+    name: Role Name Can Not Be Empty
+    code: Role Code Can Not Be Empty
+  button:
+    menu: Menu Permission
+    data: Data Permission

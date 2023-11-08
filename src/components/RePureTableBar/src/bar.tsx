@@ -14,6 +14,9 @@ import ExpandIcon from "./svg/expand.svg?component";
 import RefreshIcon from "./svg/refresh.svg?component";
 import SettingIcon from "./svg/settings.svg?component";
 import CollapseIcon from "./svg/collapse.svg?component";
+import { i18n } from "@/plugins/i18n";
+
+const { t } = i18n.global;
 
 const props = {
   /** 头部最左边的标题 */
@@ -141,19 +144,19 @@ export default defineComponent({
             style={getDropdownItemStyle.value("large")}
             onClick={() => (size.value = "large")}
           >
-            宽松
+            {t("buttons.prueTable.density.large")}
           </el-dropdown-item>
           <el-dropdown-item
             style={getDropdownItemStyle.value("default")}
             onClick={() => (size.value = "default")}
           >
-            默认
+            {t("buttons.prueTable.density.default")}
           </el-dropdown-item>
           <el-dropdown-item
             style={getDropdownItemStyle.value("small")}
             onClick={() => (size.value = "small")}
           >
-            紧凑
+            {t("buttons.prueTable.density.small")}
           </el-dropdown-item>
         </el-dropdown-menu>
       )
@@ -240,7 +243,11 @@ export default defineComponent({
                   <el-divider direction="vertical" />
                 </>
               ) : null}
-              <el-tooltip effect="dark" content="刷新" placement="top">
+              <el-tooltip
+                effect="dark"
+                content={t("buttons.prueTable.refresh")}
+                placement="top"
+              >
                 <RefreshIcon
                   class={[
                     "w-[16px]",
@@ -251,7 +258,11 @@ export default defineComponent({
                 />
               </el-tooltip>
               <el-divider direction="vertical" />
-              <el-tooltip effect="dark" content="密度" placement="top">
+              <el-tooltip
+                effect="dark"
+                content={t("buttons.prueTable.density.name")}
+                placement="top"
+              >
                 <el-dropdown v-slots={dropdown} trigger="click">
                   <CollapseIcon class={["w-[16px]", iconClass.value]} />
                 </el-dropdown>
@@ -268,13 +279,13 @@ export default defineComponent({
                 <div class={[topClass.value]}>
                   <el-checkbox
                     class="!-mr-1"
-                    label="列展示"
+                    label={t("buttons.prueTable.column.columns")}
                     v-model={checkAll.value}
                     indeterminate={isIndeterminate.value}
                     onChange={value => handleCheckAllChange(value)}
                   />
                   <el-button type="primary" link onClick={() => onReset()}>
-                    重置
+                    {t("buttons.prueTable.column.reset")}
                   </el-button>
                 </div>
 
@@ -341,7 +352,7 @@ export default defineComponent({
               virtual-ref={buttonRef.value}
               virtual-triggering
               trigger="hover"
-              content="列设置"
+              content={t("buttons.prueTable.column.name")}
             />
           </div>
           {slots.default({

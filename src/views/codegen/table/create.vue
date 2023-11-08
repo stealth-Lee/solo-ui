@@ -7,11 +7,11 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="数据源" prop="sourceId">
+      <el-form-item :label="$t('table.column.source')" prop="sourceId">
         <el-select
           v-model="formModel.sourceId"
+          :placeholder="$t('table.tip.source')"
           filterable
-          placeholder="Select"
           @change="handleSelectDatasource(formModel.sourceId)"
         >
           <el-option
@@ -22,8 +22,12 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="选择表" prop="name">
-        <el-select v-model="formModel.name" filterable placeholder="Select">
+      <el-form-item :label="$t('table.column.selectTable')" prop="name">
+        <el-select
+          v-model="formModel.name"
+          :placeholder="$t('table.tip.selectTable')"
+          filterable
+        >
           <el-option
             v-for="item in table"
             :key="item.name"

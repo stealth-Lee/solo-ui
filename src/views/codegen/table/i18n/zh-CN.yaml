@@ -1,7 +1,8 @@
 table:
   title: 代码生成
   column:
-    sourceId: 数据源id
+    source: 数据源
+    selectTable: 选择表
     name: 表名称
     comment: 表描述
     author: 作者
@@ -17,7 +18,8 @@ table:
     createTime: 创建时间
     remark: 备注
   tip:
-    sourceId: 请输入数据源id
+    source: 请选择数据源
+    selectTable: 请选择表
     name: 请输入表名称
     comment: 请输入表描述
     author: 请输入作者

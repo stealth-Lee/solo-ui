@@ -39,7 +39,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
+        <el-tooltip :content="$t('buttons.common.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -47,7 +47,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
+        <el-tooltip :content="$t('buttons.common.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -70,7 +70,7 @@
           @click="handleCreate()"
           plain
         >
-          {{ t("commons.buttons.create") }}
+          {{ t("buttons.common.create") }}
         </el-button>
         <el-button
           type="success"
@@ -79,7 +79,7 @@
           :disabled="props.single"
           plain
         >
-          {{ t("commons.buttons.edit") }}
+          {{ t("buttons.common.edit") }}
         </el-button>
         <el-popconfirm
           icon-color="red"
@@ -93,7 +93,7 @@
               :disabled="props.multiple"
               plain
             >
-              {{ t("commons.buttons.delete") }}
+              {{ t("buttons.common.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -103,7 +103,7 @@
           @click="handleUpdate()"
           plain
         >
-          {{ t("commons.buttons.import") }}
+          {{ t("buttons.common.import") }}
         </el-button>
         <el-button
           type="warning"
@@ -111,7 +111,7 @@
           @click="handleUpdate()"
           plain
         >
-          {{ t("commons.buttons.export") }}
+          {{ t("buttons.common.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -143,7 +143,7 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.roleId)"
             >
-              {{ t("commons.buttons.update") }}
+              {{ t("buttons.common.update") }}
             </el-button>
             <el-popconfirm
               icon-color="red"
@@ -158,7 +158,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  {{ t("commons.buttons.delete") }}
+                  {{ t("buttons.common.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>

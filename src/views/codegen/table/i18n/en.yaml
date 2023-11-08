@@ -1,7 +1,8 @@
 table:
   title: CodeGeneration
   column:
-    sourceId: The ID Of The Data Source
+    source: Data Source
+    selectTable: Select Table
     name: The Name Of The Table
     comment: Table Description
     author: Author
@@ -17,7 +18,8 @@ table:
     createTime: Creation Time
     remark: Remark
   tip:
-    sourceId: Please Enter The ID Of The Data Source
+    source: Please Select Data Source
+    selectTable: Please Select Table
     name: Please Enter The Name Of The Table
     comment: Please Enter Table Description
     author: Please Enter Author

@@ -24,10 +24,10 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="visible = false">{{
-          t("commons.buttons.cancel")
+          t("buttons.common.cancel")
         }}</el-button>
         <el-button type="primary" @click="handleSubmit">{{
-          t("commons.buttons.confirm")
+          t("buttons.common.confirm")
         }}</el-button>
       </span>
     </template>

@@ -22,6 +22,31 @@ buttons:
   hswholeExitFullScreen: ExitFull
   hscontentFullScreen: Content FullScreen
   hscontentExitFullScreen: Content ExitFullScreen
+  common:
+    create: New
+    delete: Delete
+    update: Update
+    edit: Edit
+    import: Import
+    export: Export
+    search: Search
+    reset: Reset
+    refresh: Refresh
+    cancel: Cancel
+    confirm: Confirm
+    enable: Enable
+    disable: Disable
+  prueTable:
+    refresh: Refresh
+    density:
+      name: Density
+      large: Large
+      default: Default
+      small: Small
+    column:
+      name: Column Setting
+      columns: Columns
+      reset: Reset
 menus:
   hshome: Home
   hslogin: Login
@@ -153,20 +178,6 @@ login:
   passwordDifferentReg: The two passwords do not match!
   passwordUpdateReg: Password has been updated
 commons:
-  buttons:
-    create: New
-    delete: Delete
-    update: Update
-    edit: Edit
-    import: Import
-    export: Export
-    search: Search
-    reset: Reset
-
-    cancel: Cancel
-    confirm: Confirm
-    enable: Enable
-    disable: Disable
   columns:
     action: Action
   other:

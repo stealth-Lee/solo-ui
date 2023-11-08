@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div class="main">
     <!-- 搜索工作栏 -->
     <el-form
@@ -209,10 +209,10 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
 import { paging, deleting, updateStatus } from "@/api/system/role";
-defineOptions({ name: "SysRole" });
-// import { $t } from "@/plugins/i18n";
-const { t } = useI18n();
 
+defineOptions({ name: "SysRole" });
+
+const { t } = useI18n();
 const RoleForm = defineAsyncComponent(() => import("./form.vue"));
 const { status } = useDict("status");
 const queryFormRef = ref();
@@ -308,4 +308,4 @@ const buttonClass = computed(() => {
     margin-bottom: 12px;
   }
 }
-</style> -->
+</style>

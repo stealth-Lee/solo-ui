@@ -4,52 +4,52 @@
       ref="formRef"
       :model="formModel"
       :rules="formRules"
-      label-width="81px"
+      label-width="100px"
       v-loading="formLoading"
     >
       <el-row :gutter="11">
         <el-col>
-          <el-form-item label="上级部门" prop="parentId">
+          <el-form-item :label="$t('dept.column.parentDept')" prop="parentId">
             <el-cascader
-              class="w-full"
               v-model="formModel.parentId"
+              :placeholder="$t('dept.tip.parentDept')"
               :options="deptTree"
               :props="{
                 value: 'deptId',
-                label: 'deptName',
+                label: 'name',
                 emitPath: false,
                 checkStrictly: true,
                 expandTrigger: 'hover' as const
               }"
-              placeholder="请选择上级部门"
               clearable
               filterable
+              class="w-full"
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="部门名称" prop="deptName">
+          <el-form-item :label="$t('dept.column.name')" prop="name">
             <el-input
-              v-model="formModel.deptName"
-              placeholder="请输入部门名称"
+              v-model="formModel.name"
+              :placeholder="$t('dept.tip.name')"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="部门编码" prop="deptCode">
+          <el-form-item :label="$t('dept.column.code')" prop="code">
             <el-input
-              v-model="formModel.deptCode"
-              placeholder="请输入部门编码"
+              v-model="formModel.code"
+              :placeholder="$t('dept.tip.code')"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="排序" prop="deptSort">
+          <el-form-item :label="$t('dept.column.sort')" prop="sort">
             <el-input-number
-              v-model="formModel.deptSort"
-              placeholder="请输入排序"
+              v-model="formModel.sort"
+              :placeholder="$t('dept.tip.sort')"
               class="!w-[100%]"
               :min="0"
               :max="9999"
@@ -57,10 +57,10 @@
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item label="备注" prop="remark">
+          <el-form-item :label="$t('dept.column.remark')" prop="remark">
             <el-input
               v-model="formModel.remark"
-              placeholder="请输入备注信息"
+              :placeholder="$t('dept.tip.remark')"
               type="textarea"
             />
           </el-form-item>
@@ -69,8 +69,12 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="visible = false">{{
+          t("commons.buttons.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("commons.buttons.confirm")
+        }}</el-button>
       </span>
     </template>
   </el-drawer>
@@ -80,6 +84,7 @@
 import { handleTree } from "@/utils/tree";
 import { listSimple, getting, creating, updating } from "@/api/system/dept";
 
+const { t } = useI18n();
 const message = useMessage();
 const formRef = ref();
 const deptTree = ref(); // 树形结构
@@ -89,17 +94,17 @@ const formTitle = ref("");
 const formModel = reactive({
   deptId: undefined,
   parentId: 0,
-  deptName: "",
-  deptCode: "",
-  deptSort: 10,
+  name: "",
+  code: "",
+  sort: 10,
   remark: ""
 });
 
 /** 自定义表单规则校验 */
 const formRules = reactive({
-  deptName: [{ required: true, message: "部门名称不能为空", trigger: "blur" }],
-  deptCode: [{ required: true, message: "部门编码不能为空", trigger: "blur" }],
-  deptSort: [{ required: true, message: "部门排序不能为空", trigger: "blur" }]
+  name: [{ required: true, message: t("dept.required.name"), trigger: "blur" }],
+  code: [{ required: true, message: t("dept.required.code"), trigger: "blur" }],
+  sort: [{ required: true, message: t("dept.required.sort"), trigger: "blur" }]
 });
 
 // 重置表单
@@ -134,7 +139,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.deptId ? await updating(formModel) : await creating(formModel);
-    message.success(`部门[${formModel.deptName}]${formTitle.value}成功！`);
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

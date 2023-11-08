@@ -7,31 +7,31 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="字典编码" prop="code">
+      <el-form-item :label="$t('dictData.column.code')" prop="code">
         <el-input
           v-model="formModel.code"
-          placeholder="请输入字典编码"
+          :placeholder="$t('dictData.tip.code')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典键值" prop="value">
+      <el-form-item :label="$t('dictData.column.value')" prop="value">
         <el-input
           v-model="formModel.value"
-          placeholder="请输入字典键值"
+          :placeholder="$t('dictData.tip.value')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典标签" prop="label">
+      <el-form-item :label="$t('dictData.column.label')" prop="label">
         <el-input
           v-model="formModel.label"
-          placeholder="请输入字典标签"
+          :placeholder="$t('dictData.tip.label')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="标签类型" prop="tagType">
+      <el-form-item :label="$t('dictData.column.tagType')" prop="tagType">
         <el-select
           v-model="formModel.tagType"
-          placeholder="请选择标签类型"
+          :placeholder="$t('dictData.tip.tagType')"
           clearable
         >
           <el-option
@@ -42,35 +42,39 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="标签样式" prop="tagClass">
+      <el-form-item :label="$t('dictData.column.tagClass')" prop="tagClass">
         <el-input
           v-model="formModel.tagClass"
-          placeholder="请输入标签样式"
+          :placeholder="$t('dictData.tip.tagClass')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典排序" prop="dictSort">
+      <el-form-item :label="$t('dictData.column.dictSort')" prop="dictSort">
         <el-input-number v-model="formModel.dictSort" />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item :label="$t('dictData.column.status')" prop="status">
         <el-switch
           v-model="formModel.status"
           active-value="1"
           inactive-value="0"
         />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item :label="$t('dictData.column.remark')" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注"
+          :placeholder="$t('dictData.tip.remark')"
           type="textarea"
         />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="visible = false">{{
+          t("commons.buttons.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("commons.buttons.confirm")
+        }}</el-button>
       </span>
     </template>
   </el-drawer>
@@ -81,7 +85,8 @@ import { getting, creating, updating } from "@/api/system/dict.data";
 
 defineOptions({ name: "SysDictDataForm" });
 
-const { tag_type, status } = useDict("tag_type", "status");
+const { t } = useI18n();
+const { tag_type } = useDict("tag_type");
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
@@ -101,10 +106,18 @@ const formModel = reactive({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  code: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
-  value: [{ required: true, message: "字典键值为必填项", trigger: "blur" }],
-  label: [{ required: true, message: "字典标签为必填项", trigger: "blur" }],
-  status: [{ required: true, message: "状态为必填项", trigger: "blur" }]
+  code: [
+    { required: true, message: t("dictData.required.code"), trigger: "blur" }
+  ],
+  value: [
+    { required: true, message: t("dictData.required.value"), trigger: "blur" }
+  ],
+  label: [
+    { required: true, message: t("dictData.required.label"), trigger: "blur" }
+  ],
+  status: [
+    { required: true, message: t("dictData.required.status"), trigger: "blur" }
+  ]
 });
 
 // 打开弹框
@@ -131,7 +144,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.dataId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}成功！`);
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

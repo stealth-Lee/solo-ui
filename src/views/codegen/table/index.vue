@@ -7,24 +7,24 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="表名称：" prop="name">
+      <el-form-item :label="$t('table.column.name')" prop="name">
         <el-input
           v-model="props.queryParams.name"
-          placeholder="请输入表名称："
+          :placeholder="$t('table.tip.name')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="表描述" prop="comment">
+      <el-form-item :label="$t('table.column.comment')" prop="comment">
         <el-input
           v-model="props.queryParams.comment"
-          placeholder="请输入表描述"
+          :placeholder="$t('table.tip.comment')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -32,7 +32,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -44,7 +44,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}${t('commons.other.list')}`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -55,7 +55,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -64,12 +64,12 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
           width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -79,26 +79,10 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
-        <el-button
-          type="info"
-          :icon="useRenderIcon('ep:upload')"
-          @click="handleUpdate()"
-          plain
-        >
-          导入
-        </el-button>
-        <el-button
-          type="warning"
-          :icon="useRenderIcon('ep:download')"
-          @click="handleUpdate()"
-          plain
-        >
-          导出
-        </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
         <pure-table
@@ -130,12 +114,12 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.tableId)"
             >
-              修改
+              {{ t("commons.buttons.update") }}
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.tableId)"
             >
               <template #reference>
@@ -146,7 +130,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -168,7 +152,7 @@
                       :icon="useRenderIcon('ep:menu')"
                       @click="handlePreview(row.tableId)"
                     >
-                      预览
+                      {{ t("table.button.preview") }}
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -179,7 +163,7 @@
                       :size="size"
                       :icon="useRenderIcon('ri:database-2-line')"
                     >
-                      生成代码
+                      {{ t("table.button.codegen") }}
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -203,11 +187,11 @@ import { paging, deleting } from "@/api/codegen/table";
 
 defineOptions({ name: "GenTable" });
 
+const { t } = useI18n();
 const { tpl_type } = useDict("tpl_type");
 const CreateTable = defineAsyncComponent(() => import("./create.vue"));
 const EditTable = defineAsyncComponent(() => import("./edit.vue"));
 const PreviewTable = defineAsyncComponent(() => import("./preview.vue"));
-
 const queryFormRef = ref();
 const listFormRef = ref();
 const createTableRef = ref();
@@ -215,7 +199,7 @@ const editTableRef = ref();
 const previewTableRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "代码生成",
+  title: t("table.title"),
   pk: "tableId",
   listApi: paging,
   deleteApi: deleting,
@@ -240,22 +224,22 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "表名称",
+    label: t("table.column.name"),
     prop: "name",
     minWidth: 120
   },
   {
-    label: "表描述",
+    label: t("table.column.comment"),
     prop: "comment",
     minWidth: 150
   },
   {
-    label: "作者",
+    label: t("table.column.author"),
     prop: "author",
     minWidth: 150
   },
   {
-    label: "模版类型",
+    label: t("table.column.tplType"),
     prop: "tplType",
     minWidth: 150,
     cellRenderer: scope => (
@@ -263,17 +247,17 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "备注",
+    label: t("table.column.remark"),
     prop: "remark",
     minWidth: 150
   },
   {
-    label: "创建时间",
+    label: t("table.column.createTime"),
     minWidth: 180,
     prop: "createTime"
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 240,
     slot: "operation"

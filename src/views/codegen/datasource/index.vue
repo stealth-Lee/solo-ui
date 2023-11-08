@@ -7,16 +7,16 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="别名" prop="name">
+      <el-form-item :label="$t('datasource.column.name')" prop="name">
         <el-input
           v-model="props.queryParams.name"
-          placeholder="请输入别名："
+          :placeholder="$t('datasource.tip.name')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon(Search)"
             :loading="props.loading"
@@ -24,7 +24,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon(RefreshRight)"
             @click="handleReset()"
@@ -36,7 +36,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}${t('commons.other.list')}`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -47,7 +47,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -56,12 +56,12 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
           width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -71,7 +71,7 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -81,7 +81,7 @@
           @click="handleUpdate()"
           plain
         >
-          导入
+          {{ t("commons.buttons.import") }}
         </el-button>
         <el-button
           type="warning"
@@ -89,7 +89,7 @@
           @click="handleUpdate()"
           plain
         >
-          导出
+          {{ t("commons.buttons.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -121,7 +121,7 @@
               :icon="useRenderIcon(Database)"
               @click="handleTest(row.sourceId)"
             >
-              测试连接
+              {{ t("datasource.button.connect") }}
             </el-button>
             <el-button
               class="reset-margin"
@@ -131,12 +131,12 @@
               :icon="useRenderIcon(EditPen)"
               @click="handleUpdate(row.sourceId)"
             >
-              修改
+              {{ t("commons.buttons.update") }}
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.sourceId)"
             >
               <template #reference>
@@ -147,7 +147,7 @@
                   :size="size"
                   :icon="useRenderIcon(Delete)"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -180,12 +180,13 @@ import Database from "@iconify-icons/ri/database-2-line";
 
 defineOptions({ name: "SysRole" });
 
+const { t } = useI18n();
 const message = useMessage();
 const queryFormRef = ref();
 const datasourceFormRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "数据源",
+  title: t("datasource.title"),
   pk: "sourceId",
   listApi: paging,
   deleteApi: deleting,
@@ -212,41 +213,36 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "连接名",
-    prop: "name",
-    minWidth: 120
+    label: t("datasource.column.name"),
+    prop: "name"
   },
   {
-    label: "数据源URL",
-    prop: "url",
-    minWidth: 150
+    label: t("datasource.column.url"),
+    prop: "url"
   },
   {
-    label: "用户名",
-    prop: "username",
-    minWidth: 150
+    label: t("datasource.column.username"),
+    prop: "username"
   },
   {
-    label: "备注",
-    prop: "remark",
-    minWidth: 150
+    label: t("datasource.column.remark"),
+    prop: "remark"
   },
   {
-    label: "创建时间",
-    minWidth: 180,
+    label: t("datasource.column.createTime"),
     prop: "createTime"
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
-    width: 240,
-    slot: "operation"
+    slot: "operation",
+    minWidth: 150
   }
 ];
 
 const handleTest = async (id: number) => {
   await test(id);
-  message.success("连接成功");
+  message.success(t("datasource.message.connect"));
 };
 </script>
 

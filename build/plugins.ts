@@ -44,7 +44,7 @@ export function getPluginsList(
     VueI18nPlugin({
       runtimeOnly: true,
       compositionOnly: true,
-      include: [resolve("locales/**"), resolve("src/views/**")]
+      include: [resolve("locales/**"), resolve("src/views/**/i18n/*.y(a)?ml")]
     }),
     // jsx、tsx语法支持
     vueJsx(),

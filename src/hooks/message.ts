@@ -15,10 +15,10 @@ export const useMessage = () => {
       });
     },
     // 成功消息
-    success(content: string, showClose?: boolean) {
+    success(content?: string, showClose?: boolean) {
       ElMessage({
         showClose: showClose,
-        message: content,
+        message: content ? content : t("prompt.action.success"),
         type: "success"
       });
     },
@@ -31,10 +31,10 @@ export const useMessage = () => {
       });
     },
     // 错误消息
-    error(content: string, showClose?: boolean) {
+    error(content?: string, showClose?: boolean) {
       ElMessage({
         showClose: showClose,
-        message: content,
+        message: content ? content : t("prompt.action.fail"),
         type: "error"
       });
     }
@@ -46,37 +46,33 @@ export const useMessageBox = () => {
   return {
     // 消息提示
     info(content: string) {
-      ElMessageBox.alert(content, t("commons.prompt.system"));
+      ElMessageBox.alert(content, t("prompt.system"));
     },
     // 成功提示
     success(content: string) {
-      ElMessageBox.alert(content, t("commons.prompt.system"), {
+      ElMessageBox.alert(content, t("prompt.system"), {
         type: "success"
       });
     },
     // 警告提示
     warning(content: string) {
-      ElMessageBox.alert(content, t("commons.prompt.system"), {
+      ElMessageBox.alert(content, t("prompt.system"), {
         type: "warning"
       });
     },
     // 错误提示
     error(content: string) {
-      ElMessageBox.alert(content, t("commons.prompt.system"), {
+      ElMessageBox.alert(content, t("prompt.system"), {
         type: "error"
       });
     },
     // 确认窗体
     confirm(content: Content, title?: string) {
-      return ElMessageBox.confirm(
-        content,
-        title ? title : t("commons.prompt.system"),
-        {
-          confirmButtonText: t("commons.buttons.confirm"),
-          cancelButtonText: t("commons.buttons.cancel"),
-          type: "warning"
-        }
-      );
+      return ElMessageBox.confirm(content, title ? title : t("prompt.system"), {
+        confirmButtonText: t("commons.buttons.confirm"),
+        cancelButtonText: t("commons.buttons.cancel"),
+        type: "warning"
+      });
     },
     // 状态窗体
     switch(status: number, name?: any, title?: string) {
@@ -93,7 +89,7 @@ export const useMessageBox = () => {
               t("commons.buttons.disable")
             );
       name = name
-        ? h("span", { style: "font-weight: bold" }, `“${name}”`)
+        ? h("span", { style: "font-weight: bold" }, ` “${name}” `)
         : null;
       const c = h("p", null, [
         h("span", null, `${t("commons.ask.confirm")} `),
@@ -113,7 +109,7 @@ export const usrNotification = () => {
     // 消息提示
     info(content: string, position?: Position) {
       ElNotification({
-        title: t("commons.prompt.system"),
+        title: t("prompt.system"),
         message: content,
         type: "info",
         position: position
@@ -122,7 +118,7 @@ export const usrNotification = () => {
     // 成功提示
     success(content: string, position?: Position) {
       ElNotification({
-        title: t("commons.prompt.system"),
+        title: t("prompt.system"),
         message: content,
         type: "success",
         position: position
@@ -131,7 +127,7 @@ export const usrNotification = () => {
     // 警告提示
     warning(content: string, position?: Position) {
       ElNotification({
-        title: t("commons.prompt.system"),
+        title: t("prompt.system"),
         message: content,
         type: "warning",
         position: position
@@ -140,7 +136,7 @@ export const usrNotification = () => {
     // 错误提示
     error(content: string, position?: Position) {
       ElNotification({
-        title: t("commons.prompt.system"),
+        title: t("prompt.system"),
         message: content,
         type: "error",
         position: position

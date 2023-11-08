@@ -11,7 +11,7 @@ role:
     code: 请输入角色编码
     status: 请选择状态
     remark: 请输入备注
-  message:
+  required:
     name: 角色名称不能为空
     code: 角色编码不能为空
   button:

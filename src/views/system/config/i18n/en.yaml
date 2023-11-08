@@ -1,0 +1,19 @@
+config:
+  title: System Config
+  column:
+    name: Config Name
+    key: Config Key
+    value: Config Value
+    isSys: System ID
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    name: Please Enter Config Name
+    key: Please Enter Config Key
+    value: Please Enter Config Value
+    isSys: Please Enter System ID
+    remark: Please Enter Remark
+  required:
+    name: Config Name Cannot Be Empty
+    key: Config Key Cannot Be Empty
+    value: Config Value Cannot Be Empty

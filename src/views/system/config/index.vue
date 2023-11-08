@@ -7,34 +7,34 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="配置名称" prop="name">
+      <el-form-item :label="$t('config.column.name')" prop="name">
         <el-input
           v-model="props.queryParams.name"
-          placeholder="请输入配置名称"
+          :placeholder="$t('config.tip.name')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="配置键" prop="key">
+      <el-form-item :label="$t('config.column.key')" prop="key">
         <el-input
           v-model="props.queryParams.key"
-          placeholder="请输入配置键"
+          :placeholder="$t('config.tip.key')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="配置值" prop="value">
+      <el-form-item :label="$t('config.column.value')" prop="value">
         <el-input
           v-model="props.queryParams.value"
-          placeholder="请输入配置值"
+          :placeholder="$t('config.tip.value')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="系统标识" prop="isSys">
+      <el-form-item :label="$t('config.column.isSys')" prop="isSys">
         <el-select
           v-model="props.queryParams.isSys"
-          placeholder="请选择系统标识"
+          :placeholder="$t('config.tip.isSys')"
           clearable
           class="!w-[200px]"
         >
@@ -47,7 +47,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -55,7 +55,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -67,7 +67,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}${t('commons.other.list')}`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -78,7 +78,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -87,12 +87,12 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
           width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -102,7 +102,7 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -152,12 +152,12 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.configId)"
             >
-              编辑
+              {{ t("commons.buttons.edit") }}
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.configId)"
             >
               <template #reference>
@@ -168,7 +168,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -191,10 +191,10 @@ defineOptions({ name: "SysConfig" });
 const ConfigForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
 const configFormRef = ref();
-
+const { t } = useI18n();
 const { is_sys } = useDict("is_sys");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "系统配置",
+  title: t("config.title"),
   pk: "configId",
   listApi: paging,
   deleteApi: deleting,
@@ -221,22 +221,22 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "配置名称",
+    label: t("config.column.name"),
     prop: "name",
     minWidth: 120
   },
   {
-    label: "配置键",
+    label: t("config.column.key"),
     prop: "key",
     minWidth: 120
   },
   {
-    label: "配置值",
+    label: t("config.column.value"),
     prop: "value",
     minWidth: 120
   },
   {
-    label: "系统标识[0:否 1:是]",
+    label: t("config.column.isSys"),
     prop: "isSys",
     minWidth: 120,
     cellRenderer: scope => (
@@ -244,17 +244,17 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "创建时间",
+    label: t("config.column.createTime"),
     prop: "createTime",
     minWidth: 120
   },
   {
-    label: "备注",
+    label: t("config.column.remark"),
     prop: "remark",
     minWidth: 120
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 240,
     slot: "operation"

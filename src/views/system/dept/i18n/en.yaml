@@ -1,3 +1,20 @@
 dept:
-  name: 'Dept Name'
-  code: 'Dept Code'
+  title: Dept
+  column:
+    parentDept: Parent Dept
+    name: Dept Name
+    code: Dept Code
+    sort: Sort
+    createTime: Create Time
+    remark: Remark
+  tip:
+    parentDept: Please Select Parent Dept
+    name: Please Enter Dept Name
+    code: Please Enter Dept Code
+    sort: Please Enter Sort
+    remark: Please Enter Remark
+  required:
+    name: Dept Name Can Not Be Empty
+    code: Dept Code Can Not Be Empty
+    sort: Sort Can Not Be Empty
+    

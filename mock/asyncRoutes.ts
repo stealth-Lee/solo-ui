@@ -48,7 +48,7 @@ const systemRouter = {
       name: "Config",
       meta: {
         icon: "dept",
-        title: "系统参数",
+        title: "config.title",
         roles: ["admin"]
       }
     },
@@ -57,7 +57,7 @@ const systemRouter = {
       name: "Dict",
       meta: {
         icon: "dept",
-        title: "数据字典",
+        title: "Data Dictionary",
         roles: ["admin"]
       }
     }

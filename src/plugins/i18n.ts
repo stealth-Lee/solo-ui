@@ -13,7 +13,7 @@ function siphonI18n(prefix = "zh-CN") {
   const mergedObject: { [key: string]: any } = {};
   Object.entries(
     import.meta.glob(
-      ["../../locales/*.y(a)?ml", "../../src/views/**/i18n/*.yaml"],
+      ["../../locales/*.y(a)?ml", "../../src/views/**/i18n/*.y(a)?ml"],
       { eager: true }
     )
   ).forEach(([key, value]: any) => {

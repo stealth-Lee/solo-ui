@@ -1,0 +1,24 @@
+datasource:
+  title: 数据源
+  column:
+    name: 连接名
+    url: 数据源URL
+    username: 用户名
+    password: 密码
+    createTime: 创建时间
+    remark: 备注
+  tip:
+    name: 请输入连接名
+    url: 请输入数据源URL
+    username: 请输入用户名
+    password: 请输入密码
+    remark: 请输入备注
+  required:
+    name: 连接名不能为空
+    url: 数据源URL不能为空
+    username: 用户名不能为空
+    password: 密码不能为空
+  button:
+    connect: 测试连接
+  message:
+    connect: 连接成功

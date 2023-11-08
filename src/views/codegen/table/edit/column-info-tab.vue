@@ -17,6 +17,7 @@ import {
 
 defineOptions({ name: "GenColumnInfoTab" });
 
+const { t } = useI18n();
 const props = defineProps({
   table: {
     type: Object as PropType<TableReq>,
@@ -27,7 +28,6 @@ const props = defineProps({
     default: () => []
   }
 });
-
 const dataList = ref([]);
 const dictList = ref<DictTypeReq[]>([]);
 const { java_type, query_mode, form_type } = useDict(
@@ -45,25 +45,24 @@ const basicEntity: string[] = [
 
 const tableColumns: TableColumnList = [
   {
-    label: "字段",
-    prop: "date",
+    label: t("genColumn.column.field"),
     children: [
       {
-        label: "列名",
+        label: t("genColumn.column.name"),
         prop: "name",
         width: 130,
         align: "left",
         headerAlign: "center"
       },
       {
-        label: "列类型",
-        prop: "columnType",
+        label: t("genColumn.column.type"),
+        prop: "type",
         width: 150,
         align: "left",
         headerAlign: "center"
       },
       {
-        label: "Java字段名",
+        label: t("genColumn.column.javaField"),
         prop: "javaField",
         width: 130,
         cellRenderer: scope => (
@@ -78,7 +77,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "Java类型",
+        label: t("genColumn.column.javaType"),
         prop: "javaType",
         width: 150,
         cellRenderer: scope => (
@@ -101,7 +100,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "Java说明",
+        label: t("genColumn.column.javaComment"),
         prop: "javaComment",
         width: 150,
         cellRenderer: scope => (
@@ -112,7 +111,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "主键",
+        label: t("genColumn.column.isPk"),
         prop: "isPk",
         width: 55,
         cellRenderer: scope => (
@@ -125,11 +124,10 @@ const tableColumns: TableColumnList = [
     ]
   },
   {
-    label: "列表",
-    prop: "name",
+    label: t("genColumn.column.list"),
     children: [
       {
-        label: "列表",
+        label: t("genColumn.column.isList"),
         prop: "isList",
         width: 55,
         cellRenderer: scope => (
@@ -144,7 +142,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "查询",
+        label: t("genColumn.column.isQuery"),
         prop: "isQuery",
         width: 55,
         cellRenderer: scope => (
@@ -155,7 +153,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "查询方式",
+        label: t("genColumn.column.queryMode"),
         prop: "queryMode",
         width: 130,
         cellRenderer: scope => (
@@ -177,11 +175,10 @@ const tableColumns: TableColumnList = [
     ]
   },
   {
-    label: "表单",
-    prop: "post-code",
+    label: t("genColumn.column.form"),
     children: [
       {
-        label: "插入",
+        label: t("genColumn.column.isCreate"),
         prop: "isCreate",
         width: 55,
         cellRenderer: scope => (
@@ -196,7 +193,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "更新",
+        label: t("genColumn.column.isUpdate"),
         prop: "isUpdate",
         width: 55,
         cellRenderer: scope => (
@@ -211,7 +208,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "必填",
+        label: t("genColumn.column.isRequired"),
         prop: "isRequired",
         width: 55,
         cellRenderer: scope => (
@@ -226,7 +223,7 @@ const tableColumns: TableColumnList = [
         )
       },
       {
-        label: "表单类型",
+        label: t("genColumn.column.formType"),
         prop: "formType",
         width: 130,
         cellRenderer: scope => (
@@ -247,12 +244,12 @@ const tableColumns: TableColumnList = [
       },
       // TODO 11 修改成当isSwitch=true时，自动将字典设置成status
       {
-        label: "字典",
-        prop: "code",
+        label: t("genColumn.column.dictCode"),
+        prop: "dictCode",
         width: 180,
         cellRenderer: scope => (
           <el-select
-            v-model={scope.row.code}
+            v-model={scope.row.dictCode}
             disabled={
               basicEntity.includes(scope.row.name) ||
               (props.table.isSwitch &&

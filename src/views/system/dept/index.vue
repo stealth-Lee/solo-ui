@@ -6,25 +6,25 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item :label="$t('dept.name')" prop="name">
+      <el-form-item :label="$t('dept.column.name')" prop="name">
         <el-input
           v-model="props.queryParams.name"
-          placeholder="请输入部门名称"
+          :placeholder="$t('dept.tip.name')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="部门编码" prop="code">
+      <el-form-item :label="$t('dept.column.code')" prop="code">
         <el-input
           v-model="props.queryParams.code"
-          placeholder="请输入部门编码"
+          :placeholder="$t('dept.tip.code')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
 
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -32,7 +32,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -55,7 +55,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -86,10 +86,10 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.deptId)"
             >
-              编辑
+              {{ t("commons.buttons.edit") }}
             </el-button>
             <el-popconfirm
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.deptId)"
             >
               <template #reference>
@@ -100,7 +100,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -119,7 +119,7 @@ import { BasicTableProps } from "@/hooks/table";
 import { deleting, listing } from "@/api/system/dept";
 
 const DeptForm = defineAsyncComponent(() => import("./form.vue"));
-
+const { t } = useI18n();
 const queryFormRef = ref();
 const deptFormRef = ref();
 const tableRef = ref();
@@ -130,7 +130,7 @@ defineOptions({
 
 const props: BasicTableProps = reactive<BasicTableProps>({
   type: "tree",
-  title: "部门",
+  title: t("dept.title"),
   pk: "deptId",
   listApi: listing,
   deleteApi: deleting,
@@ -149,34 +149,34 @@ const {
 
 const columns: TableColumnList = [
   {
-    label: "部门名称",
+    label: t("dept.column.name"),
     prop: "name",
     width: 180,
     align: "left"
   },
   {
-    label: "部门编码",
+    label: t("dept.column.code"),
     prop: "code",
     width: 180,
     align: "left"
   },
   {
-    label: "排序",
+    label: t("dept.column.sort"),
     prop: "sort",
     minWidth: 70
   },
   {
-    label: "创建时间",
+    label: t("dept.column.createTime"),
     minWidth: 200,
     prop: "createTime"
   },
   {
-    label: "备注",
+    label: t("dept.column.remark"),
     prop: "remark",
     minWidth: 320
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 160,
     slot: "operation"

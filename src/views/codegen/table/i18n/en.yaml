@@ -1,0 +1,75 @@
+table:
+  title: CodeGeneration
+  column:
+    sourceId: The ID Of The Data Source
+    name: The Name Of The Table
+    comment: Table Description
+    author: Author
+    tplType: Template Type
+    packageName: Generate Package Paths
+    moduleName: Generate Module Names
+    businessName: Generate A Business Name
+    functionName: Generate Feature Names
+    className: Entity Class Name
+    classTail: Solid Class Tails
+    isSwitch: Whether To Enable The on/off Button
+    switchField: Switch Field
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    sourceId: Please Enter The ID Of The Data Source
+    name: Please Enter The Name Of The Table
+    comment: Please Enter Table Description
+    author: Please Enter Author
+    tplType: Please Enter Template Type
+    packageName: Please Enter Generate Package Paths
+    moduleName: Please Enter Generate Module Names
+    businessName: Please Enter Generate A Business Name
+    functionName: Please Enter Generate Feature Names
+    className: Please Enter Entity Class Name
+    classTail: Please Enter Solid Class Tails
+    isSwitch: Please Enter Whether To Enable The on/off Button
+    switchField: Please Enter Switch Field
+    remark: Please Enter Remark
+  required:
+    name: The Name Of The Table Cannot Be Empty
+    comment: Table Description Cannot Be Empty
+    tplType: Template Type Cannot Be Empty
+    packageName: Generate Package Paths Cannot Be Empty
+    moduleName: Generate Module Names Cannot Be Empty
+    businessName: Generate A Business Name Cannot Be Empty
+    className: Entity Class Name Cannot Be Empty
+    isSwitch: Whether To Enable The on/off Button Cannot Be Empty
+  button:
+    preview: Preview Code
+    codegen: Code Generation
+    copy: Copy
+  message:
+    basicInfo: Basic Information
+    otherInfo: Other Information
+    previewCode: Preview Code
+    copySuccess: Copy Success
+    copyFail: Copy Fail
+genColumn:
+  message:
+    basicInfo: Basic Information
+    fieldInfo: Other Information
+  column:
+    field: Field
+    form: Form
+    list: List
+    name: Column Name
+    type: Column Type
+    javaField: Java Field Name
+    javaType: Java Type
+    javaComment: Java Comment
+    isPk: PK
+    isList: List
+    isQuery: Query
+    queryMode: Query Mode
+    isCreate: Insert
+    isUpdate: Edit
+    isRequired: Required
+    formType: Form Type
+    dictCode: Dictionary Code
+

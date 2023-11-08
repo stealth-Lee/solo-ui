@@ -1,0 +1,20 @@
+dictType:
+  title: DictType
+  column:
+    name: Dict Name
+    code: Dict Code
+    type: Dict Type
+    status: Status
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    name: Please Enter Dict Name
+    code: Please Enter Dict Code
+    type: Please Select Dict Type
+    status: Please Select Status
+    remark: Please Enter Remark
+  required:
+    name: Dict Name Cannot Be Empty
+    code: Dict Code Cannot Be Empty
+    type: Dict Type Cannot Be Empty
+    status: Status Cannot Be Empty

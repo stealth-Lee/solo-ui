@@ -1,6 +1,10 @@
 <template>
-  <el-drawer title="预览代码" v-model="visible" size="80%">
-    <el-tabs v-model="activeName" class="demo-tabs">
+  <el-drawer
+    :title="$t('table.message.previewCode')"
+    v-model="visible"
+    size="80%"
+  >
+    <el-tabs v-loading="formLoading" v-model="activeName" class="demo-tabs">
       <el-scrollbar height="calc(100vh - 100px)" class="mt20">
         <el-tab-pane
           v-for="item in previewCodegen"
@@ -14,7 +18,7 @@
             type="primary"
             @click="copy(item.code)"
           >
-            复制
+            {{ t("table.button.copy") }}
           </el-button>
           <pre><code v-html="highlightedCode(item)" class="hljs"/></pre>
         </el-tab-pane>
@@ -33,9 +37,11 @@ import ts from "highlight.js/lib/languages/typescript";
 import sql from "highlight.js/lib/languages/sql";
 import { PreviewReq, preview } from "@/api/codegen/table";
 
+const { t } = useI18n();
 const { clipboardValue, copied } = useCopyToClipboard();
 const message = useMessage();
 const visible = ref(false);
+const formLoading = ref(false);
 const activeName = ref("");
 const previewCodegen = ref<PreviewReq[]>([]);
 
@@ -50,18 +56,23 @@ const highlightedCode = item => {
 const copy = async (text: string) => {
   clipboardValue.value = unref(text);
   if (copied.value) {
-    message.success("复制成功");
+    message.success(t("table.message.copySuccess"));
   } else {
-    message.error("复制失败");
+    message.error(t("table.message.copyFail"));
   }
 };
 
 // 打开弹框
 const openDialog = async (id?: number) => {
-  visible.value = true;
-  const res = await preview(id);
-  activeName.value = res.data[0].path;
-  previewCodegen.value = res.data;
+  try {
+    formLoading.value = true;
+    visible.value = true;
+    const res = await preview(id);
+    activeName.value = res.data[0].path;
+    previewCodegen.value = res.data;
+  } finally {
+    formLoading.value = false;
+  }
 };
 defineExpose({ openDialog });
 

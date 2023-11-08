@@ -11,7 +11,7 @@ role:
     code: Please Enter Role Code
     status: Please Select Status
     remark: Please Enter Remark
-  message:
+  required:
     name: Role Name Can Not Be Empty
     code: Role Code Can Not Be Empty
   button:

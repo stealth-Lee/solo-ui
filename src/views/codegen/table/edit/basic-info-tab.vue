@@ -5,61 +5,77 @@
     :rules="formRules"
     label-width="150px"
   >
-    <el-divider content-position="left">基本信息</el-divider>
+    <el-divider content-position="left">{{
+      t("table.message.basicInfo")
+    }}</el-divider>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="表名称" prop="name">
+        <el-form-item :label="$t('table.column.name')" prop="name">
           <el-input
-            placeholder="请输入表名称"
+            :placeholder="$t('table.tip.name')"
             v-model="formModel.name"
             disabled
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="表描述" prop="comment">
-          <el-input placeholder="请输入表描述" v-model="formModel.comment" />
+        <el-form-item :label="$t('table.column.comment')" prop="comment">
+          <el-input
+            :placeholder="$t('table.tip.comment')"
+            v-model="formModel.comment"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="实体类名称" prop="className">
+        <el-form-item :label="$t('table.column.className')" prop="className">
           <el-input
-            placeholder="请输入实体类名称"
+            :placeholder="$t('table.tip.className')"
             v-model="formModel.className"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="功能名" prop="functionName">
+        <el-form-item
+          :label="$t('table.column.functionName')"
+          prop="functionName"
+        >
           <el-input
-            placeholder="请输入功能名"
+            :placeholder="$t('table.tip.functionName')"
             v-model="formModel.functionName"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="作者" prop="author">
-          <el-input placeholder="请输入作者" v-model="formModel.author" />
+        <el-form-item :label="$t('table.column.author')" prop="author">
+          <el-input
+            :placeholder="$t('table.tip.author')"
+            v-model="formModel.author"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="小尾巴" prop="classTail">
-          <el-input placeholder="请输入小尾巴" v-model="formModel.classTail" />
+        <el-form-item :label="$t('table.column.classTail')" prop="classTail">
+          <el-input
+            :placeholder="$t('table.tip.classTail')"
+            v-model="formModel.classTail"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item label="备注" prop="remark">
+        <el-form-item :label="$t('table.column.remark')" prop="remark">
           <el-input type="textarea" :rows="3" v-model="formModel.remark" />
         </el-form-item>
       </el-col>
     </el-row>
-    <el-divider content-position="left">其它信息</el-divider>
+    <el-divider content-position="left">{{
+      t("table.message.otherInfo")
+    }}</el-divider>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="模版类型" prop="tplType">
+        <el-form-item :label="$t('table.column.tplType')" prop="tplType">
           <el-select
             v-model="formModel.tplType"
-            placeholder="请选择模版类型"
+            :placeholder="$t('table.tip.tplType')"
             clearable
           >
             <el-option
@@ -72,15 +88,18 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="包路径" prop="packageName">
+        <el-form-item
+          :label="$t('table.column.packageName')"
+          prop="packageName"
+        >
           <el-input
-            placeholder="请输入包路径"
             v-model="formModel.packageName"
+            :placeholder="$t('table.tip.packageName')"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="是否启用开关按钮" prop="isSwitch">
+        <el-form-item :label="$t('table.column.isSwitch')" prop="isSwitch">
           <el-radio-group v-model="formModel.isSwitch">
             <el-radio
               v-for="(item, index) in yes_no"
@@ -92,15 +111,21 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="模块名" prop="moduleName">
-          <el-input placeholder="请输入模块名" v-model="formModel.moduleName" />
+        <el-form-item :label="$t('table.column.moduleName')" prop="moduleName">
+          <el-input
+            :placeholder="$t('table.tip.moduleName')"
+            v-model="formModel.moduleName"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="开关字段" prop="switchField">
+        <el-form-item
+          :label="$t('table.column.switchField')"
+          prop="switchField"
+        >
           <el-select
             v-model="formModel.switchField"
-            placeholder="请选择开关字段"
+            :placeholder="$t('table.tip.switchField')"
             :disabled="!formModel.isSwitch"
           >
             <template v-for="dict in columns">
@@ -115,9 +140,12 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="业务名" prop="businessName">
+        <el-form-item
+          :label="$t('table.column.businessName')"
+          prop="businessName"
+        >
           <el-input
-            placeholder="请输入业务名"
+            :placeholder="$t('table.tip.businessName')"
             v-model="formModel.businessName"
           />
         </el-form-item>
@@ -131,6 +159,7 @@ import { TableReq } from "@/api/codegen/table";
 import { ColumnReq } from "@/api/codegen/column";
 defineOptions({ name: "GenBasicInfoTab" });
 
+const { t } = useI18n();
 const { tpl_type, yes_no } = useDict("tpl_type", "yes_no");
 const basicInfoTabRef = ref();
 const props = defineProps({
@@ -161,9 +190,15 @@ const formModel = ref({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  name: [{ required: true, message: "请输入表名称", trigger: "blur" }],
-  comment: [{ required: true, message: "请输入表描述", trigger: "blur" }],
-  className: [{ required: true, message: "请输入实体类名称", trigger: "blur" }]
+  name: [
+    { required: true, message: t("table.required.name"), trigger: "blur" }
+  ],
+  comment: [
+    { required: true, message: t("table.required.comment"), trigger: "blur" }
+  ],
+  className: [
+    { required: true, message: t("table.required.className"), trigger: "blur" }
+  ]
 });
 
 /** 监听 table 属性，复制给 formModel 属性 */

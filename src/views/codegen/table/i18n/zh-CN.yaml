@@ -1,0 +1,74 @@
+table:
+  title: 代码生成
+  column:
+    sourceId: 数据源id
+    name: 表名称
+    comment: 表描述
+    author: 作者
+    tplType: 模版类型
+    packageName: 生成包路径
+    moduleName: 生成模块名
+    businessName: 生成业务名
+    functionName: 生成功能名
+    className: 实体类名称
+    classTail: 实体类尾巴
+    isSwitch: 是否启用开关按钮
+    switchField: 开关字段
+    createTime: 创建时间
+    remark: 备注
+  tip:
+    sourceId: 请输入数据源id
+    name: 请输入表名称
+    comment: 请输入表描述
+    author: 请输入作者
+    tplType: 请输入模版类型
+    packageName: 请输入生成包路径
+    moduleName: 请输入生成模块名
+    businessName: 请输入生成业务名
+    functionName: 请输入生成功能名
+    className: 请输入实体类名称
+    classTail: 请输入实体类尾巴
+    isSwitch: 请输入是否启用开关按钮
+    switchField: 请输入开关字段
+    remark: 请输入备注
+  required:
+    name: 表名称不能为空
+    comment: 表描述不能为空
+    tplType: 模版类型不能为空
+    packageName: 生成包路径不能为空
+    moduleName: 生成模块名不能为空
+    businessName: 生成业务名不能为空
+    className: 实体类名称不能为空
+    isSwitch: 是否启用开关按钮不能为空
+  button:
+    preview: 预览代码
+    codegen: 代码生成
+    copy: 复制
+  message:
+    basicInfo: 基础信息
+    otherInfo: 其他信息
+    previewCode: 预览代码
+    copySuccess: 复制成功
+    copyFail: 复制失败
+genColumn:
+  message:
+    basicInfo: 基础信息
+    fieldInfo: 其他信息
+  column:
+    field: 字段
+    form: 表单
+    list: 列表
+    name: 列名称
+    type: 列类型
+    javaField: Java字段名
+    javaType: Java类型
+    javaComment: Java注释
+    isPk: 主键
+    isList: 列表
+    isQuery: 查询
+    queryMode: 查询方式
+    isCreate: 插入
+    isUpdate: 编辑
+    isRequired: 必填
+    formType: 表单类型
+    dictCode: 字典编码

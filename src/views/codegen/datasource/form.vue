@@ -7,46 +7,50 @@
       v-loading="formLoading"
       label-width="95px"
     >
-      <el-form-item label="连接名" prop="name">
+      <el-form-item :label="$t('datasource.column.name')" prop="name">
         <el-input
           v-model="formModel.name"
+          :placeholder="$t('datasource.tip.name')"
           clearable
-          placeholder="请输入连接名"
         />
       </el-form-item>
-      <el-form-item label="数据源URL" prop="url">
+      <el-form-item :label="$t('datasource.column.url')" prop="url">
         <el-input
           v-model="formModel.url"
+          :placeholder="$t('datasource.tip.url')"
           clearable
-          placeholder="请输入数据源URL"
         />
       </el-form-item>
-      <el-form-item label="用户名" prop="username">
+      <el-form-item :label="$t('datasource.column.username')" prop="username">
         <el-input
           v-model="formModel.username"
+          :placeholder="$t('datasource.tip.username')"
           clearable
-          placeholder="请输入用户名"
         />
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item :label="$t('datasource.column.password')" prop="password">
         <el-input
           v-model="formModel.password"
+          :placeholder="$t('datasource.tip.password')"
           clearable
-          placeholder="请输入密码"
         />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item :label="$t('datasource.column.remark')" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注信息"
+          :placeholder="$t('datasource.tip.remark')"
           type="textarea"
         />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="visible = false">{{
+          t("commons.buttons.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("commons.buttons.confirm")
+        }}</el-button>
       </span>
     </template>
   </el-drawer>
@@ -60,12 +64,12 @@ import { getting, creating, updating } from "@/api/codegen/datasource";
 
 defineOptions({ name: "CodegenDatasourceForm" });
 
+const { t } = useI18n();
 const message = useMessage();
 const formRef = ref();
 const visible = ref(false);
 const formLoading = ref(false);
 const formTitle = ref("");
-
 const formModel = reactive({
   sourceId: undefined,
   name: "",
@@ -77,10 +81,26 @@ const formModel = reactive({
 
 /** 自定义表单规则校验 */
 const formRules = reactive({
-  name: [{ required: true, message: "连接名为必填项", trigger: "blur" }],
-  url: [{ required: true, message: "数据源URL为必填项", trigger: "blur" }],
-  username: [{ required: true, message: "用户名为必填项", trigger: "blur" }],
-  password: [{ required: true, message: "密码为必填项", trigger: "blur" }]
+  name: [
+    { required: true, message: t("datasource.required.name"), trigger: "blur" }
+  ],
+  url: [
+    { required: true, message: t("datasource.required.url"), trigger: "blur" }
+  ],
+  username: [
+    {
+      required: true,
+      message: t("datasource.required.username"),
+      trigger: "blur"
+    }
+  ],
+  password: [
+    {
+      required: true,
+      message: t("datasource.required.password"),
+      trigger: "blur"
+    }
+  ]
 });
 
 // 打开弹框
@@ -107,7 +127,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.sourceId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}[${formModel.name}]成功！`);
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

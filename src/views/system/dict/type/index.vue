@@ -7,26 +7,26 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="字典名称" prop="name">
+      <el-form-item :label="$t('dictType.column.name')" prop="name">
         <el-input
           v-model="props.queryParams.name"
-          placeholder="请输入字典名称"
+          :placeholder="$t('dictType.tip.name')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典编码" prop="code">
+      <el-form-item :label="$t('dictType.column.code')" prop="code">
         <el-input
           v-model="props.queryParams.code"
-          placeholder="请输入字典编码"
+          :placeholder="$t('dictType.tip.code')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典类型" prop="type">
+      <el-form-item :label="$t('dictType.column.type')" prop="type">
         <el-select
           v-model="props.queryParams.type"
-          placeholder="请选择字典类型"
+          :placeholder="$t('dictType.tip.type')"
           clearable
           class="!w-[200px]"
         >
@@ -38,10 +38,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item :label="$t('dictType.column.status')" prop="status">
         <el-select
           v-model="props.queryParams.status"
-          placeholder="请选择状态"
+          :placeholder="$t('dictType.tip.status')"
           clearable
           class="!w-[200px]"
         >
@@ -54,7 +54,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -62,7 +62,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -74,7 +74,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表`"
+      :title="`${props.title}${t('commons.other.list')}`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -85,7 +85,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -94,12 +94,12 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
           width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -109,7 +109,7 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -119,7 +119,7 @@
           @click="handleUpdate()"
           plain
         >
-          导入
+          {{ t("commons.buttons.import") }}
         </el-button>
         <el-button
           type="warning"
@@ -127,7 +127,7 @@
           @click="handleUpdate()"
           plain
         >
-          导出
+          {{ t("commons.buttons.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -159,12 +159,12 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.typeId)"
             >
-              编辑
+              {{ t("commons.buttons.update") }}
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.typeId)"
             >
               <template #reference>
@@ -175,7 +175,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -195,13 +195,13 @@ import { paging, deleting, updateStatus } from "@/api/system/dict.type";
 
 defineOptions({ name: "SysDictType" });
 
+const { t } = useI18n();
 const DictTypeForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
 const dictTypeFormRef = ref();
-
 const { dict_type, status } = useDict("dict_type", "status");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: "字典类型",
+  title: t("dictType.title"),
   pk: "typeId",
   listApi: paging,
   deleteApi: deleting,
@@ -231,12 +231,12 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "字典名称",
+    label: t("dictType.column.name"),
     prop: "name",
     minWidth: 120
   },
   {
-    label: "字典编码",
+    label: t("dictType.column.code"),
     prop: "code",
     minWidth: 120,
     cellRenderer: scope => (
@@ -248,7 +248,7 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "字典类型",
+    label: t("dictType.column.type"),
     prop: "type",
     minWidth: 120,
     cellRenderer: scope => (
@@ -256,7 +256,7 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "状态",
+    label: t("dictType.column.status"),
     prop: "status",
     minWidth: 120,
     cellRenderer: scope => (
@@ -269,17 +269,17 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "创建时间",
+    label: t("dictType.column.createTime"),
     prop: "createTime",
     minWidth: 120
   },
   {
-    label: "备注",
+    label: t("dictType.column.remark"),
     prop: "remark",
     minWidth: 120
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 240,
     slot: "operation"

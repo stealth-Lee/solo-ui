@@ -1,0 +1,24 @@
+datasource:
+  title: DataSources
+  column:
+    name: Connection Name
+    url: Data Source URL
+    username: Username
+    password: Password
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    name: Please Enter Connection Name
+    url: Please Enter Data Source URL
+    username: Please Enter Username
+    password: Please Enter Password
+    remark: Please Enter Remark
+  required:
+    name: Connection Name Cannot Be Empty
+    url: Data Source URL Cannot Be Empty
+    username: Username Cannot Be Empty
+    password: Password Cannot Be Empty
+  button:
+    connect: Test Connection
+  message:
+    connect: Connection Succeeded

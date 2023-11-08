@@ -7,31 +7,31 @@
       v-loading="formLoading"
       label-width="82px"
     >
-      <el-form-item label="配置名称" prop="name">
+      <el-form-item :label="$t('config.column.name')" prop="name">
         <el-input
           v-model="formModel.name"
-          placeholder="请输入配置名称"
+          :placeholder="$t('config.tip.name')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="配置键" prop="key">
+      <el-form-item :label="$t('config.column.key')" prop="key">
         <el-input
           v-model="formModel.key"
-          placeholder="请输入配置键"
+          :placeholder="$t('config.tip.key')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="配置值" prop="value">
+      <el-form-item :label="$t('config.column.value')" prop="value">
         <el-input
           v-model="formModel.value"
-          placeholder="请输入配置值"
+          :placeholder="$t('config.tip.value')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="系统标识" prop="isSys">
+      <el-form-item :label="$t('config.column.isSys')" prop="isSys">
         <el-select
           v-model="formModel.isSys"
-          placeholder="请选择系统标识"
+          :placeholder="$t('config.tip.isSys')"
           clearable
         >
           <el-option
@@ -42,10 +42,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item :label="$t('config.column.remark')" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注"
+          :placeholder="$t('config.tip.remark')"
           type="textarea"
         />
       </el-form-item>
@@ -64,6 +64,7 @@ import { getting, creating, updating } from "@/api/system/config";
 
 defineOptions({ name: "SysConfigForm" });
 
+const { t } = useI18n();
 const { is_sys } = useDict("is_sys");
 const message = useMessage();
 const formRef = ref();
@@ -81,9 +82,13 @@ const formModel = reactive({
 
 // 自定义表单规则校验
 const formRules = reactive({
-  name: [{ required: true, message: "配置名称为必填项", trigger: "blur" }],
-  key: [{ required: true, message: "配置键为必填项", trigger: "blur" }],
-  value: [{ required: true, message: "配置值为必填项", trigger: "blur" }]
+  name: [
+    { required: true, message: t("config.required.name"), trigger: "blur" }
+  ],
+  key: [{ required: true, message: t("config.required.key"), trigger: "blur" }],
+  value: [
+    { required: true, message: t("config.required.value"), trigger: "blur" }
+  ]
 });
 
 // 打开弹框
@@ -110,7 +115,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.configId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}成功！`);
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

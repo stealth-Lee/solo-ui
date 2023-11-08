@@ -176,7 +176,11 @@ commons:
   ask:
     delete: Are you sure to delete this?
     confirm: Are you sure to
-  prompt:
-    system: System Prompt
-    delete: Delete Success
-    action: Action Success
+prompt:
+  system: System Prompt
+  delete:
+    success: Delete Success
+    fail: Delete Fail
+  action:
+    success: Action Success
+    fail: Action Fail

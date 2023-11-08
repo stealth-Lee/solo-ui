@@ -176,7 +176,11 @@ commons:
   ask:
     delete: 您确认要删除选中数据吗？
     confirm: 您确认要
-  prompt:
-    system: 系统提示
-    delete: 删除成功
-    action: 操作成功
+prompt:
+  system: 系统提示
+  delete:
+    success: 删除成功
+    fail: 删除失败
+  action:
+    success: 操作成功
+    fail: 操作失败

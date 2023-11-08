@@ -1,0 +1,27 @@
+dictData:
+  title: DictData
+  column:
+    code: Dict Code
+    value: Dict Key
+    label: Dict Tags
+    tagType: Tag Type
+    tagClass: Label Style
+    dictSort: Dict Sorting
+    status: Status
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    code: Please Enter Dict Code
+    value: Please Enter Dict Key
+    label: Please Enter Dict Tags
+    tagType: Please Enter Tag Type
+    tagClass: Please Enter Label Style
+    dictSort: Please Enter Dict Sorting
+    status: Please Enter Status
+    remark: Please Enter Remark
+  required:
+    code: Dict Code Cannot Be Empty
+    value: Dict Key Cannot Be Empty
+    label: Dict Tags Cannot Be Empty
+    tagType: Tag Type Cannot Be Empty
+    status: Status Cannot Be Empty

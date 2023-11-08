@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <el-drawer :title="formTitle" v-model="visible" width="600">
     <el-form
       ref="formRef"
@@ -75,8 +75,8 @@ const formModel = reactive({
 
 /** 自定义表单规则校验 */
 const formRules = reactive({
-  name: [{ required: true, message: t("role.message.name"), trigger: "blur" }],
-  code: [{ required: true, message: t("role.message.code"), trigger: "blur" }]
+  name: [{ required: true, message: t("role.required.name"), trigger: "blur" }],
+  code: [{ required: true, message: t("role.required.code"), trigger: "blur" }]
 });
 
 // 打开弹框
@@ -103,7 +103,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.roleId ? await updating(formModel) : await creating(formModel);
-    message.success(t("commons.prompt.action"));
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {
@@ -118,4 +118,4 @@ const resetForm = () => {
 };
 
 defineExpose({ openDialog });
-</script> -->
+</script>

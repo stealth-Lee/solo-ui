@@ -7,24 +7,24 @@
       v-loading="formLoading"
       label-width="81px"
     >
-      <el-form-item label="字典名称" prop="name">
+      <el-form-item :label="$t('dictType.column.name')" prop="name">
         <el-input
           v-model="formModel.name"
-          placeholder="请输入字典名称"
+          :placeholder="$t('dictType.tip.name')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典编码" prop="code">
+      <el-form-item :label="$t('dictType.column.code')" prop="code">
         <el-input
           v-model="formModel.code"
-          placeholder="请输入字典编码"
+          :placeholder="$t('dictType.tip.code')"
           clearable
         />
       </el-form-item>
-      <el-form-item label="字典类型" prop="dictType">
+      <el-form-item :label="$t('dictType.column.type')" prop="type">
         <el-select
-          v-model="formModel.dictType"
-          placeholder="请选择字典类型"
+          v-model="formModel.type"
+          :placeholder="$t('dictType.tip.type')"
           clearable
           class="!w-[100%]"
         >
@@ -36,25 +36,29 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item :label="$t('dictType.column.status')" prop="status">
         <el-switch
           v-model="formModel.status"
           :active-value="1"
           :inactive-value="0"
         />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item :label="$t('dictType.column.remark')" prop="remark">
         <el-input
           v-model="formModel.remark"
-          placeholder="请输入备注"
+          :placeholder="$t('dictType.tip.remark')"
           type="textarea"
         />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="visible = false">{{
+          t("commons.buttons.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("commons.buttons.confirm")
+        }}</el-button>
       </span>
     </template>
   </el-drawer>
@@ -65,6 +69,7 @@ import { getting, creating, updating } from "@/api/system/dict.type";
 
 defineOptions({ name: "SysDictTypeForm" });
 
+const { t } = useI18n();
 const { dict_type } = useDict("dict_type");
 const message = useMessage();
 const formRef = ref();
@@ -75,17 +80,29 @@ const formModel = reactive({
   typeId: undefined,
   name: "",
   code: "",
-  dictType: undefined,
+  type: undefined,
   status: undefined,
   remark: ""
 });
 
 // 自定义表单规则校验
 const formRules = reactive({
-  name: [{ required: true, message: "字典名称为必填项", trigger: "blur" }],
-  code: [{ required: true, message: "字典编码为必填项", trigger: "blur" }],
-  dictType: [{ required: true, message: "字典类型为必填项", trigger: "blur" }],
-  status: [{ required: true, message: "状态为必填项", trigger: "blur" }]
+  name: [
+    { required: true, message: t("dictType.required.name"), trigger: "blur" }
+  ],
+  code: [
+    { required: true, message: t("dictType.required.code"), trigger: "blur" }
+  ],
+  dictType: [
+    {
+      required: true,
+      message: t("dictType.required.type"),
+      trigger: "blur"
+    }
+  ],
+  status: [
+    { required: true, message: t("dictType.required.status"), trigger: "blur" }
+  ]
 });
 
 // 打开弹框
@@ -112,7 +129,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.typeId ? await updating(formModel) : await creating(formModel);
-    message.success(`${formTitle.value}成功！`);
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

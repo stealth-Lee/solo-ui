@@ -7,26 +7,26 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="字典键值" prop="value">
+      <el-form-item :label="$t('dictData.column.value')" prop="value">
         <el-input
           v-model="props.queryParams.value"
-          placeholder="请输入字典键值"
+          :placeholder="$t('dictData.tip.value')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="字典标签" prop="label">
+      <el-form-item :label="$t('dictData.column.label')" prop="label">
         <el-input
           v-model="props.queryParams.label"
-          placeholder="请输入字典标签"
+          :placeholder="$t('dictData.tip.label')"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item :label="$t('dictData.column.status')" prop="status">
         <el-select
           v-model="props.queryParams.status"
-          placeholder="请选择状态"
+          :placeholder="$t('dictData.tip.status')"
           clearable
           class="!w-[200px]"
         >
@@ -39,7 +39,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-tooltip content="搜索" placement="top">
+        <el-tooltip :content="$t('commons.buttons.search')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
@@ -47,7 +47,7 @@
             circle
           />
         </el-tooltip>
-        <el-tooltip content="重置" placement="top">
+        <el-tooltip :content="$t('commons.buttons.reset')" placement="top">
           <el-button
             :icon="useRenderIcon('ep:refresh-right')"
             @click="handleReset()"
@@ -59,7 +59,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}列表(${route.params.code})`"
+      :title="`${props.title}${t('commons.other.list')}(${route.params.code})`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -70,7 +70,7 @@
           @click="handleCreate()"
           plain
         >
-          新增
+          {{ t("commons.buttons.create") }}
         </el-button>
         <el-button
           type="success"
@@ -79,12 +79,12 @@
           :disabled="props.single"
           plain
         >
-          编辑
+          {{ t("commons.buttons.edit") }}
         </el-button>
         <el-popconfirm
           width="180"
           icon-color="red"
-          title="是否删除选中数据？"
+          :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
@@ -94,7 +94,7 @@
               :disabled="props.multiple"
               plain
             >
-              删除
+              {{ t("commons.buttons.delete") }}
             </el-button>
           </template>
         </el-popconfirm>
@@ -104,7 +104,7 @@
           @click="handleUpdate()"
           plain
         >
-          导入
+          {{ t("commons.buttons.import") }}
         </el-button>
         <el-button
           type="warning"
@@ -112,7 +112,7 @@
           @click="handleUpdate()"
           plain
         >
-          导出
+          {{ t("commons.buttons.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -144,12 +144,12 @@
               :icon="useRenderIcon('ep:edit-pen')"
               @click="handleUpdate(row.dataId)"
             >
-              编辑
+              {{ t("commons.buttons.update") }}
             </el-button>
             <el-popconfirm
               width="180"
               icon-color="red"
-              title="是否删除选中数据？"
+              :title="$t('commons.ask.delete')"
               @confirm="handleDelete(row.dataId)"
             >
               <template #reference>
@@ -160,7 +160,7 @@
                   :size="size"
                   :icon="useRenderIcon('ep:delete')"
                 >
-                  删除
+                  {{ t("commons.buttons.delete") }}
                 </el-button>
               </template>
             </el-popconfirm>
@@ -181,11 +181,11 @@ import { paging, deleting, updateStatus } from "@/api/system/dict.data";
 
 defineOptions({ name: "SysDictData" });
 
+const { t } = useI18n();
 const route = useRoute(); // 路由
 const DictDataForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
 const dictDataFormRef = ref();
-
 const { status } = useDict("status");
 const props: BasicTableProps = reactive<BasicTableProps>({
   queryParams: {
@@ -194,7 +194,7 @@ const props: BasicTableProps = reactive<BasicTableProps>({
     label: "",
     status: ""
   },
-  title: "字典数据",
+  title: t("dictData.title"),
   pk: "dataId",
   listApi: paging,
   deleteApi: deleting,
@@ -224,12 +224,12 @@ const columns: TableColumnList = [
     width: 10
   },
   {
-    label: "字典键值",
+    label: t("dictData.column.value"),
     prop: "value",
     minWidth: 120
   },
   {
-    label: "字典标签",
+    label: t("dictData.column.label"),
     prop: "label",
     minWidth: 120,
     cellRenderer: scope =>
@@ -242,12 +242,12 @@ const columns: TableColumnList = [
       )
   },
   {
-    label: "字典排序",
+    label: t("dictData.column.dictSort"),
     prop: "dictSort",
     minWidth: 120
   },
   {
-    label: "状态",
+    label: t("dictData.column.status"),
     prop: "status",
     minWidth: 120,
     cellRenderer: scope => (
@@ -260,17 +260,17 @@ const columns: TableColumnList = [
     )
   },
   {
-    label: "创建时间",
+    label: t("dictData.column.createTime"),
     prop: "createTime",
     minWidth: 120
   },
   {
-    label: "备注",
+    label: t("dictData.column.remark"),
     prop: "remark",
     minWidth: 120
   },
   {
-    label: "操作",
+    label: t("commons.columns.action"),
     fixed: "right",
     width: 240,
     slot: "operation"

@@ -27,3 +27,10 @@ export const paging = (params?: object) => {
     params
   });
 };
+
+// 导出系统配置信息
+export const exportExcel = (params?: object) => {
+  return http.get(baseUrlApi("/system/config/export"), {
+    params
+  });
+};

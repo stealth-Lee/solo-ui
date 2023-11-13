@@ -4,6 +4,7 @@ import { useMessage, useMessageBox } from "@/hooks/message";
 import { GlobalStatus } from "@/utils/constants";
 import { handleTree } from "@/utils/tree";
 import { i18n } from "@/plugins/i18n";
+import download from "@/hooks/download";
 
 const { t } = i18n.global;
 const message = useMessage();
@@ -22,12 +23,14 @@ export interface BasicTableProps {
   queryParams?: any;
   // 分页属性对象
   pagination?: PaginationProps;
-  // 数据列表接口
+  // 数据列表API
   listApi?: (...arg: any) => Promise<any>;
-  // 删除函数
+  // 删除API
   deleteApi?: (...arg: any) => Promise<any>;
-  // 状态切换函数
+  // 状态切换API
   switchApi?: (...arg: any) => Promise<any>;
+  // 导出API
+  exportApi?: (...arg: any) => Promise<any>;
   // 主键名
   pk?: any;
   // 状态字段名
@@ -186,6 +189,12 @@ export function useTable(options?: BasicTableProps) {
     }
   };
 
+  // 导出按钮
+  const handleExport = async () => {
+    const data = await props.exportApi({ ...props.queryParams });
+    download.excel(data, "字典数据.xls");
+  };
+
   // 初始化数据
   onMounted(() => {
     if (props.createdIsNeed) {
@@ -218,6 +227,7 @@ export function useTable(options?: BasicTableProps) {
     handleCreate,
     handleUpdate,
     handleDelete,
-    handleSwitch
+    handleSwitch,
+    handleExport
   };
 }

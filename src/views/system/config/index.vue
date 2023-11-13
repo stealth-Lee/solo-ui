@@ -112,15 +112,15 @@
           @click="handleUpdate()"
           plain
         >
-          导入
+          {{ t("buttons.common.import") }}
         </el-button>
         <el-button
           type="warning"
           :icon="useRenderIcon('ep:download')"
-          @click="handleUpdate()"
+          @click="handleExport()"
           plain
         >
-          导出
+          {{ t("buttons.common.export") }}
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -184,7 +184,7 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting } from "@/api/system/config";
+import { paging, deleting, exportExcel } from "@/api/system/config";
 
 defineOptions({ name: "SysConfig" });
 
@@ -198,6 +198,7 @@ const props: BasicTableProps = reactive<BasicTableProps>({
   pk: "configId",
   listApi: paging,
   deleteApi: deleting,
+  exportApi: exportExcel,
   queryRef: queryFormRef,
   formRef: configFormRef
 });
@@ -211,7 +212,8 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete
+  handleDelete,
+  handleExport
 } = useTable(props);
 
 const columns: TableColumnList = [

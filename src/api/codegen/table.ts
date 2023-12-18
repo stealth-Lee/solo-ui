@@ -1,5 +1,7 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
+import axios from "axios";
+import { downloadByData } from "@pureadmin/utils";
 
 export interface TableReq {
   tableId: number;
@@ -47,6 +49,11 @@ export const getting = (tableId: number) => {
 // 预览代码
 export const preview = (id: number) => {
   return http.get<PreviewReq[]>(baseUrlApi("/codegen/table/preview/" + id));
+};
+
+// 代码生成
+export const codegen = (id: number) => {
+  http.downloadFile(baseUrlApi("/codegen/table/generate-code/" + id));
 };
 
 // 获取业务表精简信息列表

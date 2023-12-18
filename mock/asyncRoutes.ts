@@ -60,6 +60,15 @@ const systemRouter = {
         title: "Data Dictionary",
         roles: ["admin"]
       }
+    },
+    {
+      path: "/system/menu/index",
+      name: "Menu",
+      meta: {
+        icon: "menu",
+        title: "menu.title",
+        roles: ["admin"]
+      }
     }
   ]
 };
@@ -250,6 +259,7 @@ export default [
     url: "/getAsyncRoutes",
     method: "get",
     response: () => {
+      console.log("getAsyncRoutes666");
       return {
         success: true,
         data: [

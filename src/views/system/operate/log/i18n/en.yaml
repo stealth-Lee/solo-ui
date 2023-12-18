@@ -1,0 +1,36 @@
+operateLog:
+  title: Operation Logs
+  column:
+    title: Log Title
+    type: Log Type
+    method: The Name Of The Method
+    requestUrl: The Address Of The Request
+    requestMethod: How The Request Is Made
+    requestData: Request Data
+    responseData: Response Data
+    exceptionInfo: Exception Information
+    userIp: User IP
+    userAgent: User Agent
+    deviceName: Device name/operating System
+    browserName: Browser Name
+    executionTime: Execution Time (in milliseconds)
+    createTime: Request Time
+    remark: Remark
+  tip:
+    title: Please Enter Log Title
+    type: Please Enter Log Type
+    method: Please Enter The Name Of The Method
+    requestUrl: Please Enter The Address Of The Request
+    requestMethod: Please Enter How The Request Is Made
+    requestData: Please Enter Request Data
+    responseData: Please Enter Response Data
+    exceptionInfo: Please Enter Exception Information
+    userIp: Please Enter User IP
+    userAgent: Please Enter User Agent
+    deviceName: Please Enter Device name/operating System
+    browserName: Please Enter Browser Name
+    executionTime: Please Enter Execution Time (in milliseconds)
+    remark: Please Enter Remark
+  required:
+    createTime: Creation Time Cannot Be Empty
+    deleted: Whether To Delete Cannot Be Empty

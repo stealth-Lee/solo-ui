@@ -71,12 +71,15 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
+        .loginByUsername({
+          username: ruleForm.username,
+          password: ruleForm.password
+        })
         .then(res => {
-          if (res.success) {
+          if (res.code === 0) {
             // 获取后端路由
             initRouter().then(() => {
-              router.push(getTopMenu(true).path);
+              router.push("/welcome");
               message("登录成功", { type: "success" });
             });
           }

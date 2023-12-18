@@ -1,0 +1,25 @@
+user:
+  title: User
+  column:
+    username: Username
+    password: Password
+    nickname: Nickname
+    name: Name
+    sex: Sex
+    mobile: Mobile
+    email: Email
+    status: Status
+    createTime: CreateTime
+    remark: Remark
+    deptId: Department
+  tip:
+    username: Please Enter Username
+    password: Please Enter Password
+    nickname: Please Enter Nickname
+    name: Please Enter Name
+    sex: Please select Sex
+    mobile: Please Enter Mobile
+    email: Please Enter email
+    status: Please Select Status
+    remark: Please Enter Remark
+    deptId: Please Select Department

@@ -1,5 +1,5 @@
 <template>
-  <el-drawer :title="formTitle" v-model="visible" width="600">
+  <el-drawer :title="formTitle" v-model="visible" width="1000">
     <el-form
       ref="formRef"
       :model="formModel"
@@ -9,93 +9,93 @@
     >
       <el-row :gutter="30">
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="用户名" prop="username">
+          <el-form-item :label="$t('user.column.username')" prop="username">
             <el-input
               :disabled="formModel.userId !== ''"
               v-model="formModel.username"
               clearable
-              placeholder="请输入用户名"
+              :placeholder="$t('user.tip.username')"
             />
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="用户昵称" prop="nickname">
+          <el-form-item :label="$t('user.column.nickname')" prop="nickname">
             <el-input
               v-model="formModel.nickname"
               clearable
-              placeholder="请输入用户昵称"
+              :placeholder="$t('user.tip.nickname')"
             />
           </el-form-item>
         </re-col>
 
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="用户密码" prop="password">
+          <el-form-item :label="$t('user.column.password')" prop="password">
             <el-input
               :disabled="formModel.userId !== ''"
               v-model="formModel.password"
               clearable
-              placeholder="请输入用户密码"
+              :placeholder="$t('user.tip.password')"
             />
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="用户性别">
+          <el-form-item :label="$t('user.column.sex')">
             <el-select
               v-model="formModel.sex"
-              placeholder="请选择用户性别"
+              :placeholder="$t('user.tip.remark')"
               class="w-full"
               clearable
             >
               <el-option
-                v-for="(item, index) in sexOptions"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
+                v-for="dict in sex"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
               />
             </el-select>
           </el-form-item>
         </re-col>
 
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="手机号" prop="mobile">
+          <el-form-item :label="$t('user.column.mobile')" prop="mobile">
             <el-input
               v-model="formModel.mobile"
               clearable
-              placeholder="请输入手机号"
+              :placeholder="$t('user.tip.mobile')"
             />
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="邮箱" prop="email">
+          <el-form-item :label="$t('user.column.email')" prop="email">
             <el-input
               v-model="formModel.email"
               clearable
-              placeholder="请输入邮箱"
+              :placeholder="$t('user.tip.email')"
             />
           </el-form-item>
         </re-col>
 
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="归属部门" prop="deptId">
+          <el-form-item :label="$t('user.column.deptId')" prop="deptId">
             <el-cascader
               class="w-full"
               v-model="formModel.deptId"
               :options="deptTree"
               :props="{
                 value: 'deptId',
-                label: 'deptName',
+                label: 'name',
                 emitPath: false,
                 checkStrictly: true,
                 expandTrigger: 'hover' as const
               }"
               clearable
               filterable
-              placeholder="请选择归属部门"
+              :placeholder="$t('user.tip.deptId')"
             />
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item label="用户状态">
+          <el-form-item :label="$t('user.column.status')">
             <el-switch
               v-model="formModel.status"
               inline-prompt
@@ -103,16 +103,15 @@
               :inactive-value="1"
               active-text="正常"
               inactive-text="停用"
-              :style="switchStyle"
             />
           </el-form-item>
         </re-col>
 
         <re-col>
-          <el-form-item label="备注" prop="remark">
+          <el-form-item :label="$t('user.column.remark')" prop="remark">
             <el-input
               v-model="formModel.remark"
-              placeholder="请输入备注信息"
+              :placeholder="$t('user.tip.remark')"
               type="textarea"
             />
           </el-form-item>
@@ -129,19 +128,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { message } from "@/utils/message";
 import ReCol from "@/components/ReCol";
-import { usePublicHooks } from "../hooks";
-
 import { handleTree } from "@/utils/tree";
-
 import { creating, updating, getting } from "@/api/system/user";
 import { listSimple } from "@/api/system/dept";
 
+const message = useMessage();
+const { sex } = useDict("sex");
 const formRef = ref();
 const deptTree = ref();
-const { switchStyle } = usePublicHooks();
 const visible = ref(false);
 const formTitle = ref("");
 const formLoading = ref(false);
@@ -160,7 +155,7 @@ const formModel = reactive({
   remark: ""
 });
 
-/** 自定义表单规则校验 */
+// 自定义表单规则校验
 const formRules = reactive({
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
   password: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
@@ -178,7 +173,7 @@ const formRules = reactive({
 // 打开弹框
 const openDialog = async (title: string, id?: number) => {
   visible.value = true;
-  formTitle.value = title + "用户";
+  formTitle.value = title;
   resetForm();
   const treeRes = await listSimple();
   deptTree.value = handleTree(treeRes.data, "deptId");
@@ -199,17 +194,6 @@ const resetForm = () => {
   formRef.value?.resetFields();
 };
 
-const sexOptions = [
-  {
-    value: 0,
-    label: "男"
-  },
-  {
-    value: 1,
-    label: "女"
-  }
-];
-
 // 确认按钮
 const emit = defineEmits(["refresh"]);
 const handleSubmit = async () => {
@@ -218,9 +202,7 @@ const handleSubmit = async () => {
   try {
     formLoading.value = true;
     formModel.deptId ? await updating(formModel) : await creating(formModel);
-    message(`部门[${formModel.username}]${formTitle.value}成功！`, {
-      type: "success"
-    });
+    message.success();
     visible.value = false;
     emit("refresh");
   } finally {

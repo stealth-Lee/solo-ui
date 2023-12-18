@@ -1,0 +1,32 @@
+menu:
+  title: Menu
+  column:
+    parentMenu: Parent Menu
+    type: Menu Type
+    name: Menu Name
+    icon: Menu Icon
+    path: Routing Address
+    permission: Permission ID
+    visible: Visible Or Not
+    keepAlive: Cached Or not
+    sort: Menu Sorting
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    parentMenu: Please Select Parent Menu
+    type: Please Enter Menu Type
+    name: Please Enter Menu Name
+    icon: Please Enter Menu Icon
+    path: Please Enter Routing Address
+    permission: Please Enter Permission ID
+    visible: Please Enter Visible Or Not
+    keepAlive: Please Enter Cached Or not
+    sort: Please Enter Menu Sorting
+    remark: Please Enter Remark
+  required:
+    type: Menu Type Cannot Be Empty
+    name: Menu Name Cannot Be Empty
+    visible: Visible Or Not Cannot Be Empty
+    keepAlive: Cached Or not Cannot Be Empty
+    createTime: Creation Time Cannot Be Empty
+    deleted: Whether To Delete Cannot Be Empty

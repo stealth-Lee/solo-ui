@@ -1,7 +1,9 @@
 import { http } from "@/utils/http";
+import { baseUrlApi } from "@/api/utils";
 
 export type UserResult = {
-  success: boolean;
+  code: number;
+  message: string;
   data: {
     /** 用户名 */
     username: string;
@@ -17,7 +19,8 @@ export type UserResult = {
 };
 
 export type RefreshTokenResult = {
-  success: boolean;
+  code: number;
+  message: string;
   data: {
     /** `token` */
     accessToken: string;
@@ -28,12 +31,19 @@ export type RefreshTokenResult = {
   };
 };
 
-/** 登录 */
+// 登录
 export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/login", { data });
+  return http.post<UserResult>(baseUrlApi("/auth/login"), { data });
+};
+
+// 退出登录
+export const authLogout = () => {
+  return http.delete<UserResult>(baseUrlApi("/auth/logout"));
 };
 
 /** 刷新token */
 export const refreshTokenApi = (data?: object) => {
-  return http.request<RefreshTokenResult>("post", "/refreshToken", { data });
+  return http.post<RefreshTokenResult>(baseUrlApi("/auth/refreshToken"), {
+    data
+  });
 };

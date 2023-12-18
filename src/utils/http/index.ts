@@ -15,6 +15,7 @@ import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
 import { message } from "@/utils/message";
+import { downloadByData } from "@pureadmin/utils";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -215,6 +216,19 @@ class PureHttp {
     config?: PureHttpRequestConfig
   ): Promise<T> {
     return this.request<T>("put", url, params, config);
+  }
+
+  // 根据后台接口返回的文件流，下载文件
+  public downloadFile(
+    url: string,
+    params?: AxiosRequestConfig
+  ): Promise<BlobPart> {
+    return this.request<BlobPart>("get", url, params, {
+      responseType: "blob"
+    }).then(data => {
+      downloadByData(data, "code.zip");
+      return data;
+    });
   }
 }
 

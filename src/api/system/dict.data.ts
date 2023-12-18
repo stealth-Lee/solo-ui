@@ -9,7 +9,7 @@ export interface DictDataReq {
   tagType: number;
   tagClass: string;
   dictSort: number;
-  status: boolean;
+  status: number;
   remark: string;
 }
 

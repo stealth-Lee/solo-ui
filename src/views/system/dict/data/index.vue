@@ -59,7 +59,7 @@
 
     <!-- 列表 -->
     <PureTableBar
-      :title="`${props.title}${t('commons.other.list')}(${route.params.code})`"
+      :title="`${props.title}${t('commons.other.list')}(${dictCode})`"
       :columns="columns"
       @refresh="handleQuery"
     >
@@ -67,7 +67,7 @@
         <el-button
           type="primary"
           :icon="useRenderIcon('ep:plus')"
-          @click="handleCreate()"
+          @click="handleCreate(dictCode)"
           plain
         >
           {{ t("buttons.common.create") }}
@@ -187,9 +187,10 @@ const DictDataForm = defineAsyncComponent(() => import("./form.vue"));
 const queryFormRef = ref();
 const dictDataFormRef = ref();
 const { status } = useDict("status");
+const dictCode = route.params.code;
 const props: BasicTableProps = reactive<BasicTableProps>({
   queryParams: {
-    code: route.params.code,
+    code: dictCode,
     value: "",
     label: "",
     status: ""

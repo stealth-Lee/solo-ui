@@ -13,7 +13,7 @@ const messageBox = useMessageBox();
 type Type = "table" | "tree";
 
 export interface BasicTableProps {
-  // 表格类型
+  // 表格类型: 普通分页表格(table)、树形表格(tree)
   type?: Type;
   // 标题
   title?: string;
@@ -33,6 +33,8 @@ export interface BasicTableProps {
   exportApi?: (...arg: any) => Promise<any>;
   // 主键名
   pk?: any;
+  // 父级ID,当表格类型为树形表格时需要
+  parentId?: any;
   // 状态字段名
   switchField?: any;
   // loading标志
@@ -67,6 +69,7 @@ export function useTable(options?: BasicTableProps) {
     loading: false,
     dataList: [],
     pk: "id",
+    parentId: "parentId",
     single: true,
     multiple: true
   };
@@ -113,7 +116,7 @@ export function useTable(options?: BasicTableProps) {
           });
           if (res.code === 0) {
             const data = res.data;
-            props.dataList = handleTree(data, props.pk);
+            props.dataList = handleTree(data, props.pk, props.parentId);
           }
         }
       } catch (err: any) {
@@ -156,21 +159,30 @@ export function useTable(options?: BasicTableProps) {
   };
 
   // 新增按钮
-  const handleCreate = () => {
-    props.formRef.openDialog(`${t("commons.buttons.create")}${props.title}`);
+  const handleCreate = (...args: any[]) => {
+    console.log(...args);
+    props.formRef.openDialog(
+      `${t("buttons.common.create")}${props.title}`,
+      undefined,
+      ...args
+    );
   };
 
   // 编辑按钮
-  const handleUpdate = (id?: number) => {
+  const handleUpdate = (id?: number, ...args: any[]) => {
     const ids = id || props.ids;
-    props.formRef.openDialog(`${t("commons.buttons.edit")}${props.title}`, ids);
+    props.formRef.openDialog(
+      `${t("buttons.common.edit")}${props.title}`,
+      ids,
+      ...args
+    );
   };
 
   // 删除按钮
   const handleDelete = async (id?: any[]) => {
     const ids = id || props.ids;
     await props.deleteApi(ids);
-    message.success(`${props.title}${t("commons.prompt.delete")}`);
+    message.success(`${props.title}${t("prompt.action.success")}`);
     await loadData();
   };
 
@@ -180,7 +192,7 @@ export function useTable(options?: BasicTableProps) {
       await messageBox.switch(row[props.switchField], name, props.title);
       await props.switchApi(row[props.pk], row[props.switchField]);
       await loadData();
-      await message.success(t("commons.prompt.action"));
+      await message.success(t("prompt.action.success"));
     } catch {
       row[props.switchField] =
         row[props.switchField] === GlobalStatus.ENABLE
@@ -189,7 +201,7 @@ export function useTable(options?: BasicTableProps) {
     }
   };
 
-  // 导出按钮
+  // TODO 11 导出按钮
   const handleExport = async () => {
     const data = await props.exportApi({ ...props.queryParams });
     download.excel(data, "字典数据.xls");

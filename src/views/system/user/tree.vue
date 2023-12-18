@@ -1,6 +1,6 @@
 <template>
   <div
-    v-loading="props.treeLoading"
+    v-loading="treeLoading"
     class="h-full bg-bg_color overflow-auto"
     :style="{ minHeight: `calc(100vh - 133px)` }"
   >
@@ -40,17 +40,6 @@
                 {{ isExpand ? "折叠全部" : "展开全部" }}
               </el-button>
             </el-dropdown-item>
-            <!-- <el-dropdown-item>
-              <el-button
-                :class="buttonClass"
-                link
-                type="primary"
-                :icon="useRenderIcon(Reset)"
-                @click="onTreeReset"
-              >
-                重置状态
-              </el-button>
-            </el-dropdown-item> -->
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -109,13 +98,10 @@
 
 <script setup lang="ts">
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ref, computed, watch, getCurrentInstance, onMounted } from "vue";
-
 import { handleTree } from "@/utils/tree";
 import { listSimple } from "@/api/system/dept";
 
 import Dept from "@iconify-icons/ri/git-branch-line";
-// import Reset from "@iconify-icons/ri/restart-line";
 import Search from "@iconify-icons/ep/search";
 import More2Fill from "@iconify-icons/ri/more-2-fill";
 import OfficeBuilding from "@iconify-icons/ep/office-building";
@@ -125,17 +111,13 @@ import UnExpandIcon from "./svg/unexpand.svg?component";
 
 interface Tree {
   deptId: number;
-  deptName: string;
+  name: string;
   highlight?: boolean;
   children?: Tree[];
 }
 
-const props = defineProps({
-  treeLoading: Boolean
-});
-
 const emit = defineEmits(["tree-select"]);
-
+const treeLoading = ref(true);
 const treeData = ref([]);
 const treeRef = ref();
 const isExpand = ref(true);
@@ -144,7 +126,7 @@ const highlightMap = ref({});
 const { proxy } = getCurrentInstance();
 const defaultProps = {
   children: "children",
-  label: "deptName"
+  label: "name"
 };
 const buttonClass = computed(() => {
   return [
@@ -159,7 +141,7 @@ const buttonClass = computed(() => {
 // 查询节点
 const queryNode = (value: string, data: Tree) => {
   if (!value) return true;
-  return data.deptName.includes(value);
+  return data.name.includes(value);
 };
 
 // 部门树节点点击事件
@@ -184,6 +166,7 @@ watch(searchValue, val => {
 onMounted(async () => {
   const treeRes = await listSimple();
   treeData.value = handleTree(treeRes.data, "deptId");
+  treeLoading.value = false;
 });
 </script>
 

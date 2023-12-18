@@ -1,0 +1,32 @@
+menu:
+  title: 菜单
+  column:
+    parentMenu: 上级菜单
+    type: 菜单类型
+    name: 菜单名称
+    icon: 菜单图标
+    path: 路由地址
+    permission: 权限标识
+    visible: 是否可见
+    keepAlive: 是否缓存
+    sort: 菜单排序
+    createTime: 创建时间
+    remark: 备注
+  tip:
+    parentMenu: 请选择上级菜单
+    type: 请输入菜单类型
+    name: 请输入菜单名称
+    icon: 请输入菜单图标
+    path: 请输入路由地址
+    permission: 请输入权限标识
+    visible: 请输入是否可见
+    keepAlive: 请输入是否缓存
+    sort: 请输入菜单排序
+    remark: 请输入备注
+  required:
+    type: 菜单类型不能为空
+    name: 菜单名称不能为空
+    visible: 是否可见不能为空
+    keepAlive: 是否缓存不能为空
+    createTime: 创建时间不能为空
+    deleted: 是否删除不能为空

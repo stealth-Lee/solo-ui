@@ -5,7 +5,8 @@ export default {
   meta: {
     icon: "edit",
     title: "字典",
-    rank: dict
+    rank: dict,
+    showLink: false
   },
   children: [
     {

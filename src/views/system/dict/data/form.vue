@@ -14,17 +14,17 @@
           clearable
         />
       </el-form-item>
-      <el-form-item :label="$t('dictData.column.value')" prop="value">
-        <el-input
-          v-model="formModel.value"
-          :placeholder="$t('dictData.tip.value')"
-          clearable
-        />
-      </el-form-item>
       <el-form-item :label="$t('dictData.column.label')" prop="label">
         <el-input
           v-model="formModel.label"
           :placeholder="$t('dictData.tip.label')"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item :label="$t('dictData.column.value')" prop="value">
+        <el-input
+          v-model="formModel.value"
+          :placeholder="$t('dictData.tip.value')"
           clearable
         />
       </el-form-item>
@@ -55,8 +55,8 @@
       <el-form-item :label="$t('dictData.column.status')" prop="status">
         <el-switch
           v-model="formModel.status"
-          active-value="1"
-          inactive-value="0"
+          :active-value="1"
+          :inactive-value="0"
         />
       </el-form-item>
       <el-form-item :label="$t('dictData.column.remark')" prop="remark">
@@ -100,7 +100,7 @@ const formModel = reactive({
   tagType: undefined,
   tagClass: "",
   dictSort: undefined,
-  status: undefined,
+  status: 1,
   remark: ""
 });
 
@@ -121,10 +121,11 @@ const formRules = reactive({
 });
 
 // 打开弹框
-const openDialog = async (title: string, id?: number) => {
+const openDialog = async (title: string, id?: number, code?: string) => {
   visible.value = true;
   formTitle.value = title;
   resetForm();
+  if (code) formModel.code = code;
   if (id) {
     try {
       formLoading.value = true;

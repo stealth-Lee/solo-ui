@@ -69,8 +69,8 @@ export const useMessageBox = () => {
     // 确认窗体
     confirm(content: Content, title?: string) {
       return ElMessageBox.confirm(content, title ? title : t("prompt.system"), {
-        confirmButtonText: t("commons.buttons.confirm"),
-        cancelButtonText: t("commons.buttons.cancel"),
+        confirmButtonText: t("buttons.common.confirm"),
+        cancelButtonText: t("buttons.common.cancel"),
         type: "warning"
       });
     },
@@ -81,12 +81,12 @@ export const useMessageBox = () => {
           ? h(
               "span",
               { style: "color: teal; font-weight: bold" },
-              t("commons.buttons.enable")
+              t("buttons.common.enable")
             )
           : h(
               "span",
               { style: "color: red; font-weight: bold" },
-              t("commons.buttons.disable")
+              t("buttons.common.disable")
             );
       name = name
         ? h("span", { style: "font-weight: bold" }, ` “${name}” `)

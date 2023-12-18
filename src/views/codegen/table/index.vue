@@ -162,6 +162,7 @@
                       type="primary"
                       :size="size"
                       :icon="useRenderIcon('ri:database-2-line')"
+                      @click="handleCodegen(row.tableId)"
                     >
                       {{ t("table.button.codegen") }}
                     </el-button>
@@ -183,7 +184,7 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting } from "@/api/codegen/table";
+import { paging, deleting, codegen } from "@/api/codegen/table";
 
 defineOptions({ name: "GenTable" });
 
@@ -277,6 +278,11 @@ const handleUpdate = (id?: number) => {
 // 预览按钮
 const handlePreview = (id?: number) => {
   previewTableRef.value.openDialog(id);
+};
+
+// 代码生成
+const handleCodegen = (id?: number) => {
+  codegen(id);
 };
 
 const buttonClass = computed(() => {

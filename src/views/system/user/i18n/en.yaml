@@ -1,5 +1,6 @@
 user:
   title: User
+  passwordTitle: Reset Password
   column:
     username: Username
     password: Password

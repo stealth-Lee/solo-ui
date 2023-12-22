@@ -17,3 +17,4 @@ role:
   button:
     menu: 菜单权限
     data: 数据权限
+    user: 分配用户

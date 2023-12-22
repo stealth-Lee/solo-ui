@@ -54,6 +54,7 @@
       <el-form-item>
         <el-tooltip :content="$t('buttons.common.search')" placement="top">
           <el-button
+            v-auth="['system-operate-log-create']"
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
@@ -82,6 +83,7 @@
           :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
+          v-auth="['system-operate-log-create']"
         >
           {{ t("buttons.common.create") }}
         </el-button>
@@ -91,6 +93,7 @@
           @click="handleUpdate()"
           :disabled="props.single"
           plain
+          v-auth="['system-operate-log-update']"
         >
           {{ t("buttons.common.edit") }}
         </el-button>
@@ -102,6 +105,7 @@
         >
           <template #reference>
             <el-button
+              v-auth="['system-operate-log-delete']"
               type="danger"
               :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
@@ -112,6 +116,7 @@
           </template>
         </el-popconfirm>
         <el-button
+          v-auth="['system-operate-log-import']"
           type="info"
           :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
@@ -120,6 +125,7 @@
           {{ t("buttons.common.import") }}
         </el-button>
         <el-button
+          v-auth="['system-operate-log-export']"
           type="warning"
           :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
@@ -150,6 +156,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-auth="['system-operate-log-update']"
               class="reset-margin"
               link
               type="primary"
@@ -167,6 +174,7 @@
             >
               <template #reference>
                 <el-button
+                  v-auth="['system-operate-log-delete']"
                   class="reset-margin"
                   link
                   type="danger"
@@ -287,7 +295,6 @@ const columns: TableColumnList = [
   {
     label: t("commons.columns.action"),
     fixed: "right",
-    width: 240,
     slot: "operation"
   }
 ];

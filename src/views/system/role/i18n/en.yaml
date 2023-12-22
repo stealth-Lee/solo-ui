@@ -17,3 +17,4 @@ role:
   button:
     menu: Menu Permission
     data: Data Permission
+    user: Assign User

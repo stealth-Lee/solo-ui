@@ -1,5 +1,6 @@
 user:
   title: 用户
+  passwordTitle: 重置密码
   column:
     username: 用户名
     password: 密码

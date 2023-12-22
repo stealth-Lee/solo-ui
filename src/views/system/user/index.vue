@@ -153,7 +153,7 @@
                         type="primary"
                         :size="size"
                         :icon="useRenderIcon('ri:lock-password-line')"
-                        @click="handleReset()"
+                        @click="resetPassword(row.userId)"
                       >
                         重置密码
                       </el-button>
@@ -179,6 +179,7 @@
       </PureTableBar>
     </div>
     <UserForm ref="userFormRef" @refresh="loadData()" />
+    <Password ref="passwordFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -190,6 +191,7 @@ import { paging, deleting } from "@/api/system/user";
 
 import DeptTree from "./tree.vue";
 const UserForm = defineAsyncComponent(() => import("./form.vue"));
+const Password = defineAsyncComponent(() => import("./password.vue"));
 
 defineOptions({
   name: "User"
@@ -200,6 +202,7 @@ const { sex, status } = useDict("sex", "status");
 const treeRef = ref();
 const queryFormRef = ref();
 const userFormRef = ref();
+const passwordFormRef = ref();
 
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: t("user.title"),
@@ -282,6 +285,10 @@ function handleSelectTree(row) {
   props.queryParams.deptId = row.deptId;
   handleQuery();
 }
+
+const resetPassword = (userId: number) => {
+  passwordFormRef.value.openDialog(userId);
+};
 
 const buttonClass = computed(() => {
   return [

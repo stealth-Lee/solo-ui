@@ -35,6 +35,7 @@ import java from "highlight.js/lib/languages/java";
 import xml from "highlight.js/lib/languages/java";
 import ts from "highlight.js/lib/languages/typescript";
 import sql from "highlight.js/lib/languages/sql";
+import yaml from "highlight.js/lib/languages/yaml";
 import { PreviewReq, preview } from "@/api/codegen/table";
 
 const { t } = useI18n();
@@ -84,5 +85,7 @@ onMounted(async () => {
   hljs.registerLanguage("vue", xml);
   hljs.registerLanguage("ts", ts);
   hljs.registerLanguage("sql", sql);
+  hljs.registerLanguage("yaml", yaml);
+  hljs.registerLanguage("properties", yaml);
 });
 </script>

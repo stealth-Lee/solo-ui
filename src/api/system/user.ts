@@ -33,6 +33,15 @@ export const deleting = (id: number) => {
   return http.delete(baseUrlApi("/system/user/" + id));
 };
 
+// 重置密码
+export const resetPassword = (userId: number, password: string) => {
+  const data = {
+    userId,
+    password
+  };
+  return http.put(baseUrlApi("/system/user/reset-password"), { data });
+};
+
 /**
  * 修改用户
  * @param id 用户id

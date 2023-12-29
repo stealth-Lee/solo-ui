@@ -178,6 +178,7 @@
                       type="primary"
                       :size="size"
                       :icon="useRenderIcon('ep:menu')"
+                      @click="handleAssignMenu(row)"
                     >
                       {{ t("role.button.menu") }}
                     </el-button>
@@ -211,7 +212,10 @@
         </pure-table>
       </template>
     </PureTableBar>
+    <!-- 角色编辑弹窗 -->
     <RoleForm ref="roleFormRef" @refresh="loadData()" />
+    <!-- 菜单权限弹窗 -->
+    <AssignMenu ref="assignMenuFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -219,15 +223,17 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting, updateStatus } from "@/api/system/role";
-
+import { paging, deleting, updateStatus, RoleReq } from "@/api/system/role";
 defineOptions({ name: "SysRole" });
 
-const { t } = useI18n();
 const RoleForm = defineAsyncComponent(() => import("./form.vue"));
-const { status } = useDict("status");
+const AssignMenu = defineAsyncComponent(() => import("./assignMenu.vue"));
+
 const queryFormRef = ref();
 const roleFormRef = ref();
+const assignMenuFormRef = ref();
+const { t } = useI18n();
+const { status } = useDict("status");
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: t("role.title"),
   pk: "roleId",
@@ -297,6 +303,10 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
+
+const handleAssignMenu = (role: RoleReq) => {
+  assignMenuFormRef.value.open(role);
+};
 
 const buttonClass = computed(() => {
   return [

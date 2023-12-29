@@ -1,3 +1,4 @@
+import qs from "qs";
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
 
@@ -36,8 +37,20 @@ export const getting = (menuId: number) => {
 };
 
 // 获取树形菜单精简信息列表
-export const listSimple = () => {
-  return http.get<MenuReq[]>(baseUrlApi("/system/menu/list-simple"));
+export const listSimple = (type?: string[]) => {
+  const params = {
+    type: type
+  };
+  return http.get<MenuReq[]>(
+    baseUrlApi("/system/menu/list-simple"),
+    { params },
+    {
+      paramsSerializer: function (params) {
+        // 设置数组接受的格式 ?type=1&type=2
+        return qs.stringify(params, { indices: false });
+      }
+    }
+  );
 };
 
 // 获取菜单信息分页列表

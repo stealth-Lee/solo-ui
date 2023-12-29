@@ -1,0 +1,14 @@
+onlineUser:
+  title: Online User
+  column:
+    userId: User ID
+    nickname: User Nickname
+  tip:
+    nickname: Please Enter User Nickname
+  required:
+    createTime: Create Time Can Not Be Empty
+    deleted: Whether To Delete Can Not Be Empty
+  button:
+    offline: Offline
+  ask:
+    offline: Are You Sure To Offline This User?

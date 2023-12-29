@@ -14,8 +14,18 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
-import { message } from "@/utils/message";
 import { downloadByData } from "@pureadmin/utils";
+import { GlobalErrorCode } from "../constants";
+import type { StorageConfigs } from "/#/index";
+import { storageLocal } from "@pureadmin/utils";
+import { removeToken } from "@/utils/auth";
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
+import { router, resetRouter } from "@/router";
+import { routerArrays } from "@/layout/types";
+
+const message = useMessage();
+const messageBox = useMessageBox();
+const notification = usrNotification();
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -71,6 +81,10 @@ class PureHttp {
           config.beforeRequestCallback(config);
           return config;
         }
+        // 设置后台国际化语言
+        const locale =
+          storageLocal().getItem<StorageConfigs>("responsive-locale")?.locale;
+        config.headers["Accept-Language"] = locale;
         if (PureHttp.initConfig.beforeRequestCallback) {
           PureHttp.initConfig.beforeRequestCallback(config);
           return config;
@@ -126,11 +140,18 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
-        // 业务异常处理
-        if (response.data.code === 1) {
-          message(response.data.message, {
-            type: "error"
-          });
+        // 异常处理
+        if (response.data.code !== GlobalErrorCode.SUCCESS) {
+          notification.error(response.data.message, "bottom-right");
+          if (response.data.code === GlobalErrorCode.UNAUTHORIZED) {
+            messageBox.confirm("登录已过期，请重新登录").then(() => {
+              removeToken();
+              useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
+              resetRouter();
+              router.push("/login");
+            });
+          }
+          // todo 优化错误提示,详细区分错误类型
           return Promise.reject("service exception");
         }
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调

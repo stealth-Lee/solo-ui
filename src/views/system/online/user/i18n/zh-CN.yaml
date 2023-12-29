@@ -1,0 +1,14 @@
+onlineUser:
+  title: 在线用户
+  column:
+    userId: 用户ID
+    nickname: 用户昵称
+  tip:
+    nickname: 请输入用户昵称
+  required:
+    createTime: 创建时间不能为空
+    deleted: 是否删除不能为空
+  button:
+    offline: 下线
+  ask:
+    offline: 确定要下线该用户吗？

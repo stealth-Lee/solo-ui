@@ -150,7 +150,8 @@ const openDialog = async (title: string, id?: number) => {
   visible.value = true;
   formTitle.value = title;
   resetForm();
-  const treeRes = await listSimple();
+  const type = ["D", "M"];
+  const treeRes = await listSimple(type);
   menuTree.value = handleTree(treeRes.data, "menuId");
   if (id) {
     try {

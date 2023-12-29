@@ -32,7 +32,8 @@
     "src/views/**/i18n",
     "src/views/system/dict/type/i18n",
     "src/views/system/dict/data/i18n",
-    "src/views/system/operate/log/i18n"
+    "src/views/system/operate/log/i18n",
+    "src/views/system/online/user/i18n"
   ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sortKeys": true,

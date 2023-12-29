@@ -6,7 +6,8 @@ export default [
     method: "post",
     response: () => {
       return {
-        success: true,
+        code: 0,
+        message: "操作成功",
         data: {
           list: [
             {
@@ -458,7 +459,8 @@ export default [
     method: "get",
     response: () => {
       return {
-        success: true,
+        code: 0,
+        message: "操作成功",
         data: {
           list: [
             {

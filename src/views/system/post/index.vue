@@ -7,54 +7,34 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item :label="$t('operateLog.column.title')" prop="title">
+      <el-form-item :label="$t('post.column.name')" prop="name">
         <el-input
-          v-model="props.queryParams.title"
-          :placeholder="$t('operateLog.tip.title')"
+          v-model="props.queryParams.name"
+          :placeholder="$t('post.tip.name')"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item :label="$t('operateLog.column.type')" prop="type">
-        <el-select
-          v-model="props.queryParams.type"
-          :placeholder="$t('operateLog.tip.type')"
-          clearable
-          class="!w-[180px]"
-        >
-          <el-option
-            v-for="dict in logger_type"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('operateLog.column.method')" prop="method">
+      <el-form-item :label="$t('post.column.code')" prop="code">
         <el-input
-          v-model="props.queryParams.method"
-          :placeholder="$t('operateLog.tip.method')"
+          v-model="props.queryParams.code"
+          :placeholder="$t('post.tip.code')"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item
-        :label="$t('operateLog.column.createTime')"
-        prop="createTime"
-      >
-        <el-date-picker
-          v-model="props.queryParams.createTime"
-          type="datetimerange"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          :range-separator="$t('tip.rangeSeparator')"
-          :start-placeholder="$t('tip.time.start')"
-          :end-placeholder="$t('tip.time.end')"
+      <el-form-item :label="$t('post.column.sort')" prop="sort">
+        <el-input
+          v-model="props.queryParams.sort"
+          :placeholder="$t('post.tip.sort')"
+          clearable
+          class="!w-[180px]"
         />
       </el-form-item>
       <el-form-item>
         <el-tooltip :content="$t('buttons.common.search')" placement="top">
           <el-button
-            v-auth="['system-operate-log-create']"
+            v-auth="['system-post-query']"
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
@@ -79,21 +59,21 @@
     >
       <template #buttons>
         <el-button
+          v-auth="['system-post-create']"
           type="primary"
           :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
-          v-auth="['system-operate-log-create']"
         >
           {{ t("buttons.common.create") }}
         </el-button>
         <el-button
+          v-auth="['system-post-update']"
           type="success"
           :icon="useRenderIcon('ep:edit-pen')"
           @click="handleUpdate()"
           :disabled="props.single"
           plain
-          v-auth="['system-operate-log-update']"
         >
           {{ t("buttons.common.edit") }}
         </el-button>
@@ -105,7 +85,7 @@
         >
           <template #reference>
             <el-button
-              v-auth="['system-operate-log-delete']"
+              v-auth="['system-post-delete']"
               type="danger"
               :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
@@ -116,7 +96,7 @@
           </template>
         </el-popconfirm>
         <el-button
-          v-auth="['system-operate-log-import']"
+          v-auth="['system-post-import']"
           type="info"
           :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
@@ -125,7 +105,7 @@
           {{ t("buttons.common.import") }}
         </el-button>
         <el-button
-          v-auth="['system-operate-log-export']"
+          v-auth="['system-post-export']"
           type="warning"
           :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
@@ -156,13 +136,13 @@
         >
           <template #operation="{ row }">
             <el-button
-              v-auth="['system-operate-log-update']"
+              v-auth="['system-post-update']"
               class="reset-margin"
               link
               type="primary"
               :size="size"
               :icon="useRenderIcon('ep:edit-pen')"
-              @click="handleUpdate(row.operateId)"
+              @click="handleUpdate(row.postId)"
             >
               {{ t("buttons.common.edit") }}
             </el-button>
@@ -170,11 +150,11 @@
               width="180"
               icon-color="red"
               :title="$t('commons.ask.delete')"
-              @confirm="handleDelete(row.operateId)"
+              @confirm="handleDelete(row.postId)"
             >
               <template #reference>
                 <el-button
-                  v-auth="['system-operate-log-delete']"
+                  v-auth="['system-post-delete']"
                   class="reset-margin"
                   link
                   type="danger"
@@ -189,7 +169,7 @@
         </pure-table>
       </template>
     </PureTableBar>
-    <OperateLogForm ref="dialogFormRef" @refresh="loadData()" />
+    <PostForm ref="dialogFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -197,19 +177,18 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting } from "@/api/system/operate.log";
+import { paging, deleting } from "@/api/system/post";
 
-defineOptions({ name: "SysOperateLog" });
+defineOptions({ name: "SysPost" });
 
-const OperateLogForm = defineAsyncComponent(() => import("./form.vue"));
+const PostForm = defineAsyncComponent(() => import("./form.vue"));
 const { t } = useI18n();
 const queryFormRef = ref();
 const dialogFormRef = ref();
 
-const { logger_type } = useDict("logger_type");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: t("operateLog.title"),
-  pk: "operateId",
+  title: t("post.title"),
+  pk: "postId",
   listApi: paging,
   deleteApi: deleting,
   queryRef: queryFormRef,
@@ -232,69 +211,42 @@ const columns: TableColumnList = [
   {
     type: "selection",
     align: "left",
-    width: 10
+    width: 40
   },
   {
-    label: t("operateLog.column.title"),
-    prop: "title",
+    label: "#",
+    type: "index",
+    width: 40
+  },
+  {
+    label: t("post.column.name"),
+    prop: "name",
     minWidth: 120
   },
   {
-    label: t("operateLog.column.type"),
-    prop: "type",
-    minWidth: 120,
-    cellRenderer: scope => (
-      <dict-tag options={logger_type.value} value={scope.row.type}></dict-tag>
-    )
-  },
-  {
-    label: t("operateLog.column.method"),
-    prop: "method",
+    label: t("post.column.code"),
+    prop: "code",
     minWidth: 120
   },
   {
-    label: t("operateLog.column.requestUrl"),
-    prop: "requestUrl",
+    label: t("post.column.sort"),
+    prop: "sort",
     minWidth: 120
   },
   {
-    label: t("operateLog.column.requestMethod"),
-    prop: "requestMethod",
-    minWidth: 120
-  },
-  {
-    label: t("operateLog.column.userIp"),
-    prop: "userIp",
-    minWidth: 120
-  },
-  {
-    label: t("operateLog.column.deviceName"),
-    prop: "deviceName",
-    minWidth: 120
-  },
-  {
-    label: t("operateLog.column.browserName"),
-    prop: "browserName",
-    minWidth: 120
-  },
-  {
-    label: t("operateLog.column.executionTime"),
-    prop: "executionTime",
-    minWidth: 120
-  },
-  {
-    label: t("operateLog.column.createTime"),
+    label: t("post.column.createTime"),
     prop: "createTime",
     minWidth: 120
   },
   {
-    label: t("operateLog.column.remark"),
+    label: t("post.column.remark"),
     prop: "remark",
     minWidth: 120
   },
   {
     label: t("commons.columns.action"),
     fixed: "right",
+    width: 160,
     slot: "operation"
   }
 ];

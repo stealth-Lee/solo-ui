@@ -7,40 +7,54 @@
       :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item :label="$t('role.column.name')" prop="name">
+      <el-form-item :label="$t('logOperate.column.title')" prop="title">
         <el-input
-          v-model="props.queryParams.name"
-          :placeholder="$t('role.tip.name')"
+          v-model="props.queryParams.title"
+          :placeholder="$t('logOperate.tip.title')"
           clearable
-          class="!w-[200px]"
+          class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item :label="$t('role.column.code')" prop="code">
-        <el-input
-          v-model="props.queryParams.code"
-          :placeholder="$t('role.tip.code')"
-          clearable
-          class="!w-[200px]"
-        />
-      </el-form-item>
-      <el-form-item :label="$t('role.column.status')" prop="status">
+      <el-form-item :label="$t('logOperate.column.type')" prop="type">
         <el-select
-          v-model="props.queryParams.status"
-          :placeholder="$t('role.tip.status')"
+          v-model="props.queryParams.type"
+          :placeholder="$t('logOperate.tip.type')"
           clearable
-          class="!w-[200px]"
+          class="!w-[180px]"
         >
           <el-option
-            v-for="dict in status"
+            v-for="dict in logger_type"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
+      <el-form-item :label="$t('logOperate.column.method')" prop="method">
+        <el-input
+          v-model="props.queryParams.method"
+          :placeholder="$t('logOperate.tip.method')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item
+        :label="$t('logOperate.column.createTime')"
+        prop="createTime"
+      >
+        <el-date-picker
+          v-model="props.queryParams.createTime"
+          type="datetimerange"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :range-separator="$t('tip.rangeSeparator')"
+          :start-placeholder="$t('tip.time.start')"
+          :end-placeholder="$t('tip.time.end')"
+        />
+      </el-form-item>
       <el-form-item>
         <el-tooltip :content="$t('buttons.common.search')" placement="top">
           <el-button
+            v-auth="['system-operate-log-create']"
             :icon="useRenderIcon('ep:search')"
             :loading="props.loading"
             @click="handleQuery"
@@ -69,6 +83,7 @@
           :icon="useRenderIcon('ep:plus')"
           @click="handleCreate()"
           plain
+          v-auth="['system-operate-log-create']"
         >
           {{ t("buttons.common.create") }}
         </el-button>
@@ -78,16 +93,19 @@
           @click="handleUpdate()"
           :disabled="props.single"
           plain
+          v-auth="['system-operate-log-update']"
         >
           {{ t("buttons.common.edit") }}
         </el-button>
         <el-popconfirm
+          width="180"
           icon-color="red"
           :title="$t('commons.ask.delete')"
           @confirm="handleDelete()"
         >
           <template #reference>
             <el-button
+              v-auth="['system-operate-log-delete']"
               type="danger"
               :icon="useRenderIcon('ep:delete')"
               :disabled="props.multiple"
@@ -98,6 +116,7 @@
           </template>
         </el-popconfirm>
         <el-button
+          v-auth="['system-operate-log-import']"
           type="info"
           :icon="useRenderIcon('ep:upload')"
           @click="handleUpdate()"
@@ -106,6 +125,7 @@
           {{ t("buttons.common.import") }}
         </el-button>
         <el-button
+          v-auth="['system-operate-log-export']"
           type="warning"
           :icon="useRenderIcon('ep:download')"
           @click="handleUpdate()"
@@ -119,39 +139,42 @@
           align-whole="center"
           table-layout="auto"
           :data="props.dataList"
-          :loading="props.loading"
           :columns="dynamicColumns"
+          :loading="props.loading"
           :size="size"
           :header-cell-style="{
             background: 'var(--el-fill-color-light)',
             color: 'var(--el-text-color-primary)'
           }"
+          showOverflowTooltip
+          adaptive
           :pagination="props.pagination"
           :paginationSmall="size === 'small' ? true : false"
           @selection-change="handleSelectionChange"
           @page-size-change="handleSizeChange"
           @page-current-change="handleCurrentChange"
-          showOverflowTooltip
-          adaptive
         >
           <template #operation="{ row }">
             <el-button
+              v-auth="['system-operate-log-update']"
               class="reset-margin"
               link
               type="primary"
               :size="size"
               :icon="useRenderIcon('ep:edit-pen')"
-              @click="handleUpdate(row.roleId)"
+              @click="handleUpdate(row.operateId)"
             >
-              {{ t("buttons.common.update") }}
+              {{ t("buttons.common.edit") }}
             </el-button>
             <el-popconfirm
+              width="180"
               icon-color="red"
               :title="$t('commons.ask.delete')"
-              @confirm="handleDelete(row.roleId)"
+              @confirm="handleDelete(row.operateId)"
             >
               <template #reference>
                 <el-button
+                  v-auth="['system-operate-log-delete']"
                   class="reset-margin"
                   link
                   type="danger"
@@ -162,60 +185,11 @@
                 </el-button>
               </template>
             </el-popconfirm>
-            <el-dropdown>
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
-                :size="size"
-                :icon="useRenderIcon('ep:more-filled')"
-              />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon('ep:menu')"
-                      @click="handleAssignMenu(row)"
-                    >
-                      {{ t("role.button.menu") }}
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon('ri:database-2-line')"
-                    >
-                      {{ t("role.button.data") }}
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon('ep:user')"
-                    >
-                      {{ t("role.button.user") }}
-                    </el-button>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
-    <!-- 角色编辑弹窗 -->
-    <RoleForm ref="roleFormRef" @refresh="loadData()" />
-    <!-- 菜单权限弹窗 -->
-    <AssignMenu ref="assignMenuFormRef" @refresh="loadData()" />
+    <logOperateForm ref="dialogFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -223,26 +197,23 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { BasicTableProps } from "@/hooks/table";
-import { paging, deleting, updateStatus, RoleReq } from "@/api/system/role";
-defineOptions({ name: "SysRole" });
+import { paging, deleting } from "@/api/system/log.operate";
 
-const RoleForm = defineAsyncComponent(() => import("./form.vue"));
-const AssignMenu = defineAsyncComponent(() => import("./assignMenu.vue"));
+defineOptions({ name: "SyslogOperate" });
 
-const queryFormRef = ref();
-const roleFormRef = ref();
-const assignMenuFormRef = ref();
+const logOperateForm = defineAsyncComponent(() => import("./form.vue"));
 const { t } = useI18n();
-const { status } = useDict("status");
+const queryFormRef = ref();
+const dialogFormRef = ref();
+
+const { logger_type } = useDict("logger_type");
 const props: BasicTableProps = reactive<BasicTableProps>({
-  title: t("role.title"),
-  pk: "roleId",
+  title: t("logOperate.title"),
+  pk: "operateId",
   listApi: paging,
   deleteApi: deleting,
-  switchApi: updateStatus,
-  switchField: "status",
   queryRef: queryFormRef,
-  formRef: roleFormRef
+  formRef: dialogFormRef
 });
 
 const {
@@ -254,74 +225,79 @@ const {
   handleReset,
   handleCreate,
   handleUpdate,
-  handleDelete,
-  handleSwitch
+  handleDelete
 } = useTable(props);
 
 const columns: TableColumnList = [
   {
     type: "selection",
     align: "left",
-    width: 40
+    width: 10
   },
   {
-    label: "#",
-    type: "index",
-    width: 40
-  },
-  {
-    label: t("role.column.name"),
-    prop: "name",
+    label: t("logOperate.column.title"),
+    prop: "title",
     minWidth: 120
   },
   {
-    label: t("role.column.code"),
-    prop: "code",
-    minWidth: 150
-  },
-  {
-    label: t("role.column.remark"),
-    prop: "remark",
-    minWidth: 150
-  },
-  {
-    label: t("role.column.createTime"),
-    minWidth: 180,
-    prop: "createTime"
-  },
-  {
-    label: t("role.column.status"),
-    minWidth: 130,
+    label: t("logOperate.column.type"),
+    prop: "type",
+    minWidth: 120,
     cellRenderer: scope => (
-      <el-switch
-        v-model={scope.row.status}
-        active-value={1}
-        inactive-value={0}
-        onChange={() => handleSwitch(scope.row, scope.row.name)}
-      />
+      <dict-tag options={logger_type.value} value={scope.row.type}></dict-tag>
     )
+  },
+  {
+    label: t("logOperate.column.method"),
+    prop: "method",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.requestUrl"),
+    prop: "requestUrl",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.requestMethod"),
+    prop: "requestMethod",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.userIp"),
+    prop: "userIp",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.deviceName"),
+    prop: "deviceName",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.browserName"),
+    prop: "browserName",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.executionTime"),
+    prop: "executionTime",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.createTime"),
+    prop: "createTime",
+    minWidth: 120
+  },
+  {
+    label: t("logOperate.column.remark"),
+    prop: "remark",
+    minWidth: 120
   },
   {
     label: t("commons.columns.action"),
     fixed: "right",
-    width: 200,
     slot: "operation"
   }
 ];
-
-const handleAssignMenu = (role: RoleReq) => {
-  assignMenuFormRef.value.open(role);
-};
-
-const buttonClass = computed(() => {
-  return [
-    "!h-[20px]",
-    "reset-margin",
-    "!text-gray-500",
-    "dark:!text-white",
-    "dark:hover:!text-primary"
-  ];
-});
 </script>
 
 <style scoped lang="scss">

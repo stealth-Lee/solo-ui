@@ -1,0 +1,16 @@
+logLogin:
+  title: 登录日志
+  column:
+    username: 用户名
+    ip: 登录地址
+    location: 登录地点
+    userAgent: 用户代理
+    deviceName: 设备名称/操作系统
+    browserName: 浏览器名称
+    status: 状态
+    loginTime: 登录时间
+    remark: 备注
+  tip:
+    username: 请输入用户名
+    ip: 请输入登录地址
+    status: 请选择状态

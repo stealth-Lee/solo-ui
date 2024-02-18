@@ -219,7 +219,6 @@ const {
   handleCurrentChange,
   handleSelectionChange,
   handleQuery,
-  handleReset,
   handleCreate,
   handleUpdate,
   handleDelete
@@ -228,33 +227,34 @@ const {
 const columns: TableColumnList = [
   {
     type: "selection",
-    fixed: "left",
+    align: "left",
+    width: 40,
     reserveSelection: true // 数据刷新后保留选项,此功能需指定row-key
   },
   {
+    label: "#",
+    type: "index",
+    width: 40
+  },
+  {
     label: t("user.column.username"),
-    prop: "username",
-    minWidth: 130
+    prop: "username"
   },
   {
     label: t("user.column.nickname"),
-    prop: "nickname",
-    minWidth: 130
+    prop: "nickname"
   },
   {
     label: t("user.column.name"),
-    prop: "name",
-    minWidth: 130
+    prop: "name"
   },
   {
     label: t("user.column.mobile"),
-    prop: "mobile",
-    minWidth: 130
+    prop: "mobile"
   },
   {
     label: t("user.column.sex"),
     prop: "sex",
-    minWidth: 90,
     cellRenderer: scope => (
       <dict-tag options={sex.value} value={scope.row.sex}></dict-tag>
     )
@@ -262,20 +262,19 @@ const columns: TableColumnList = [
   {
     label: t("user.column.status"),
     prop: "status",
-    minWidth: 90,
     cellRenderer: scope => (
       <dict-tag options={status.value} value={scope.row.status}></dict-tag>
     )
   },
   {
     label: t("user.column.createTime"),
-    minWidth: 90,
+    width: 180,
     prop: "createTime"
   },
   {
     label: t("commons.columns.action"),
     fixed: "right",
-    width: 180,
+    width: 200,
     slot: "operation"
   }
 ];
@@ -286,8 +285,16 @@ function handleSelectTree(row) {
   handleQuery();
 }
 
+// 重置密码
 const resetPassword = (userId: number) => {
   passwordFormRef.value.openDialog(userId);
+};
+
+// 重置按钮
+const handleReset = () => {
+  queryFormRef.value.resetFields();
+  props.queryParams.deptId = "";
+  handleQuery();
 };
 
 const buttonClass = computed(() => {

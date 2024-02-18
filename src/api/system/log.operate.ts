@@ -21,19 +21,19 @@ export interface OperateLogReq {
 
 // 删除操作日志
 export const deleting = (operateIds: number) => {
-  return http.delete(baseUrlApi("/system/operate-log/" + operateIds));
+  return http.delete(baseUrlApi("/system/log-operate/" + operateIds));
 };
 
 // 获取单条操作日志信息
 export const getting = (operateId: number) => {
   return http.get<OperateLogReq>(
-    baseUrlApi("/system/operate-log/" + operateId)
+    baseUrlApi("/system/log-operate/" + operateId)
   );
 };
 
 // 获取操作日志信息列表
 export const paging = (params?: object) => {
-  return http.get<OperateLogReq>(baseUrlApi("/system/operate-log/page"), {
+  return http.get<OperateLogReq>(baseUrlApi("/system/log-operate/page"), {
     params
   });
 };

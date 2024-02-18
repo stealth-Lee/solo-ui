@@ -1,0 +1,16 @@
+logLogin:
+  title: 登录日志
+  column:
+    username: Username
+    ip: IP
+    location: Location
+    userAgent: User Agent
+    deviceName: Device Name
+    browserName: Browser Name
+    status: Status
+    loginTime: Login Time
+    remark: Remark
+  tip:
+    username: Please Enter Username
+    ip: Please Enter IP
+    status: Please Select Status

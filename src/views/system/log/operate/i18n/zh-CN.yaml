@@ -1,4 +1,4 @@
-operateLog:
+logOperate:
   title: 操作日志
   column:
     title: 日志标题

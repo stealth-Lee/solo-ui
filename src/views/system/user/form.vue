@@ -99,8 +99,8 @@
             <el-switch
               v-model="formModel.status"
               inline-prompt
-              :active-value="0"
-              :inactive-value="1"
+              :active-value="1"
+              :inactive-value="0"
               active-text="正常"
               inactive-text="停用"
             />

@@ -1,0 +1,16 @@
+post:
+  title: 岗位
+  column:
+    name: 岗位名称
+    code: 岗位编码
+    sort: 岗位排序
+    createTime: 创建时间
+    remark: 备注
+  tip:
+    name: 请输入岗位名称
+    code: 请输入岗位编码
+    sort: 请输入岗位排序
+    remark: 请输入备注
+  required:
+    createTime: 创建时间不能为空
+    deleted: 是否删除[0否 1是]不能为空

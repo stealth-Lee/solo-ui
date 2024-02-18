@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { getting } from "@/api/system/operate.log";
+import { getting } from "@/api/system/log.operate";
 
 defineOptions({ name: "SysOperateLogForm" });
 

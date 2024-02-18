@@ -1,0 +1,16 @@
+post:
+  title: Post
+  column:
+    name: Job Title
+    code: Position Code
+    sort: Position Sorting
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    name: Please Enter Job Title
+    code: Please Enter Position Code
+    sort: Please Enter Position Sorting
+    remark: Please Enter Remark
+  required:
+    createTime: Creation Time Cannot Be Empty
+    deleted: Whether To Delete [0 No 1 Yes] Cannot Be Empty

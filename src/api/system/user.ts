@@ -11,24 +11,24 @@ export interface UserReq {
   sex: number;
   mobile: string;
   email: string;
+  avatar: string;
   status: number;
   remark: string;
+  postList: any[];
 }
 
-/**
- * 新增用户
- * @param data 用户信息
- * @returns 返回信息
- */
+export interface ChangePasswordReq {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+// 新增用户
 export const creating = (data: UserReq) => {
   return http.post(baseUrlApi("/system/user"), { data });
 };
 
-/**
- * 删除部门
- * @param id 部门id
- * @returns 返回信息
- */
+// 删除用户
 export const deleting = (id: number) => {
   return http.delete(baseUrlApi("/system/user/" + id));
 };
@@ -42,29 +42,32 @@ export const resetPassword = (userId: number, password: string) => {
   return http.put(baseUrlApi("/system/user/reset-password"), { data });
 };
 
-/**
- * 修改用户
- * @param id 用户id
- * @returns 返回信息
- */
+// 修改密码
+export const changePassword = (data: ChangePasswordReq) => {
+  return http.put(baseUrlApi("/system/user/change-password"), { data });
+};
+
+// 修改用户
 export const updating = (data: UserReq) => {
   return http.put(baseUrlApi("/system/user"), { data });
 };
 
-/**
- * 获取单条用户信息
- * @param id 用户id
- * @returns 用户信息
- */
+// 修改个人信息
+export const updatePersonalInfo = (data: UserReq) => {
+  return http.put(baseUrlApi("/system/user/personal-info"), { data });
+};
+
+// 获取单条用户信息
 export const getting = (id: number) => {
   return http.get<UserReq>(baseUrlApi("/system/user/" + id));
 };
 
-/**
- * 获取用户信息分页列表
- * @param params 查询条件
- * @returns 部门信息列表
- */
+// 获取当前登录用户信息
+export const currentUser = () => {
+  return http.get<UserReq>(baseUrlApi("/system/user/current"));
+};
+
+// 获取用户信息分页列表
 export const paging = (params?: object) => {
   return http.get<UserReq>(baseUrlApi("/system/user/page"), {
     params

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Search from "./search/index.vue";
 import Notice from "./notice/index.vue";
 import mixNav from "./sidebar/mixNav.vue";
@@ -7,9 +8,9 @@ import Breadcrumb from "./sidebar/breadCrumb.vue";
 import topCollapse from "./sidebar/topCollapse.vue";
 import { useTranslationLang } from "../hooks/useTranslationLang";
 import globalization from "@/assets/svg/globalization.svg?component";
-import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
-import Setting from "@iconify-icons/ri/settings-3-line";
 import Check from "@iconify-icons/ep/check";
+
+const Personal = defineAsyncComponent(() => import("./personal/index.vue"));
 
 const {
   layout,
@@ -26,6 +27,12 @@ const {
 } = useNav();
 
 const { t, locale, translationCh, translationEn } = useTranslationLang();
+const personalRef = ref();
+
+// 打开个人中心
+const openPersonalCenter = (userId: number) => {
+  personalRef.value.openDialog(userId);
+};
 </script>
 
 <template>
@@ -89,24 +96,29 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
+            <el-dropdown-item @click="openPersonalCenter">
+              <component :is="useRenderIcon('ep:user')" style="margin: 5px" />
+              {{ t("navbar.buttons.personalCenter") }}
+            </el-dropdown-item>
             <el-dropdown-item @click="logout">
-              <IconifyIconOffline
-                :icon="LogoutCircleRLine"
+              <component
+                :is="useRenderIcon('ri:logout-circle-r-line')"
                 style="margin: 5px"
               />
-              {{ t("buttons.hsLoginOut") }}
+              {{ t("navbar.buttons.logoutSystem") }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
       <span
         class="set-icon navbar-bg-hover"
-        :title="t('buttons.hssystemSet')"
+        :title="t('navbar.buttons.systemConfig')"
         @click="onPanel"
       >
-        <IconifyIconOffline :icon="Setting" />
+        <component :is="useRenderIcon('ri:settings-3-line')" />
       </span>
     </div>
+    <Personal ref="personalRef" />
   </div>
 </template>
 

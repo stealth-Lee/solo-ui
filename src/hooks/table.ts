@@ -160,7 +160,6 @@ export function useTable(options?: BasicTableProps) {
 
   // 新增按钮
   const handleCreate = (...args: any[]) => {
-    console.log(...args);
     props.formRef.openDialog(
       `${t("buttons.common.create")}${props.title}`,
       undefined,

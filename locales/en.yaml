@@ -1,5 +1,4 @@
 buttons:
-  hsLoginOut: LoginOut
   hsfullscreen: FullScreen
   hsexitfullscreen: ExitFullscreen
   hsrefreshRoute: RefreshRoute
@@ -10,7 +9,6 @@ buttons:
   hssearch: Search
   hsexpendAll: Expand All
   hscollapseAll: Collapse All
-  hssystemSet: Open ProjectConfig
   hsdelete: Delete
   hsreload: Reload
   hscloseCurrentTab: Close CurrentTab
@@ -164,3 +162,13 @@ tip:
   date:
     start: Start Date
     end: End Date
+
+# navbar
+navbar:
+  buttons:
+    personalCenter: Personal Center
+    logoutSystem: Logout
+    systemConfig: System Config
+  label:
+    basicInfo: Basic Info
+    securityInfo: Security Info

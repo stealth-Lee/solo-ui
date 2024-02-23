@@ -79,7 +79,7 @@ getReleases().then(({ data }) => {
             >
               <TypeIt
                 :className="'type-it2'"
-                :values="[`PureAdmin 版本日志（当前版本 v${version}）`]"
+                :values="[`SoloAdmin 版本日志（当前版本 v${version}）`]"
                 :cursor="false"
                 :speed="60"
               />

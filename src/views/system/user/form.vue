@@ -1,5 +1,5 @@
 <template>
-  <el-drawer :title="formTitle" v-model="visible" width="1000">
+  <el-drawer :title="formTitle" v-model="visible" size="60%">
     <el-form
       ref="formRef"
       :model="formModel"
@@ -19,6 +19,18 @@
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
+          <el-form-item :label="$t('user.column.password')" prop="password">
+            <el-input
+              :disabled="formModel.userId !== ''"
+              v-model="formModel.password"
+              clearable
+              show-password
+              :placeholder="$t('user.tip.password')"
+            />
+          </el-form-item>
+        </re-col>
+
+        <re-col :value="12" :xs="24" :sm="24">
           <el-form-item :label="$t('user.column.nickname')" prop="nickname">
             <el-input
               v-model="formModel.nickname"
@@ -27,32 +39,26 @@
             />
           </el-form-item>
         </re-col>
-
         <re-col :value="12" :xs="24" :sm="24">
-          <el-form-item :label="$t('user.column.password')" prop="password">
+          <el-form-item :label="$t('user.column.name')" prop="name">
             <el-input
-              :disabled="formModel.userId !== ''"
-              v-model="formModel.password"
+              v-model="formModel.name"
               clearable
-              :placeholder="$t('user.tip.password')"
+              :placeholder="$t('user.tip.name')"
             />
           </el-form-item>
         </re-col>
+
         <re-col :value="12" :xs="24" :sm="24">
           <el-form-item :label="$t('user.column.sex')">
-            <el-select
-              v-model="formModel.sex"
-              :placeholder="$t('user.tip.remark')"
-              class="w-full"
-              clearable
-            >
-              <el-option
-                v-for="dict in sex"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
+            <el-radio-group v-model="formModel.sex">
+              <el-radio
+                v-for="(item, index) in sex"
+                :key="index"
+                :label="item.value"
+                >{{ item.label }}
+              </el-radio>
+            </el-radio-group>
           </el-form-item>
         </re-col>
 
@@ -82,16 +88,33 @@
               v-model="formModel.deptId"
               :options="deptTree"
               :props="{
-                value: 'deptId',
-                label: 'name',
-                emitPath: false,
-                checkStrictly: true,
-                expandTrigger: 'hover' as const
-              }"
+              value: 'deptId',
+              label: 'name',
+              emitPath: false,
+              checkStrictly: true,
+              expandTrigger: 'hover' as const
+            }"
               clearable
               filterable
               :placeholder="$t('user.tip.deptId')"
             />
+          </el-form-item>
+        </re-col>
+        <re-col :value="12" :xs="24" :sm="24">
+          <el-form-item :label="$t('user.column.post')" prop="postIds">
+            <el-select
+              v-model="formModel.postIds"
+              multiple
+              :placeholder="$t('user.tip.post')"
+              class="w-full"
+            >
+              <el-option
+                v-for="item in postOptions"
+                :key="item.postId"
+                :label="item.name"
+                :value="item.postId"
+              />
+            </el-select>
           </el-form-item>
         </re-col>
         <re-col :value="12" :xs="24" :sm="24">
@@ -132,7 +155,9 @@ import ReCol from "@/components/ReCol";
 import { handleTree } from "@/utils/tree";
 import { creating, updating, getting } from "@/api/system/user";
 import { listSimple } from "@/api/system/dept";
-
+import { listSimple as postListSimple } from "@/api/system/post";
+import { getConfig } from "@/api/system/config";
+const { t } = useI18n();
 const message = useMessage();
 const { sex } = useDict("sex");
 const formRef = ref();
@@ -140,6 +165,7 @@ const deptTree = ref();
 const visible = ref(false);
 const formTitle = ref("");
 const formLoading = ref(false);
+const postOptions = ref();
 
 const formModel = reactive({
   userId: undefined,
@@ -148,23 +174,33 @@ const formModel = reactive({
   password: "",
   nickname: "",
   name: "",
-  sex: undefined,
+  sex: 0,
   mobile: "",
   email: "",
-  status: 0,
-  remark: ""
+  status: 1,
+  remark: "",
+  postIds: [] as number[],
+  postList: []
 });
 
 // 自定义表单规则校验
 const formRules = reactive({
-  username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
-  password: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
-  nickname: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
-  status: [{ required: true, message: "账号状态不能为空", trigger: "blur" }],
+  username: [
+    { required: true, message: t("user.required.username"), trigger: "blur" }
+  ],
+  password: [
+    { required: true, message: t("user.required.password"), trigger: "blur" }
+  ],
+  nickname: [
+    { required: true, message: t("user.required.nickname"), trigger: "blur" }
+  ],
+  status: [
+    { required: true, message: t("user.required.status"), trigger: "blur" }
+  ],
   email: [
     {
       type: "email",
-      message: "请输入正确的邮箱地址",
+      message: t("user.message.email"),
       trigger: ["blur", "change"]
     }
   ]
@@ -175,23 +211,26 @@ const openDialog = async (title: string, id?: number) => {
   visible.value = true;
   formTitle.value = title;
   resetForm();
-  const treeRes = await listSimple();
-  deptTree.value = handleTree(treeRes.data, "deptId");
+  // 加载使用的数据
+  getDeptData();
+  getPostData();
   if (id) {
     try {
       formLoading.value = true;
-      const res = await getting(id);
-      Object.assign(formModel, res.data);
+      const { data } = await getting(id);
+      if (data.postList) {
+        formModel.postIds = data.postList.map(item => item.postId);
+      }
+      Object.assign(formModel, data);
     } finally {
       formLoading.value = false;
     }
+  } else {
+    getConfig("SYS_USER_DEFAULT_PASSWORD").then(res => {
+      const { data } = res;
+      formModel.password = data.value;
+    });
   }
-};
-
-// 重置表单
-const resetForm = () => {
-  formModel.userId = "";
-  formRef.value?.resetFields();
 };
 
 // 确认按钮
@@ -201,13 +240,33 @@ const handleSubmit = async () => {
   if (!valid) return;
   try {
     formLoading.value = true;
-    formModel.deptId ? await updating(formModel) : await creating(formModel);
+    formModel.userId ? await updating(formModel) : await creating(formModel);
     message.success();
     visible.value = false;
     emit("refresh");
   } finally {
     formLoading.value = false;
   }
+};
+
+// 重置表单
+const resetForm = () => {
+  formModel.userId = "";
+  formRef.value?.resetFields();
+};
+
+// 部门数据
+const getDeptData = () => {
+  listSimple().then(res => {
+    deptTree.value = handleTree(res.data, "deptId");
+  });
+};
+
+// 岗位数据
+const getPostData = () => {
+  postListSimple().then(res => {
+    postOptions.value = res.data;
+  });
 };
 
 defineExpose({ openDialog });

@@ -29,6 +29,11 @@ export const getting = (postId: number) => {
   return http.get<PostReq>(baseUrlApi("/system/post/" + postId));
 };
 
+// 获取精简岗位信息列表
+export const listSimple = () => {
+  return http.get<PostReq>(baseUrlApi("/system/post/list-simple"));
+};
+
 // 获取岗位信息分页列表
 export const paging = (params?: object) => {
   return http.get<PostReq>(baseUrlApi("/system/post/page"), { params });

@@ -13,6 +13,10 @@ user:
     createTime: 创建时间
     remark: 备注
     deptId: 归属部门
+    post: 岗位
+    oldPassword: 原密码
+    newPassword: 新密码
+    confirmPassword: 确认密码
   tip:
     username: 请输入用户名
     password: 请输入密码
@@ -24,9 +28,26 @@ user:
     status: 请选择状态
     remark: 请输入备注
     deptId: 请选择归属部门
+    post: 请选择岗位
+    oldPassword: 请输入原密码
+    newPassword: 请输入新密码
+    confirmPassword: 请再次输入新密码
   required:
-    name: 角色名称不能为空
-    code: 角色编码不能为空
+    username: 用户名不能为空
+    password: 密码不能为空
+    nickname: 用户昵称不能为空
+    name: 姓名不能为空
+    status: 状态不能为空
+    oldPassword: 原密码不能为空
+    newPassword: 新密码不能为空
+    confirmPassword: 确认密码不能为空
+  size:
+    newPassword: 新密码长度为 {min} 到 {max} 个字符
+    confirmPassword: 确认密码长度为 {min} 到 {max} 个字符
+  message:
+    email: 请输入正确的邮箱地址
+    confirmPassword: 两次输入密码不一致
   button:
     menu: 菜单权限
     data: 数据权限
+    changePassword: 修改密码

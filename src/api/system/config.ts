@@ -1,6 +1,14 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "@/api/utils";
 
+export interface ConfigReq {
+  configId: number;
+  name: string;
+  key: string;
+  value: string;
+  isSys: boolean;
+}
+
 // 新增系统配置
 export const creating = (data: object) => {
   return http.post(baseUrlApi("/system/config"), { data });
@@ -19,6 +27,11 @@ export const updating = (data: object) => {
 // 获取单条系统配置信息
 export const getting = (configId: number) => {
   return http.get(baseUrlApi("/system/config/" + configId));
+};
+
+// 根据配置key获取单条系统配置信息
+export const getConfig = (key: string) => {
+  return http.get<ConfigReq>(baseUrlApi("/system/config/key/" + key));
 };
 
 // 获取系统配置信息分页列表

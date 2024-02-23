@@ -13,6 +13,10 @@ user:
     createTime: CreateTime
     remark: Remark
     deptId: Department
+    post: Post
+    oldPassword: Old Password
+    newPassword: New Password
+    confirmPassword: Confirm Password
   tip:
     username: Please Enter Username
     password: Please Enter Password
@@ -24,3 +28,26 @@ user:
     status: Please Select Status
     remark: Please Enter Remark
     deptId: Please Select Department
+    post: Please Select Post
+    oldPassword: Please Enter Old Password
+    newPassword: Please Enter New Password
+    confirmPassword: Please Enter New Password Again
+  required:
+    username: Username Cannot Be Empty
+    password: Password Cannot Be Empty
+    nickname: Nickname Cannot Be Empty
+    name: Name Cannot Be Empty
+    status: Status Cannot Be Empty
+    oldPassword: Old Password Cannot Be Empty
+    newPassword: New Password Cannot Be Empty
+    confirmPassword: Confirm Password Cannot Be Empty
+  size:
+    newPassword: New Password Length Is {min} To {max} Characters
+    confirmPassword: Confirm Password Length Is {min} To {max} Characters
+  message:
+    email: Please Enter Correct Email Address
+    confirmPassword: The Two Entered Passwords Do Not Match
+  button:
+    menu: Menu Permission
+    data: Data Permission
+    changePassword: Change Password

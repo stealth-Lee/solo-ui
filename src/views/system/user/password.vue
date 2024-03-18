@@ -1,7 +1,12 @@
 <template>
   <ElDialog :title="$t('user.passwordTitle')" v-model="visible" width="500">
-    <ElForm ref="formRef" :model="formModel" v-loading="formLoading">
-      <ElFormItem prop="password" :rules="formRules">
+    <ElForm
+      ref="formRef"
+      :model="formModel"
+      :rules="formRules"
+      v-loading="formLoading"
+    >
+      <ElFormItem prop="password">
         <ElInput
           clearable
           show-password
@@ -49,7 +54,9 @@ import { isAllEmpty } from "@pureadmin/utils";
 import { zxcvbn } from "@zxcvbn-ts/core";
 import { resetPassword } from "@/api/system/user";
 
+const { t } = useI18n();
 const message = useMessage();
+
 const formRef = ref();
 const curScore = ref();
 const visible = ref(false);
@@ -58,9 +65,10 @@ const formModel = reactive({
   userId: undefined,
   password: ""
 });
-
 const formRules = reactive({
-  username: [{ required: true, message: "请输入新密码", trigger: "blur" }]
+  password: [
+    { required: true, message: t("user.required.newPassword"), trigger: "blur" }
+  ]
 });
 
 // 打开弹窗

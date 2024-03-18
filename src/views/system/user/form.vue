@@ -13,7 +13,6 @@
             <el-input
               :disabled="formModel.userId !== ''"
               v-model="formModel.username"
-              clearable
               :placeholder="$t('user.tip.username')"
             />
           </el-form-item>
@@ -23,7 +22,6 @@
             <el-input
               :disabled="formModel.userId !== ''"
               v-model="formModel.password"
-              clearable
               show-password
               :placeholder="$t('user.tip.password')"
             />
@@ -88,12 +86,12 @@
               v-model="formModel.deptId"
               :options="deptTree"
               :props="{
-              value: 'deptId',
-              label: 'name',
-              emitPath: false,
-              checkStrictly: true,
-              expandTrigger: 'hover' as const
-            }"
+                value: 'deptId',
+                label: 'name',
+                emitPath: false,
+                checkStrictly: true,
+                expandTrigger: 'hover' as const
+              }"
               clearable
               filterable
               :placeholder="$t('user.tip.deptId')"

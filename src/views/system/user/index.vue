@@ -153,7 +153,7 @@
                         type="primary"
                         :size="size"
                         :icon="useRenderIcon('ri:lock-password-line')"
-                        @click="resetPassword(row.userId)"
+                        @click="handleResetPassword(row.userId)"
                       >
                         重置密码
                       </el-button>
@@ -165,7 +165,7 @@
                         type="primary"
                         :size="size"
                         :icon="useRenderIcon('ri:admin-line')"
-                        @click="handleReset()"
+                        @click="handleAssignRole(row.userId)"
                       >
                         分配角色
                       </el-button>
@@ -180,6 +180,7 @@
     </div>
     <UserForm ref="userFormRef" @refresh="loadData()" />
     <Password ref="passwordFormRef" @refresh="loadData()" />
+    <AssignRole ref="assignRoleFormRef" @refresh="loadData()" />
   </div>
 </template>
 
@@ -188,21 +189,21 @@ import { BasicTableProps } from "@/hooks/table";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { paging, deleting } from "@/api/system/user";
-
 import DeptTree from "./tree.vue";
 const UserForm = defineAsyncComponent(() => import("./form.vue"));
 const Password = defineAsyncComponent(() => import("./password.vue"));
+const AssignRole = defineAsyncComponent(() => import("./assign-role.vue"));
 
-defineOptions({
-  name: "User"
-});
+defineOptions({ name: "User" });
 
-const { t } = useI18n();
-const { sex, status } = useDict("sex", "status");
 const treeRef = ref();
 const queryFormRef = ref();
 const userFormRef = ref();
 const passwordFormRef = ref();
+const assignRoleFormRef = ref();
+
+const { t } = useI18n();
+const { sex, status } = useDict("sex", "status");
 
 const props: BasicTableProps = reactive<BasicTableProps>({
   title: t("user.title"),
@@ -212,7 +213,6 @@ const props: BasicTableProps = reactive<BasicTableProps>({
   queryRef: queryFormRef,
   formRef: userFormRef
 });
-
 const {
   loadData,
   handleSizeChange,
@@ -279,15 +279,20 @@ const columns: TableColumnList = [
   }
 ];
 
+// 重置密码
+const handleResetPassword = (userId: number) => {
+  passwordFormRef.value.openDialog(userId);
+};
+
+// 分配角色
+const handleAssignRole = (userId: number) => {
+  assignRoleFormRef.value.openDialog(userId);
+};
+
 // 部门树搜索
-function handleSelectTree(row) {
+const handleSelectTree = row => {
   props.queryParams.deptId = row.deptId;
   handleQuery();
-}
-
-// 重置密码
-const resetPassword = (userId: number) => {
-  passwordFormRef.value.openDialog(userId);
 };
 
 // 重置按钮

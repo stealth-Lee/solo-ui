@@ -7,8 +7,9 @@
           :key="index"
           :index="index"
           :class="item.elTagClass"
-          >{{ item.label }}</span
         >
+          {{ item.label }}
+        </span>
         <el-tag
           v-else
           :disable-transitions="true"
@@ -16,8 +17,9 @@
           :index="index"
           :type="item.elTagType"
           :class="item.elTagClass"
-          >{{ item.label }}</el-tag
         >
+          {{ item.label }}
+        </el-tag>
       </template>
     </template>
   </div>

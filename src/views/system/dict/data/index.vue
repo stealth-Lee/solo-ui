@@ -179,7 +179,7 @@ import { isNullOrUnDef } from "@pureadmin/utils";
 import { BasicTableProps } from "@/hooks/table";
 import { paging, deleting, updateStatus } from "@/api/system/dict.data";
 
-defineOptions({ name: "SysDictData" });
+defineOptions({ name: "SystemDictData" });
 
 const { t } = useI18n();
 const route = useRoute(); // 路由

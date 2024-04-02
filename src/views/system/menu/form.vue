@@ -38,7 +38,11 @@
           v-model="formModel.name"
           :placeholder="$t('menu.tip.name')"
           clearable
-        />
+        >
+          <template #append>
+            <el-button :icon="useRenderIcon('ep:edit-pen')" />
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item
         v-if="formModel.type != 'B'"
@@ -107,6 +111,7 @@
 import { handleTree } from "@/utils/tree";
 import { getting, creating, updating, listSimple } from "@/api/system/menu";
 import { IconSelect } from "@/components/ReIcon";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 defineOptions({ name: "SysMenuForm" });
 

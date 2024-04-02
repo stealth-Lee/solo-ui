@@ -15,9 +15,7 @@ export default {
       component: () => import("@/views/system/dict/data/index.vue"),
       meta: {
         title: "字典数据",
-        activePath: "/system/dict",
-        hiddenTag: false,
-        dynamicLevel: 3
+        activePath: "/system/dict"
       }
     }
   ]

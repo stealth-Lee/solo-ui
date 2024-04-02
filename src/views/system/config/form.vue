@@ -25,7 +25,7 @@
         <el-input
           v-model="formModel.value"
           :placeholder="$t('config.tip.value')"
-          clearable
+          type="textarea"
         />
       </el-form-item>
       <el-form-item :label="$t('config.column.isSys')" prop="isSys">
@@ -80,7 +80,7 @@ const formModel = reactive({
   name: "",
   key: "",
   value: "",
-  isSys: "true",
+  isSys: true,
   remark: ""
 });
 

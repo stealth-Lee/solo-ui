@@ -81,7 +81,7 @@ const formModel = reactive({
   name: "",
   code: "",
   type: undefined,
-  status: undefined,
+  status: 1,
   remark: ""
 });
 

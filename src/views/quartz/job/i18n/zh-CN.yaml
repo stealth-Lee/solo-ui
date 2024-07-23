@@ -1,0 +1,30 @@
+job:
+  title: 定时任务
+  column:
+    name: 任务名称
+    handlerName: 处理器名称
+    handlerParams: 处理器参数
+    cron: cron表达式
+    retryCount: 重试次数
+    retryInterval: 重试间隔
+    policy: 执行策略
+    concurrent: 是否允许并发执行
+    status: 任务状态
+    createTime: 创建时间
+    remark: 备注
+  tip:
+    name: 请输入任务名称
+    handlerName: 请输入处理器名称
+    handlerParams: 请输入处理器参数
+    cron: 请输入cron表达式
+    retryCount: 请输入重试次数
+    retryInterval: 请输入重试间隔
+    policy: 请输入执行策略
+    concurrent: 请输入是否允许并发执行
+    status: 请输入任务状态
+    remark: 请输入备注
+  required:
+    name: 任务名称不能为空
+    handlerName: 处理器名称不能为空
+    createTime: 创建时间不能为空
+    deleted: 是否删除不能为空

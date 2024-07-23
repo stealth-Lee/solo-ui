@@ -1,0 +1,30 @@
+job:
+  title: Scheduled Tasks
+  column:
+    name: The Name Of The Task
+    handlerName: Processor Name
+    handlerParams: Processor Parameters
+    cron: Cron Expression
+    retryCount: Number Of Retries
+    retryInterval: Retry Interval
+    policy: Execution Strategy
+    concurrent: Whether To Allow Concurrent execution
+    status: Task Status
+    createTime: Creation Time
+    remark: Remark
+  tip:
+    name: Please Enter The Name Of The Task
+    handlerName: Please Enter Processor Name
+    handlerParams: Please Enter Processor Parameters
+    cron: Please Enter Cron Expression
+    retryCount: Please Enter Number Of Retries
+    retryInterval: Please Enter Retry Interval
+    policy: Please Enter Execution Strategy
+    concurrent: Please Enter Whether To Allow Concurrent execution
+    status: Please Enter Task Status
+    remark: Please Enter Remark
+  required:
+    name: The Name Of The Task Cannot Be Empty
+    handlerName: Processor Name Cannot Be Empty
+    createTime: Creation Time Cannot Be Empty
+    deleted: Whether To Delete Cannot Be Empty

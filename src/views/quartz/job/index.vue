@@ -1,180 +1,343 @@
-<script setup lang="ts">
-import Card from "./components/card.vue";
-import { getCardList } from "@/api/list";
-import { message } from "@/utils/message";
-import { ElMessageBox } from "element-plus";
-import { ref, onMounted, nextTick } from "vue";
-import dialogForm from "./form.vue";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import AddFill from "@iconify-icons/ri/add-circle-line";
-
-defineOptions({
-  name: "ListCard"
-});
-
-const svg = `
-        <path class="path" d="
-          M 30 15
-          L 28 17
-          M 25.61 25.61
-          A 15 15, 0, 0, 1, 15 30
-          A 15 15, 0, 1, 1, 27.99 7.5
-          L 15 15
-        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-      `;
-
-const INITIAL_DATA = {
-  name: "",
-  status: "",
-  description: "",
-  type: "",
-  mark: ""
-};
-
-const pagination = ref({ current: 1, pageSize: 12, total: 0 });
-
-const productList = ref([]);
-const dataLoading = ref(true);
-
-const getCardListData = async () => {
-  try {
-    const { data } = await getCardList();
-    productList.value = data.list;
-    pagination.value = {
-      ...pagination.value,
-      total: data.list.length
-    };
-  } catch (e) {
-    console.log(e);
-  } finally {
-    setTimeout(() => {
-      dataLoading.value = false;
-    }, 500);
-  }
-};
-
-onMounted(() => {
-  getCardListData();
-});
-
-const formDialogVisible = ref(false);
-const formData = ref({ ...INITIAL_DATA });
-const searchValue = ref("");
-
-const onPageSizeChange = (size: number) => {
-  pagination.value.pageSize = size;
-  pagination.value.current = 1;
-};
-const onCurrentChange = (current: number) => {
-  pagination.value.current = current;
-};
-const handleDeleteItem = product => {
-  ElMessageBox.confirm(
-    product
-      ? `确认删除后${product.name}的所有产品信息将被清空, 且无法恢复`
-      : "",
-    "提示",
-    {
-      type: "warning"
-    }
-  )
-    .then(() => {
-      message("删除成功", { type: "success" });
-    })
-    .catch(() => {});
-};
-const handleManageProduct = product => {
-  formDialogVisible.value = true;
-  nextTick(() => {
-    formData.value = { ...product, status: product?.isSetup ? "1" : "0" };
-  });
-};
-</script>
-
 <template>
   <div class="main">
     <!-- 搜索工作栏 -->
     <el-form
       ref="queryFormRef"
       :inline="true"
+      :model="props.queryParams"
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item :label="$t('role.column.name')" prop="name">
+      <el-form-item :label="$t('job.column.name')" prop="name">
         <el-input
-          :placeholder="$t('role.tip.name')"
+          v-model="props.queryParams.name"
+          :placeholder="$t('job.tip.name')"
           clearable
-          class="!w-[200px]"
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.handlerName')" prop="handlerName">
+        <el-input
+          v-model="props.queryParams.handlerName"
+          :placeholder="$t('job.tip.handlerName')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.handlerParams')" prop="handlerParams">
+        <el-input
+          v-model="props.queryParams.handlerParams"
+          :placeholder="$t('job.tip.handlerParams')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.cron')" prop="cron">
+        <el-input
+          v-model="props.queryParams.cron"
+          :placeholder="$t('job.tip.cron')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.retryCount')" prop="retryCount">
+        <el-input
+          v-model="props.queryParams.retryCount"
+          :placeholder="$t('job.tip.retryCount')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.retryInterval')" prop="retryInterval">
+        <el-input
+          v-model="props.queryParams.retryInterval"
+          :placeholder="$t('job.tip.retryInterval')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.policy')" prop="policy">
+        <el-input
+          v-model="props.queryParams.policy"
+          :placeholder="$t('job.tip.policy')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.concurrent')" prop="concurrent">
+        <el-input
+          v-model="props.queryParams.concurrent"
+          :placeholder="$t('job.tip.concurrent')"
+          clearable
+          class="!w-[180px]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.status')" prop="status">
+        <el-input
+          v-model="props.queryParams.status"
+          :placeholder="$t('job.tip.status')"
+          clearable
+          class="!w-[180px]"
         />
       </el-form-item>
       <el-form-item>
         <el-tooltip :content="$t('buttons.common.search')" placement="top">
-          <el-button :icon="useRenderIcon('ep:search')" circle />
+          <el-button
+            v-auth="['quartz-job-query']"
+            :icon="useRenderIcon('ep:search')"
+            :loading="props.loading"
+            @click="handleQuery"
+            circle
+          />
         </el-tooltip>
         <el-tooltip :content="$t('buttons.common.reset')" placement="top">
-          <el-button :icon="useRenderIcon('ep:refresh-right')" circle />
-        </el-tooltip>
-        <el-tooltip :content="$t('buttons.common.create')" placement="top">
-          <el-button :icon="useRenderIcon('ep:plus')" circle />
+          <el-button
+            :icon="useRenderIcon('ep:refresh-right')"
+            @click="handleReset()"
+            circle
+          />
         </el-tooltip>
       </el-form-item>
     </el-form>
-    <div
-      v-loading="dataLoading"
-      :element-loading-svg="svg"
-      element-loading-svg-view-box="-10, -10, 50, 50"
-      class="mt-[8px]"
+
+    <!-- 列表 -->
+    <PureTableBar
+      :title="`${props.title}${t('commons.other.list')}`"
+      :columns="columns"
+      @refresh="handleQuery"
     >
-      <el-empty
-        v-show="
-          productList
-            .slice(
-              pagination.pageSize * (pagination.current - 1),
-              pagination.pageSize * pagination.current
-            )
-            .filter(v =>
-              v.name.toLowerCase().includes(searchValue.toLowerCase())
-            ).length === 0
-        "
-        :description="`${searchValue} 产品不存在`"
-      />
-      <template v-if="pagination.total > 0">
-        <el-row :gutter="16">
-          <el-col
-            v-for="(product, index) in productList
-              .slice(
-                pagination.pageSize * (pagination.current - 1),
-                pagination.pageSize * pagination.current
-              )
-              .filter(v =>
-                v.name.toLowerCase().includes(searchValue.toLowerCase())
-              )"
-            :key="index"
-            :xs="24"
-            :sm="12"
-            :md="8"
-            :lg="6"
-            :xl="4"
-          >
-            <Card
-              :product="product"
-              @delete-item="handleDeleteItem"
-              @manage-product="handleManageProduct"
-            />
-          </el-col>
-        </el-row>
-        <el-pagination
-          v-model:currentPage="pagination.current"
-          class="float-right"
-          :page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[12, 24, 36]"
-          :background="true"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="onPageSizeChange"
-          @current-change="onCurrentChange"
-        />
+      <template #buttons>
+        <el-button
+          v-auth="['quartz-job-create']"
+          type="primary"
+          :icon="useRenderIcon('ep:plus')"
+          @click="handleCreate()"
+          plain
+        >
+          {{ t("buttons.common.create") }}
+        </el-button>
+        <el-button
+          v-auth="['quartz-job-update']"
+          type="success"
+          :icon="useRenderIcon('ep:edit-pen')"
+          @click="handleUpdate()"
+          :disabled="props.single"
+          plain
+        >
+          {{ t("buttons.common.edit") }}
+        </el-button>
+        <el-popconfirm
+          width="180"
+          icon-color="red"
+          :title="$t('commons.ask.delete')"
+          @confirm="handleDelete()"
+        >
+          <template #reference>
+            <el-button
+              v-auth="['quartz-job-delete']"
+              type="danger"
+              :icon="useRenderIcon('ep:delete')"
+              :disabled="props.multiple"
+              plain
+            >
+              {{ t("buttons.common.delete") }}
+            </el-button>
+          </template>
+        </el-popconfirm>
+        <el-button
+          v-auth="['quartz-job-import']"
+          type="info"
+          :icon="useRenderIcon('ep:upload')"
+          @click="handleUpdate()"
+          plain
+        >
+          {{ t("buttons.common.import") }}
+        </el-button>
+        <el-button
+          v-auth="['quartz-job-export']"
+          type="warning"
+          :icon="useRenderIcon('ep:download')"
+          @click="handleUpdate()"
+          plain
+        >
+          {{ t("buttons.common.export") }}
+        </el-button>
       </template>
-    </div>
-    <dialogForm v-model:visible="formDialogVisible" :data="formData" />
+      <template v-slot="{ size, dynamicColumns }">
+        <pure-table
+          align-whole="center"
+          table-layout="auto"
+          :data="props.dataList"
+          :columns="dynamicColumns"
+          :loading="props.loading"
+          :size="size"
+          :header-cell-style="{
+            background: 'var(--el-fill-color-light)',
+            color: 'var(--el-text-color-primary)'
+          }"
+          showOverflowTooltip
+          adaptive
+          :pagination="props.pagination"
+          :paginationSmall="size === 'small' ? true : false"
+          @selection-change="handleSelectionChange"
+          @page-size-change="handleSizeChange"
+          @page-current-change="handleCurrentChange"
+        >
+          <template #operation="{ row }">
+            <el-button
+              v-auth="['quartz-job-update']"
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon('ep:edit-pen')"
+              @click="handleUpdate(row.jobId)"
+            >
+              {{ t("buttons.common.edit") }}
+            </el-button>
+            <el-popconfirm
+              width="180"
+              icon-color="red"
+              :title="$t('commons.ask.delete')"
+              @confirm="handleDelete(row.jobId)"
+            >
+              <template #reference>
+                <el-button
+                  v-auth="['quartz-job-delete']"
+                  class="reset-margin"
+                  link
+                  type="danger"
+                  :size="size"
+                  :icon="useRenderIcon('ep:delete')"
+                >
+                  {{ t("buttons.common.delete") }}
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </template>
+        </pure-table>
+      </template>
+    </PureTableBar>
+    <JobForm ref="dialogFormRef" @refresh="loadData()" />
   </div>
 </template>
+
+<script setup lang="tsx">
+import { PureTableBar } from "@/components/RePureTableBar";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { BasicTableProps } from "@/hooks/table";
+import { paging, deleting } from "@/api/quartz/job";
+
+defineOptions({ name: "QrtzJob" });
+
+const JobForm = defineAsyncComponent(() => import("./form.vue"));
+const { t } = useI18n();
+const queryFormRef = ref();
+const dialogFormRef = ref();
+
+const props: BasicTableProps = reactive<BasicTableProps>({
+  title: t("job.title"),
+  pk: "jobId",
+  listApi: paging,
+  deleteApi: deleting,
+  queryRef: queryFormRef,
+  formRef: dialogFormRef
+});
+
+const {
+  loadData,
+  handleSizeChange,
+  handleCurrentChange,
+  handleSelectionChange,
+  handleQuery,
+  handleReset,
+  handleCreate,
+  handleUpdate,
+  handleDelete
+} = useTable(props);
+
+const columns: TableColumnList = [
+  {
+    type: "selection",
+    align: "left",
+    width: 40
+  },
+  {
+    label: "#",
+    type: "index",
+    width: 40
+  },
+  {
+    label: t("job.column.name"),
+    prop: "name",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.handlerName"),
+    prop: "handlerName",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.handlerParams"),
+    prop: "handlerParams",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.cron"),
+    prop: "cron",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.retryCount"),
+    prop: "retryCount",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.retryInterval"),
+    prop: "retryInterval",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.policy"),
+    prop: "policy",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.concurrent"),
+    prop: "concurrent",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.status"),
+    prop: "status",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.createTime"),
+    prop: "createTime",
+    minWidth: 120
+  },
+  {
+    label: t("job.column.remark"),
+    prop: "remark",
+    minWidth: 120
+  },
+  {
+    label: t("commons.columns.action"),
+    fixed: "right",
+    width: 160,
+    slot: "operation"
+  }
+];
+</script>
+
+<style scoped lang="scss">
+:deep(.el-dropdown-menu__item i) {
+  margin: 0;
+}
+
+.search-form {
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
+}
+</style>

@@ -1,148 +1,164 @@
-<script setup lang="ts">
-import { ref, watch } from "vue";
-import { message } from "@/utils/message";
-import { FormInstance } from "element-plus";
-
-const SELECT_OPTIONS = [
-  { label: "网关", value: 1 },
-  { label: "人工智能", value: 2 },
-  { label: "CVM", value: 3 },
-  { label: "防火墙", value: 4 },
-  { label: "未知", value: 5 }
-];
-
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false
-  },
-  data: {
-    type: Object,
-    default: () => {
-      return {};
-    }
-  }
-});
-
-const ruleFormRef = ref<FormInstance>();
-
-const formVisible = ref(false);
-const formData = ref(props.data);
-const textareaValue = ref("");
-
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(valid => {
-    if (valid) {
-      message("提交成功", { type: "success" });
-      formVisible.value = false;
-      resetForm(formEl);
-    }
-  });
-};
-
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-
-const closeDialog = () => {
-  formVisible.value = false;
-  resetForm(ruleFormRef.value);
-};
-
-const emit = defineEmits(["update:visible"]);
-watch(
-  () => formVisible.value,
-  val => {
-    emit("update:visible", val);
-  }
-);
-
-watch(
-  () => props.visible,
-  val => {
-    formVisible.value = val;
-  }
-);
-
-watch(
-  () => props.data,
-  val => {
-    formData.value = val;
-  }
-);
-
-const rules = {
-  name: [{ required: true, message: "请输入产品名称", trigger: "blur" }]
-};
-</script>
-
 <template>
-  <el-dialog
-    v-model="formVisible"
-    title="新建产品"
-    :width="680"
-    draggable
-    :before-close="closeDialog"
-  >
-    <!-- 表单内容 -->
+  <el-drawer :title="formTitle" v-model="visible" width="600">
     <el-form
-      ref="ruleFormRef"
-      :model="formData"
-      :rules="rules"
-      label-width="100px"
+      ref="formRef"
+      :model="formModel"
+      :rules="formRules"
+      v-loading="formLoading"
+      label-width="82px"
     >
-      <el-form-item label="产品名称" prop="name">
+      <el-form-item :label="$t('job.column.name')" prop="name">
         <el-input
-          v-model="formData.name"
-          :style="{ width: '480px' }"
-          placeholder="请输入产品名称"
-        />
-      </el-form-item>
-      <el-form-item label="产品状态" prop="status">
-        <el-radio-group v-model="formData.status">
-          <el-radio value="0">已停用</el-radio>
-          <el-radio value="1">已启用</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="产品描述" prop="description">
-        <el-input
-          v-model="formData.description"
-          :style="{ width: '480px' }"
-          placeholder="请输入产品描述"
-        />
-      </el-form-item>
-      <el-form-item label="产品类型" prop="type">
-        <el-select
-          v-model="formData.type"
+          v-model="formModel.name"
+          :placeholder="$t('job.tip.name')"
           clearable
-          :style="{ width: '480px' }"
-        >
-          <el-option
-            v-for="(item, index) in SELECT_OPTIONS"
-            :key="index"
-            :value="item.value"
-            :label="item.label"
-          >
-            {{ item.label }}
-          </el-option>
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="备注" prop="mark">
+      <el-form-item :label="$t('job.column.handlerName')" prop="handlerName">
         <el-input
-          v-model="textareaValue"
+          v-model="formModel.handlerName"
+          :placeholder="$t('job.tip.handlerName')"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.handlerParams')" prop="handlerParams">
+        <el-input
+          v-model="formModel.handlerParams"
+          :placeholder="$t('job.tip.handlerParams')"
           type="textarea"
-          :style="{ width: '480px' }"
-          placeholder="请输入内容"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.cron')" prop="cron">
+        <el-input
+          v-model="formModel.cron"
+          :placeholder="$t('job.tip.cron')"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.retryCount')" prop="retryCount">
+        <el-input-number
+          v-model="formModel.retryCount"
+          :placeholder="$t('job.tip.retryCount')"
+          class="!w-[100%]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.retryInterval')" prop="retryInterval">
+        <el-input-number
+          v-model="formModel.retryInterval"
+          :placeholder="$t('job.tip.retryInterval')"
+          class="!w-[100%]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.policy')" prop="policy">
+        <el-input-number
+          v-model="formModel.policy"
+          :placeholder="$t('job.tip.policy')"
+          class="!w-[100%]"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.concurrent')" prop="concurrent">
+        <el-switch
+          v-model="formModel.concurrent"
+          active-value="1"
+          inactive-value="0"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.status')" prop="status">
+        <el-switch
+          v-model="formModel.status"
+          active-value="1"
+          inactive-value="0"
+        />
+      </el-form-item>
+      <el-form-item :label="$t('job.column.remark')" prop="remark">
+        <el-input
+          v-model="formModel.remark"
+          :placeholder="$t('job.tip.remark')"
+          type="textarea"
         />
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="closeDialog">取消</el-button>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-        确定
-      </el-button>
+      <span class="dialog-footer">
+        <el-button @click="visible = false">{{
+          t("buttons.common.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{
+          t("buttons.common.confirm")
+        }}</el-button>
+      </span>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
+
+<script setup lang="ts">
+import { getting, creating, updating } from "@/api/quartz/job";
+
+defineOptions({ name: "QrtzJobForm" });
+
+const { t } = useI18n();
+const message = useMessage();
+const formRef = ref();
+const visible = ref(false);
+const formLoading = ref(false);
+const formTitle = ref("");
+const formModel = reactive({
+  jobId: undefined,
+  name: "",
+  handlerName: "",
+  handlerParams: "",
+  cron: "",
+  retryCount: undefined,
+  retryInterval: undefined,
+  policy: undefined,
+  concurrent: undefined,
+  status: undefined,
+  remark: ""
+});
+
+// 自定义表单规则校验
+const formRules = reactive({
+  name: [{ required: true, message: t("job.required.name"), trigger: "blur" }],
+  handlerName: [{ required: true, message: t("job.required.handlerName"), trigger: "blur" }],
+});
+
+// 打开弹框
+const openDialog = async (title: string, id?: number) => {
+  visible.value = true;
+  formTitle.value = title;
+  resetForm();
+  if (id) {
+    try {
+      formLoading.value = true;
+      const { data } = await getting(id);
+      Object.assign(formModel, data);
+    } finally {
+      formLoading.value = false;
+    }
+  }
+};
+
+// 确认按钮
+const emit = defineEmits(["refresh"]);
+const handleSubmit = async () => {
+  const valid = await formRef.value.validate();
+  if (!valid) return;
+  try {
+    formLoading.value = true;
+    formModel.jobId ? await updating(formModel) : await creating(formModel);
+    message.success();
+    visible.value = false;
+    emit("refresh");
+  } finally {
+    formLoading.value = false;
+  }
+};
+
+// 重置表单
+const resetForm = () => {
+  formModel.jobId = "";
+  formRef.value?.resetFields();
+};
+
+defineExpose({ openDialog });
+</script>
